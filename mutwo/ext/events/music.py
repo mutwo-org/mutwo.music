@@ -10,7 +10,7 @@ import typing
 
 from mutwo.core import events
 from mutwo.core import parameters
-from mutwo.utilities import constants
+from mutwo.core.utilities import constants
 
 from mutwo.ext import events as ext_events
 
