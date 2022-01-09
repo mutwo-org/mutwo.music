@@ -84,7 +84,7 @@ class NoteLike(events.basic.SimpleEvent):
     def __init__(
         self,
         pitch_list: PitchOrPitchSequence = "c",
-        duration: parameters.abc.DurationType = 1,
+        duration: constants.DurationType = 1,
         volume: Volume = "mf",
         grace_note_sequential_event: typing.Optional[GraceNotes] = None,
         after_grace_note_sequential_event: typing.Optional[GraceNotes] = None,
