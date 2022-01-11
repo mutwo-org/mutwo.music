@@ -1,15 +1,15 @@
-"""Set default values for :class:`mutwo.events.music.NoteLike`."""
+"""Set default values for :class:`mutwo.ext.events.music.NoteLike`."""
 
-from mutwo.core import parameters
+from mutwo.ext import parameters as ext_parameters
 
 DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS = (
-    parameters.playing_indicators.PlayingIndicatorCollection
+    ext_parameters.playing_indicators.PlayingIndicatorCollection
 )
-"""Default value for :attr:`~mutwo.events.music.NoteLike.playing_indicator_collection`
-in :class:`~mutwo.events.music.NoteLike`"""
+"""Default value for :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
+in :class:`~mutwo.ext.events.music.NoteLike`"""
 
 DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS = (
-    parameters.notation_indicators.NotationIndicatorCollection
+    ext_parameters.notation_indicators.NotationIndicatorCollection
 )
-"""Default value for :attr:`~mutwo.events.music.NoteLike.notation_indicator_collection`
-in :class:`~mutwo.events.music.NoteLike`"""
+"""Default value for :attr:`~mutwo.ext.events.music.NoteLike.notation_indicator_collection`
+in :class:`~mutwo.ext.events.music.NoteLike`"""

@@ -6,10 +6,10 @@ except ImportError:
     import fractions  # type: ignore
 
 from mutwo.core.events import basic
-from mutwo.core.parameters import pitches
-from mutwo.core.parameters import volumes
 
 from mutwo.ext.events import music
+from mutwo.ext.parameters import pitches
+from mutwo.ext.parameters import volumes
 
 
 class NoteLikeTest(unittest.TestCase):

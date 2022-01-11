@@ -9,18 +9,18 @@ import numbers
 import typing
 
 from mutwo.core import events
-from mutwo.core import parameters
 from mutwo.core.utilities import constants
 
 from mutwo.ext import events as ext_events
+from mutwo.ext import parameters as ext_parameters
 
 __all__ = ("NoteLike",)
 
 PitchOrPitchSequence = typing.Union[
-    parameters.abc.Pitch, typing.Sequence, constants.Real, None
+    ext_parameters.abc.Pitch, typing.Sequence, constants.Real, None
 ]
 
-Volume = typing.Union[parameters.abc.Volume, constants.Real, str]
+Volume = typing.Union[ext_parameters.abc.Volume, constants.Real, str]
 GraceNotes = events.basic.SequentialEvent[events.basic.SimpleEvent]
 
 
@@ -28,40 +28,40 @@ class NoteLike(events.basic.SimpleEvent):
     """NoteLike represents traditional discreet musical objects.
 
     :param pitch_list: The pitch or pitches of the event. This can
-        be a pitch object (any class that inherits from ``mutwo.parameters.abc.Pitch``)
+        be a pitch object (any class that inherits from ``mutwo.ext.parameters.abc.Pitch``)
         or a list of pitch objects. Furthermore mutwo supports syntactic sugar
         to convert other objects on the fly to pitch objects: Atring can be
         read as pitch class names to build
-        :class:`mutwo.parameters.pitches.WesternPitch` objects or as ratios to
-        build :class:`mutwo.parameters.pitches.JustIntonationPitch` objects.
-        Fraction will also build :class:`mutwo.parameters.pitches.JustIntonationPitch`
+        :class:`mutwo.ext.parameters.pitches.WesternPitch` objects or as ratios to
+        build :class:`mutwo.ext.parameters.pitches.JustIntonationPitch` objects.
+        Fraction will also build :class:`mutwo.ext.parameters.pitches.JustIntonationPitch`
         objects. Other numbers (integer and float) will be read as pitch class numbers
-        to make :class:`mutwo.parameters.pitches.WesternPitch` objects.
+        to make :class:`mutwo.ext.parameters.pitches.WesternPitch` objects.
     :param duration: The duration of ``NoteLike``. This can be any number.
         The unit of the duration is up to the interpretation of the user and the
         respective converter routine that will be used.
     :param volume: The volume of the event. Can either be a object of
-        :mod:`mutwo.parameters.volumes`, a number or a string. If the number
+        :mod:`mutwo.ext.parameters.volumes`, a number or a string. If the number
         ranges from 0 to 1, mutwo automatically generates a
-        :class:`mutwo.parameters.volumes.DirectVolume` object (and the number
+        :class:`mutwo.ext.parameters.volumes.DirectVolume` object (and the number
         will be interpreted as the amplitude). If the
         number is smaller than 0, automatically generates a
-        :class:`mutwo.parameters.volumes.DecibelVolume` object (and the number
+        :class:`mutwo.ext.parameters.volumes.DecibelVolume` object (and the number
         will be interpreted as decibel). If the argument is a string,
-        `mutwo` will try to initialise a :class:`mutwo.parameters.volumes.WesternVolume`
+        `mutwo` will try to initialise a :class:`mutwo.ext.parameters.volumes.WesternVolume`
         object.
     :param grace_note_sequential_event:
     :type grace_note_sequential_event: events.basic.SequentialEvent[NoteLike]
     :param after_grace_note_sequential_event:
     :type after_grace_note_sequential_event: events.basic.SequentialEvent[NoteLike]
-    :param playing_indicator_collection: A :class:`~mutwo.parameters.playing_indicator_collection.PlayingIndicatorCollection`.
+    :param playing_indicator_collection: A :class:`~mutwo.ext.parameters.playing_indicator_collection.PlayingIndicatorCollection`.
         Playing indicators alter the sound of :class:`NoteLike` (e.g.
         tremolo, fermata, pizzicato).
-    :type playing_indicator_collection: parameters.playing_indicator_collection.PlayingIndicatorCollection
-    :param notation_indicator_collection: A :class:`~mutwo.parameters.notation_indicator_collection.NotationIndicatorCollection`.
+    :type playing_indicator_collection: ext_parameters.playing_indicator_collection.PlayingIndicatorCollection
+    :param notation_indicator_collection: A :class:`~mutwo.ext.parameters.notation_indicator_collection.NotationIndicatorCollection`.
         Notation indicators alter the visual representation of :class:`NoteLike`
         (e.g. ottava, clefs) without affecting the resulting sound.
-    :type notation_indicator_collection: parameters.notation_indicator_collection.NotationIndicatorCollection
+    :type notation_indicator_collection: ext_parameters.notation_indicator_collection.NotationIndicatorCollection
 
     By default mutwo doesn't differentiate between Tones, Chords and
     Rests, but rather simply implements one general class which can
@@ -71,7 +71,7 @@ class NoteLike(events.basic.SimpleEvent):
 
     **Example:**
 
-    >>> from mutwo.parameters import pitches
+    >>> from mutwo.ext.parameters import pitches
     >>> from mutwo.events import music
     >>> tone = music.NoteLike(pitches.WesternPitch('a'), 1, 1)
     >>> other_tone = music.NoteLike('3/2', 1, 0.5)
@@ -88,8 +88,8 @@ class NoteLike(events.basic.SimpleEvent):
         volume: Volume = "mf",
         grace_note_sequential_event: typing.Optional[GraceNotes] = None,
         after_grace_note_sequential_event: typing.Optional[GraceNotes] = None,
-        playing_indicator_collection: parameters.playing_indicators.PlayingIndicatorCollection = None,
-        notation_indicator_collection: parameters.notation_indicators.NotationIndicatorCollection = None,
+        playing_indicator_collection: ext_parameters.playing_indicators.PlayingIndicatorCollection = None,
+        notation_indicator_collection: ext_parameters.notation_indicators.NotationIndicatorCollection = None,
     ):
         if playing_indicator_collection is None:
             playing_indicator_collection = (
@@ -117,21 +117,21 @@ class NoteLike(events.basic.SimpleEvent):
     # ###################################################################### #
 
     @staticmethod
-    def _convert_string_to_pitch(pitch_indication: str) -> parameters.abc.Pitch:
+    def _convert_string_to_pitch(pitch_indication: str) -> ext_parameters.abc.Pitch:
         # assumes it is a ratio
         if "/" in pitch_indication:
-            return parameters.pitches.JustIntonationPitch(pitch_indication)
+            return ext_parameters.pitches.JustIntonationPitch(pitch_indication)
 
         # assumes it is a WesternPitch name
         elif (
             pitch_indication[0]
-            in parameters.pitches_constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT.keys()
+            in ext_parameters.pitches_constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT.keys()
         ):
             if pitch_indication[-1].isdigit():
                 pitch_name, octave = pitch_indication[:-1], int(pitch_indication[-1])
-                pitch = parameters.pitches.WesternPitch(pitch_name, octave)
+                pitch = ext_parameters.pitches.WesternPitch(pitch_name, octave)
             else:
-                pitch = parameters.pitches.WesternPitch(pitch_indication)
+                pitch = ext_parameters.pitches.WesternPitch(pitch_indication)
 
             return pitch
 
@@ -147,23 +147,23 @@ class NoteLike(events.basic.SimpleEvent):
     @staticmethod
     def _convert_fraction_to_pitch(
         pitch_indication: fractions.Fraction,
-    ) -> parameters.abc.Pitch:
-        return parameters.pitches.JustIntonationPitch(pitch_indication)
+    ) -> ext_parameters.abc.Pitch:
+        return ext_parameters.pitches.JustIntonationPitch(pitch_indication)
 
     @staticmethod
     def _convert_float_or_integer_to_pitch(
         pitch_indication: float,
-    ) -> parameters.abc.Pitch:
-        return parameters.pitches.WesternPitch(pitch_indication)
+    ) -> ext_parameters.abc.Pitch:
+        return ext_parameters.pitches.WesternPitch(pitch_indication)
 
     @staticmethod
     def _convert_unknown_object_to_pitch(
         unknown_object: typing.Any,
-    ) -> list[parameters.abc.Pitch]:
+    ) -> list[ext_parameters.abc.Pitch]:
         if unknown_object is None:
             pitch_list = []
 
-        elif isinstance(unknown_object, parameters.abc.Pitch):
+        elif isinstance(unknown_object, ext_parameters.abc.Pitch):
             pitch_list = [unknown_object]
 
         elif isinstance(unknown_object, str):
@@ -250,14 +250,14 @@ class NoteLike(events.basic.SimpleEvent):
     def volume(self, volume: typing.Any):
         if isinstance(volume, numbers.Real):
             if volume >= 0:  # type: ignore
-                volume = parameters.volumes.DirectVolume(volume)  # type: ignore
+                volume = ext_parameters.volumes.DirectVolume(volume)  # type: ignore
             else:
-                volume = parameters.volumes.DecibelVolume(volume)  # type: ignore
+                volume = ext_parameters.volumes.DecibelVolume(volume)  # type: ignore
 
         elif isinstance(volume, str):
-            volume = parameters.volumes.WesternVolume(volume)
+            volume = ext_parameters.volumes.WesternVolume(volume)
 
-        elif not isinstance(volume, parameters.abc.Volume):
+        elif not isinstance(volume, ext_parameters.abc.Volume):
             message = (
                 "Can't initialise '{}' with value '{}' of type '{}' for argument"
                 " 'volume'. The type for 'volume' should be '{}'.".format(
