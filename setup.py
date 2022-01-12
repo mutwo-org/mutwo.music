@@ -4,11 +4,13 @@ import setuptools  # type: ignore
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-extras_require = {"testing": ["nose", "coveralls"]}
+extras_require = {
+    "testing": ["nose", "coveralls", "mutwo.ext-common-generators>=0.2.0, <1.0.0"]
+}
 
 setuptools.setup(
     name="mutwo.ext-music",
-    version="0.2.1",
+    version="0.3.0",
     license="GPL",
     description="music extension for event based framework for generative art",
     long_description=long_description,
