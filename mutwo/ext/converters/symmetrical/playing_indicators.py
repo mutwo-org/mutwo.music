@@ -16,6 +16,7 @@ except ImportError:
 from mutwo.core import converters
 from mutwo.core import events
 from mutwo.core.utilities import constants
+from mutwo.core.utilities import tools
 
 from mutwo.ext import events as ext_events
 from mutwo.ext import parameters as ext_parameters
@@ -24,7 +25,9 @@ from mutwo.ext import parameters as ext_parameters
 __all__ = (
     "PlayingIndicatorConverter",
     "ArpeggioConverter",
+    "StacattoConverter",
     "ArticulationConverter",
+    "TrillConverter",
     "PlayingIndicatorsConverter",
 )
 
@@ -46,6 +49,11 @@ class PlayingIndicatorConverter(converters.abc.Converter):
         collection can be extracted), mutwo will build a playing indicator collection
         from :const:`~mutwo.ext.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[events.basic.SimpleEvent], ext_parameters.playing_indicators.PlayingIndicatorCollection], optional
+
+    To write a new PlayingIndicatorConverter the abstract method
+    :func:`_apply_playing_indicator` and the abstract properties
+    `playing_indicator_name` and `default_playing_indicator` have
+    to be overridden.
     """
 
     def __init__(
@@ -63,9 +71,19 @@ class PlayingIndicatorConverter(converters.abc.Converter):
     def _apply_playing_indicator(
         self,
         simple_event_to_convert: events.basic.SimpleEvent,
-        playing_indicator_collection: ext_parameters.playing_indicators.PlayingIndicatorCollection,
+        playing_indicator: ext_parameters.abc.PlayingIndicator,
     ) -> events.basic.SequentialEvent[events.basic.SimpleEvent]:
         raise NotImplementedError()
+
+    @property
+    @abc.abstractmethod
+    def playing_indicator_name(self) -> str:
+        raise NotImplementedError()
+
+    @property
+    @abc.abstractmethod
+    def default_playing_indicator(self) -> ext_parameters.abc.PlayingIndicator:
+        raise NotImplementedError
 
     def convert(
         self, simple_event_to_convert: events.basic.SimpleEvent
@@ -76,22 +94,27 @@ class PlayingIndicatorConverter(converters.abc.Converter):
         :type simple_event_to_convert: events.basic.SimpleEvent
         """
 
-        simple_event_to_playing_indicator_collection = (
-            self._simple_event_to_playing_indicator_collection
+        playing_indicator_collection = tools.call_function_except_attribute_error(
+            self._simple_event_to_playing_indicator_collection,
+            simple_event_to_convert,
+            ext_events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS(),
+        )
+        playing_indicator = tools.call_function_except_attribute_error(
+            lambda playing_indicator_collection: getattr(
+                playing_indicator_collection, self.playing_indicator_name
+            ),
+            playing_indicator_collection,
+            self.default_playing_indicator,
         )
 
-        try:
-            playing_indicator_collection = simple_event_to_playing_indicator_collection(
-                simple_event_to_convert
+        if playing_indicator.is_active:
+            return self._apply_playing_indicator(
+                simple_event_to_convert, playing_indicator
             )
-        except AttributeError:
-            playing_indicator_collection = (
-                ext_events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
+        else:
+            return events.basic.SequentialEvent(
+                [copy.deepcopy(simple_event_to_convert)]
             )
-
-        return self._apply_playing_indicator(
-            simple_event_to_convert, playing_indicator_collection
-        )
 
 
 class ArpeggioConverter(PlayingIndicatorConverter):
@@ -100,7 +123,7 @@ class ArpeggioConverter(PlayingIndicatorConverter):
     :param duration_for_each_attack: Set how long each attack of the
         Arpeggio lasts. Default to 0.1.
     :type duration_for_each_attack: constants.DurationType
-    :param simple_event_to_pitches: Function to extract from a
+    :param simple_event_to_pitch_list: Function to extract from a
         :class:`mutwo.events.basic.SimpleEvent` a tuple that contains pitch objects
         (objects that inherit from :class:`mutwo.ext_parameters.abc.Pitch`).
         By default it asks the Event for its
@@ -111,7 +134,7 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         should be overridden.
         If the function call raises an :obj:`AttributeError` (e.g. if no pitch can be
         extracted), mutwo will assume an event without any pitches.
-    :type simple_event_to_pitches: typing.Callable[[events.basic.SimpleEvent], ext_parameters.abc.Pitch], optional
+    :type simple_event_to_pitch_list: typing.Callable[[events.basic.SimpleEvent], ext_parameters.abc.Pitch], optional
     :param simple_event_to_playing_indicator_collection: Function to extract from a
         :class:`mutwo.events.basic.SimpleEvent` a
         :class:`mutwo.ext_parameters.playing_indicators.PlayingIndicatorCollection`
@@ -139,7 +162,7 @@ class ArpeggioConverter(PlayingIndicatorConverter):
     def __init__(
         self,
         duration_for_each_attack: constants.DurationType = 0.1,
-        simple_event_to_pitches: typing.Callable[
+        simple_event_to_pitch_list: typing.Callable[
             [events.basic.SimpleEvent], list[ext_parameters.abc.Pitch]
         ] = lambda simple_event: simple_event.pitch_list,  # type: ignore
         simple_event_to_playing_indicator_collection: typing.Callable[
@@ -156,21 +179,29 @@ class ArpeggioConverter(PlayingIndicatorConverter):
             simple_event_to_playing_indicator_collection=simple_event_to_playing_indicator_collection
         )
         self._duration_for_each_attack = duration_for_each_attack
-        self._simple_event_to_pitches = simple_event_to_pitches
+        self._simple_event_to_pitch_list = simple_event_to_pitch_list
         self._set_pitch_list_for_simple_event = set_pitch_list_for_simple_event
 
-    def _apply_arpeggio(
+    @property
+    def playing_indicator_name(self) -> str:
+        return "arpeggio"
+
+    @property
+    def default_playing_indicator(self) -> ext_parameters.abc.PlayingIndicator:
+        return ext_parameters.playing_indicators.Arpeggio()
+
+    def _apply_playing_indicator(
         self,
         simple_event_to_convert: events.basic.SimpleEvent,
-        arpeggio: ext_parameters.playing_indicators.Arpeggio,
+        playing_indicator: ext_parameters.playing_indicators.Arpeggio,
     ) -> events.basic.SequentialEvent[events.basic.SimpleEvent]:
         try:
-            pitch_list = list(self._simple_event_to_pitches(simple_event_to_convert))
+            pitch_list = list(self._simple_event_to_pitch_list(simple_event_to_convert))
         except AttributeError:
             pitch_list = []
 
         # sort pitches according to Arpeggio direction
-        pitch_list.sort(reverse=arpeggio.direction != "up")
+        pitch_list.sort(reverse=playing_indicator.direction != "up")
 
         converted_event: events.basic.SequentialEvent[
             events.basic.SimpleEvent
@@ -196,21 +227,6 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         )
 
         return converted_event
-
-    def _apply_playing_indicator(
-        self,
-        simple_event_to_convert: events.basic.SimpleEvent,
-        playing_indicator_collection: ext_parameters.playing_indicators.PlayingIndicatorCollection,
-    ) -> events.basic.SequentialEvent[events.basic.SimpleEvent]:
-        try:
-            arpeggio = playing_indicator_collection.arpeggio
-        except AttributeError:
-            arpeggio = ext_parameters.playing_indicators.Arpeggio()
-
-        if arpeggio.is_active:
-            return self._apply_arpeggio(simple_event_to_convert, arpeggio)
-        else:
-            return events.basic.SequentialEvent([copy.copy(simple_event_to_convert)])
 
 
 class StacattoConverter(PlayingIndicatorConverter):
@@ -247,9 +263,10 @@ class StacattoConverter(PlayingIndicatorConverter):
         self._factor = factor
         super().__init__(simple_event_to_playing_indicator_collection)
 
-    def _apply_stacatto(
+    def _apply_playing_indicator(
         self,
         simple_event_to_convert: events.basic.SimpleEvent,
+        _: ext_parameters.abc.PlayingIndicator,
     ) -> events.basic.SequentialEvent[events.basic.SimpleEvent]:
         duration = simple_event_to_convert.duration * self._factor
         sequential_event = events.basic.SequentialEvent(
@@ -262,23 +279,13 @@ class StacattoConverter(PlayingIndicatorConverter):
         )
         return sequential_event
 
-    def _apply_playing_indicator(
-        self,
-        simple_event_to_convert: events.basic.SimpleEvent,
-        playing_indicator_collection: ext_parameters.playing_indicators.PlayingIndicatorCollection,
-    ) -> events.basic.SequentialEvent[events.basic.SimpleEvent]:
-        try:
-            articulation = playing_indicator_collection.articulation
-        except AttributeError:
-            articulation = ext_parameters.playing_indicators.Articulation()
+    @property
+    def playing_indicator_name(self) -> str:
+        return "articulation"
 
-        if (
-            articulation.is_active
-            and articulation.name in self._allowed_articulation_name_sequence
-        ):
-            return self._apply_stacatto(simple_event_to_convert)
-        else:
-            return events.basic.SequentialEvent([copy.copy(simple_event_to_convert)])
+    @property
+    def default_playing_indicator(self) -> ext_parameters.abc.PlayingIndicator:
+        return ext_parameters.playing_indicators.Articulation()
 
 
 class ArticulationConverter(PlayingIndicatorConverter):
@@ -324,11 +331,12 @@ class ArticulationConverter(PlayingIndicatorConverter):
                         not in articulation_name_to_playing_indicator_converter
                     )
                 except AssertionError:
-                    message = "Found two playing indicator converter mappings for "
-                    message += f"articulation name '{articulation_name}'! "
-                    message += "Mutwo will use the playing indicator converter "
-                    message += f"'{playing_indicator_converter}'."
-                    warnings.warn(message)
+                    warnings.warn(
+                        "Found two playing indicator converter mappings for "
+                        f"articulation name '{articulation_name}'! "
+                        "Mutwo will use the playing indicator converter "
+                        f"'{playing_indicator_converter}'."
+                    )
                 articulation_name_to_playing_indicator_converter.update(
                     {articulation_name: playing_indicator_converter}
                 )
@@ -341,23 +349,27 @@ class ArticulationConverter(PlayingIndicatorConverter):
     def _apply_playing_indicator(
         self,
         simple_event_to_convert: events.basic.SimpleEvent,
-        playing_indicator_collection: ext_parameters.playing_indicators.PlayingIndicatorCollection,
+        playing_indicator: ext_parameters.playing_indicators.Articulation,
     ) -> events.basic.SequentialEvent[events.basic.SimpleEvent]:
-        try:
-            articulation = playing_indicator_collection.articulation
-        except AttributeError:
-            articulation = ext_parameters.playing_indicators.Articulation()
-
         if (
-            articulation.is_active
-            and articulation.name
+            playing_indicator.name
             in self._articulation_name_to_playing_indicator_converter
         ):
             return self._articulation_name_to_playing_indicator_converter[
-                articulation.name
+                playing_indicator.name
             ].convert(simple_event_to_convert)
         else:
-            return events.basic.SequentialEvent([copy.copy(simple_event_to_convert)])
+            return events.basic.SequentialEvent(
+                [copy.deepcopy(simple_event_to_convert)]
+            )
+
+    @property
+    def playing_indicator_name(self) -> str:
+        return "articulation"
+
+    @property
+    def default_playing_indicator(self) -> ext_parameters.abc.PlayingIndicator:
+        return ext_parameters.playing_indicators.Articulation()
 
 
 class TrillConverter(PlayingIndicatorConverter):
@@ -431,52 +443,55 @@ class TrillConverter(PlayingIndicatorConverter):
     def _apply_playing_indicator(
         self,
         simple_event_to_convert: events.basic.SimpleEvent,
-        playing_indicator_collection: ext_parameters.playing_indicators.PlayingIndicatorCollection,
+        playing_indicator: ext_parameters.playing_indicators.Trill,
     ) -> events.basic.SequentialEvent[events.basic.SimpleEvent]:
-        try:
-            trill = playing_indicator_collection.trill
-        except AttributeError:
-            trill = ext_parameters.playing_indicators.Trill()
-
-        simple_event_to_pitch_list = self._simple_event_to_pitch_list
-        try:
-            pitch_list = simple_event_to_pitch_list(simple_event_to_convert)
-        except AttributeError:
-            pitch_list = []
-
-        if (
-            trill.is_active
-            and simple_event_to_convert.duration > self._trill_size * 2
-            and pitch_list
-        ):
-            return self._apply_trill(simple_event_to_convert, trill, pitch_list)
+        pitch_list = tools.call_function_except_attribute_error(
+            self._simple_event_to_pitch_list, simple_event_to_convert, []
+        )
+        if pitch_list:
+            return self._apply_trill(
+                simple_event_to_convert, playing_indicator, pitch_list
+            )
         else:
             return events.basic.SequentialEvent([copy.copy(simple_event_to_convert)])
 
+    @property
+    def playing_indicator_name(self) -> str:
+        return "trill"
 
-class PlayingIndicatorsConverter(converters.abc.EventConverter):
+    @property
+    def default_playing_indicator(self) -> ext_parameters.abc.PlayingIndicator:
+        return ext_parameters.playing_indicators.Trill()
+
+
+class PlayingIndicatorsConverter(converters.abc.SymmetricalEventConverter):
     """Apply :class:`~mutwo.ext.parameters.abc.PlayingIndicator` on any :class:`~mutwo.events.abc.Event`.
 
-    :param playing_indicator_converters: A sequence of :class:`PlayingIndicatorConverter` which shall
+    :param playing_indicator_converter_sequence: A sequence of :class:`PlayingIndicatorConverter` which shall
         be applied on each :class:`~mutwo.events.basic.SimpleEvent`.
-    :type playing_indicator_converters: typing.Sequence[PlayingIndicatorConverter]
+    :type playing_indicator_converter_sequence: typing.Sequence[PlayingIndicatorConverter]
     """
 
     def __init__(
         self,
-        playing_indicator_converters: typing.Sequence[PlayingIndicatorConverter],
+        playing_indicator_converter_sequence: typing.Sequence[
+            PlayingIndicatorConverter
+        ],
     ):
-        self._playing_indicator_converters = playing_indicator_converters
+        self._playing_indicator_converter_tuple = tuple(
+            playing_indicator_converter_sequence
+        )
 
     def _convert_simple_event(
         self,
         event_to_convert: events.basic.SimpleEvent,
         _: constants.DurationType,
-    ) -> events.basic.SequentialEvent[events.basic.SimpleEvent]:
+    ) -> events.basic.SequentialEvent:
         """Convert instance of :class:`mutwo.events.basic.SimpleEvent`."""
+
         converted_event = [event_to_convert]
 
-        for playing_indicator_converter in self._playing_indicator_converters:
+        for playing_indicator_converter in self._playing_indicator_converter_tuple:
             new_converted_event: list[events.basic.SimpleEvent] = []
             for simple_event in converted_event:
                 converted_simple_event = playing_indicator_converter.convert(
@@ -489,4 +504,5 @@ class PlayingIndicatorsConverter(converters.abc.EventConverter):
         return events.basic.SequentialEvent(converted_event)
 
     def convert(self, event_to_convert: events.abc.Event) -> events.abc.Event:
-        return self._convert_event(event_to_convert, 0)
+        converted_event = self._convert_event(event_to_convert, 0)
+        return converted_event
