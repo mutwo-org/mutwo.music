@@ -10,7 +10,7 @@ extras_require = {
 
 setuptools.setup(
     name="mutwo.ext-music",
-    version="0.3.2",
+    version="0.4.0",
     license="GPL",
     description="music extension for event based framework for generative art",
     long_description=long_description,

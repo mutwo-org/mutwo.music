@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2022-01-15
+
+### Changed
+- public API and general setup of `converters.symmetrical.playing_indicators` module
+
+
 ## [0.3.1] - 2022-01-14
 
 ### Added
