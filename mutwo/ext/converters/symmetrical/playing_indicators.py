@@ -17,6 +17,7 @@ from mutwo.core import converters
 from mutwo.core import events
 from mutwo.core.utilities import constants
 
+from mutwo.ext import events as ext_events
 from mutwo.ext import parameters as ext_parameters
 
 
@@ -35,15 +36,15 @@ class PlayingIndicatorConverter(converters.abc.Converter):
         :class:`mutwo.events.basic.SimpleEvent` a
         :class:`mutwo.ext_parameters.playing_indicators.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.events.music.NoteLike`
+        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.ext.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[events.basic.SimpleEvent], ext_parameters.playing_indicators.PlayingIndicatorCollection], optional
     """
 
@@ -85,7 +86,7 @@ class PlayingIndicatorConverter(converters.abc.Converter):
             )
         except AttributeError:
             playing_indicator_collection = (
-                events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
+                ext_events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
             )
 
         return self._apply_playing_indicator(
@@ -103,9 +104,9 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         :class:`mutwo.events.basic.SimpleEvent` a tuple that contains pitch objects
         (objects that inherit from :class:`mutwo.ext_parameters.abc.Pitch`).
         By default it asks the Event for its
-        :attr:`~mutwo.events.music.NoteLike.pitch_list` attribute
-        (because by default :class:`mutwo.events.music.NoteLike` objects are expected).
-        When using different Event classes than :class:`~mutwo.events.music.NoteLike`
+        :attr:`~mutwo.ext.events.music.NoteLike.pitch_list` attribute
+        (because by default :class:`mutwo.ext.events.music.NoteLike` objects are expected).
+        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
         with a different name for their pitch property, this argument
         should be overridden.
         If the function call raises an :obj:`AttributeError` (e.g. if no pitch can be
@@ -115,22 +116,22 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         :class:`mutwo.events.basic.SimpleEvent` a
         :class:`mutwo.ext_parameters.playing_indicators.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.events.music.NoteLike`
+        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.ext.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[events.basic.SimpleEvent], ext_parameters.playing_indicators.PlayingIndicatorCollection,], optional
     :param set_pitch_list_for_simple_event: Function which assigns
         a list of :class:`~mutwo.ext_parameters.abc.Pitch` objects to a
         :class:`~mutwo.events.basic.SimpleEvent`. By default the
         function assigns the passed pitches to the
-        :attr:`~mutwo.events.music.NoteLike.pitch_list` attribute
-        (because by default :class:`mutwo.events.music.NoteLike` objects
+        :attr:`~mutwo.ext.events.music.NoteLike.pitch_list` attribute
+        (because by default :class:`mutwo.ext.events.music.NoteLike` objects
         are expected).
     :type set_pitch_list_for_simple_event: typing.Callable[[events.basic.SimpleEvent, list[ext_parameters.abc.Pitch]], None]
     """
@@ -221,15 +222,15 @@ class StacattoConverter(PlayingIndicatorConverter):
         :class:`mutwo.events.basic.SimpleEvent` a
         :class:`mutwo.ext_parameters.playing_indicators.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.events.music.NoteLike`
+        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.ext.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[events.basic.SimpleEvent], ext_parameters.playing_indicators.PlayingIndicatorCollection,], optional
     """
 
@@ -289,15 +290,15 @@ class ArticulationConverter(PlayingIndicatorConverter):
         :class:`mutwo.events.basic.SimpleEvent` a
         :class:`mutwo.ext_parameters.playing_indicators.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.events.music.NoteLike`
+        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.ext.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[events.basic.SimpleEvent], ext_parameters.playing_indicators.PlayingIndicatorCollection,], optional
     """
 
@@ -368,9 +369,9 @@ class TrillConverter(PlayingIndicatorConverter):
         :class:`mutwo.events.basic.SimpleEvent` a tuple that contains pitch objects
         (objects that inherit from :class:`mutwo.ext_parameters.abc.Pitch`).
         By default it asks the Event for its
-        :attr:`~mutwo.events.music.NoteLike.pitch_list` attribute
-        (because by default :class:`mutwo.events.music.NoteLike` objects are expected).
-        When using different Event classes than :class:`~mutwo.events.music.NoteLike`
+        :attr:`~mutwo.ext.events.music.NoteLike.pitch_list` attribute
+        (because by default :class:`mutwo.ext.events.music.NoteLike` objects are expected).
+        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
         with a different name for their pitch property, this argument
         should be overridden.
         If the function call raises an :obj:`AttributeError` (e.g. if no pitch can be
@@ -380,15 +381,15 @@ class TrillConverter(PlayingIndicatorConverter):
         :class:`mutwo.events.basic.SimpleEvent` a
         :class:`mutwo.ext.parameters.playing_indicators.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.events.music.NoteLike`
+        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.ext.events.music_constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[events.basic.SimpleEvent], ext_parameters.playing_indicators.PlayingIndicatorCollection,], optional
     """
 
