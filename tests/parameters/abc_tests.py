@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 
 try:
@@ -5,10 +7,34 @@ try:
 except ImportError:
     import fractions  # type: ignore
 
+from mutwo.core import utilities
 from mutwo.ext import parameters as ext_parameters
 
 
 class PitchTest(unittest.TestCase):
+    class GenericPitch(ext_parameters.abc.Pitch):
+        """Pitch only for UnitTest with minimal functionality"""
+
+        def __init__(self, frequency: float, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self._frequency = frequency
+
+        @property
+        def frequency(self) -> float:
+            return self._frequency
+
+        @utilities.decorators.add_copy_option
+        def add(self, pitch_interval: ext_parameters.PitchInterval) -> GenericPitch:
+            self._frequency = self.cents_to_ratio(pitch_interval.cents) * self.frequency
+            return self
+
+        @utilities.decorators.add_copy_option
+        def subtract(
+            self, pitch_interval: ext_parameters.PitchInterval
+        ) -> GenericPitch:
+            self._frequency = self.frequency / self.cents_to_ratio(pitch_interval.cents)
+            return self
+
     def test_abstract_error(self):
         self.assertRaises(TypeError, ext_parameters.abc.Pitch)
 
@@ -31,7 +57,8 @@ class PitchTest(unittest.TestCase):
             0, ext_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(1, 1))
         )
         self.assertEqual(
-            702, round(ext_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(3, 2)))
+            702,
+            round(ext_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(3, 2))),
         )
 
     def test_cents_to_ratio(self):
@@ -51,19 +78,50 @@ class PitchTest(unittest.TestCase):
             60, round(ext_parameters.abc.Pitch.hertz_to_midi_pitch_number(261))
         )
 
+    def test_initialise_envelope_from_none(self):
+        generic_pitch = self.GenericPitch(100)
+        self.assertEqual(
+            generic_pitch.envelope,
+            generic_pitch.PitchIntervalEnvelope(
+                [
+                    [
+                        0,
+                        ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+                            0
+                        ),
+                    ]
+                ]
+            ),
+        )
+
+    def test_initialise_envelope_from_list(self):
+        generic_pitch = self.GenericPitch(100, envelope=[[0, 0], [1, 100], [2, 0]])
+        self.assertEqual(
+            generic_pitch.envelope,
+            generic_pitch.PitchIntervalEnvelope([[0, 0], [1, 100], [2, 0]]),
+        )
+
 
 class PitchIntervalEnvelopeTest(unittest.TestCase):
     def setUp(cls):
         pitch_interval0 = (
-            ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(1200)
+            ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+                1200
+            )
         )
         pitch_interval1 = (
-            ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(0)
+            ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+                0
+            )
         )
         pitch_interval2 = (
-            ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(-100)
+            ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+                -100
+            )
         )
-        cls.pitch = ext_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch_class(440)(
+        cls.pitch = ext_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch_class(
+            440
+        )(
             envelope=ext_parameters.abc.Pitch.PitchIntervalEnvelope(
                 [[0, pitch_interval0], [10, pitch_interval1], [20, pitch_interval2]]
             )
@@ -105,7 +163,9 @@ class PitchIntervalEnvelopeTest(unittest.TestCase):
             point_list.append(
                 (
                     position,
-                    ext_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch(frequency),
+                    ext_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch(
+                        frequency
+                    ),
                 )
             )
         pitch_envelope = self.pitch.PitchEnvelope(point_list)
@@ -197,7 +257,9 @@ class VolumeTest(unittest.TestCase):
             ext_parameters.abc.Volume.amplitude_ratio_to_decibel(0.50118), -6, places=3
         )
         self.assertAlmostEqual(
-            ext_parameters.abc.Volume.amplitude_ratio_to_decibel(0.25), -12.041, places=3
+            ext_parameters.abc.Volume.amplitude_ratio_to_decibel(0.25),
+            -12.041,
+            places=3,
         )
         self.assertEqual(
             ext_parameters.abc.Volume.amplitude_ratio_to_decibel(0),
@@ -210,7 +272,9 @@ class VolumeTest(unittest.TestCase):
             0,
         )
         self.assertEqual(
-            ext_parameters.abc.Volume.power_ratio_to_decibel(0.5, reference_amplitude=0.5),
+            ext_parameters.abc.Volume.power_ratio_to_decibel(
+                0.5, reference_amplitude=0.5
+            ),
             0,
         )
         self.assertAlmostEqual(

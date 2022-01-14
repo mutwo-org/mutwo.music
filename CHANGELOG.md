@@ -7,8 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2022-01-14
+
+### Added
+- syntactic sugar for setting pitch envelope
+
+
 ## [0.3.0] - 2022-01-12
-- added music related generator modules (moved from mutwo.ext-common-generators)
+
+### Added
+- music related generator modules (moved from mutwo.ext-common-generators)
+
 
 ## [0.2.0] - 2022-01-11
 

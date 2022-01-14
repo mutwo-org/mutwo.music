@@ -303,12 +303,12 @@ class Pitch(parameters.abc.ParameterWithEnvelope):
         ) -> Pitch:
             return base_parameter + relative_parameter
 
-    def __init__(self, envelope: typing.Optional[Pitch.PitchIntervalEnvelope] = None):
-        if not envelope:
-            generic_pitch_interval = (
-                self.PitchIntervalEnvelope.make_generic_pitch_interval(0)
-            )
-            envelope = self.PitchIntervalEnvelope([[0, generic_pitch_interval]])
+    def __init__(
+        self,
+        envelope: typing.Optional[
+            typing.Union[Pitch.PitchIntervalEnvelope, typing.Sequence]
+        ] = None,
+    ):
         super().__init__(envelope)
 
     # ###################################################################### #
@@ -407,6 +407,26 @@ class Pitch(parameters.abc.ParameterWithEnvelope):
     def midi_pitch_number(self) -> float:
         """The midi pitch number (from 0 to 127) of the pitch."""
         return self.hertz_to_midi_pitch_number(self.frequency)
+
+    @parameters.abc.ParameterWithEnvelope.envelope.setter
+    def envelope(
+        self,
+        envelope_or_envelope_argument: typing.Optional[
+            typing.Union[Pitch.PitchIntervalEnvelope, typing.Sequence]
+        ],
+    ):
+        if not envelope_or_envelope_argument:
+            generic_pitch_interval = (
+                self.PitchIntervalEnvelope.make_generic_pitch_interval(0)
+            )
+            envelope = self.PitchIntervalEnvelope([[0, generic_pitch_interval]])
+        elif isinstance(
+            envelope_or_envelope_argument, events.envelopes.RelativeEnvelope
+        ):
+            envelope = envelope_or_envelope_argument
+        else:
+            envelope = self.PitchIntervalEnvelope(envelope_or_envelope_argument)
+        self._envelope = envelope
 
     # ###################################################################### #
     #                            comparison methods                          #
