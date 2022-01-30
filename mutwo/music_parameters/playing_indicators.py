@@ -56,6 +56,7 @@ __all__ = (
     "Articulation",
     "Arpeggio",
     "Pedal",
+    "Trill",
     "StringContactPoint",
     "Hairpin",
     "Ornamentation",

@@ -778,7 +778,7 @@ class JustIntonationPitch(
     @property
     def helmholtz_ellis_just_intonation_notation_commas(
         self,
-    ) -> music_parameters.commas.CommaCompound:
+    ) -> music_parameters.CommaCompound:
         """Commas of JustIntonationPitch."""
 
         prime_to_exponent_dict = {
@@ -786,7 +786,7 @@ class JustIntonationPitch(
             for prime, exponent in zip(self.prime_tuple, self.exponent_tuple)
             if exponent != 0 and prime not in (2, 3)
         }
-        return music_parameters.commas.CommaCompound(
+        return music_parameters.CommaCompound(
             prime_to_exponent_dict,
             music_parameters.constants.DEFAULT_PRIME_TO_COMMA_DICT,
         )

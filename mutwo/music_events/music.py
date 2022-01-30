@@ -88,8 +88,8 @@ class NoteLike(core_events.SimpleEvent):
         volume: Volume = "mf",
         grace_note_sequential_event: typing.Optional[GraceNotes] = None,
         after_grace_note_sequential_event: typing.Optional[GraceNotes] = None,
-        playing_indicator_collection: music_parameters.playing_indicators.PlayingIndicatorCollection = None,
-        notation_indicator_collection: music_parameters.notation_indicators.NotationIndicatorCollection = None,
+        playing_indicator_collection: music_parameters.PlayingIndicatorCollection = None,
+        notation_indicator_collection: music_parameters.NotationIndicatorCollection = None,
     ):
         if playing_indicator_collection is None:
             playing_indicator_collection = (
@@ -120,7 +120,7 @@ class NoteLike(core_events.SimpleEvent):
     def _convert_string_to_pitch(pitch_indication: str) -> music_parameters.abc.Pitch:
         # assumes it is a ratio
         if "/" in pitch_indication:
-            return music_parameters.pitches.JustIntonationPitch(pitch_indication)
+            return music_parameters.JustIntonationPitch(pitch_indication)
 
         # assumes it is a WesternPitch name
         elif (
@@ -129,9 +129,9 @@ class NoteLike(core_events.SimpleEvent):
         ):
             if pitch_indication[-1].isdigit():
                 pitch_name, octave = pitch_indication[:-1], int(pitch_indication[-1])
-                pitch = music_parameters.pitches.WesternPitch(pitch_name, octave)
+                pitch = music_parameters.WesternPitch(pitch_name, octave)
             else:
-                pitch = music_parameters.pitches.WesternPitch(pitch_indication)
+                pitch = music_parameters.WesternPitch(pitch_indication)
 
             return pitch
 
@@ -148,13 +148,13 @@ class NoteLike(core_events.SimpleEvent):
     def _convert_fraction_to_pitch(
         pitch_indication: fractions.Fraction,
     ) -> music_parameters.abc.Pitch:
-        return music_parameters.pitches.JustIntonationPitch(pitch_indication)
+        return music_parameters.JustIntonationPitch(pitch_indication)
 
     @staticmethod
     def _convert_float_or_integer_to_pitch(
         pitch_indication: float,
     ) -> music_parameters.abc.Pitch:
-        return music_parameters.pitches.WesternPitch(pitch_indication)
+        return music_parameters.WesternPitch(pitch_indication)
 
     @staticmethod
     def _convert_unknown_object_to_pitch(
@@ -250,12 +250,12 @@ class NoteLike(core_events.SimpleEvent):
     def volume(self, volume: typing.Any):
         if isinstance(volume, numbers.Real):
             if volume >= 0:  # type: ignore
-                volume = music_parameters.volumes.DirectVolume(volume)  # type: ignore
+                volume = music_parameters.DirectVolume(volume)  # type: ignore
             else:
-                volume = music_parameters.volumes.DecibelVolume(volume)  # type: ignore
+                volume = music_parameters.DecibelVolume(volume)  # type: ignore
 
         elif isinstance(volume, str):
-            volume = music_parameters.volumes.WesternVolume(volume)
+            volume = music_parameters.WesternVolume(volume)
 
         elif not isinstance(volume, music_parameters.abc.Volume):
             message = (
