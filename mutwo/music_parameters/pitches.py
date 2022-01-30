@@ -43,6 +43,7 @@ from mutwo import music_parameters
 
 
 __all__ = (
+    "DirectPitchInterval",
     "DirectPitch",
     "JustIntonationPitch",
     "Partial",
