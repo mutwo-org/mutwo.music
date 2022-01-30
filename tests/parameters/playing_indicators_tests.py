@@ -1,13 +1,13 @@
 import dataclasses
 import unittest
 
-from mutwo.ext.parameters import playing_indicators
+from mutwo import music_parameters
 
 
 class PlayingIndicatorCollectionTest(unittest.TestCase):
     def setUp(self):
         self.playing_indicator_collection = (
-            playing_indicators.PlayingIndicatorCollection()
+            music_parameters.PlayingIndicatorCollection()
         )
 
     def test_frozen_attribute(self):

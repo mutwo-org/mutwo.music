@@ -1,13 +1,13 @@
 import unittest
 
 
-from mutwo.ext import converters
+from mutwo import music_converters
 
 
 class RhythmicalStrataToIndispensabilityConverterTest(unittest.TestCase):
     def test_convert(self):
         converter = (
-            converters.symmetrical.metricities.RhythmicalStrataToIndispensabilityConverter()
+            music_converters.RhythmicalStrataToIndispensabilityConverter()
         )
 
         # 3/4

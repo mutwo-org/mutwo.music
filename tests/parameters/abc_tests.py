@@ -7,12 +7,12 @@ try:
 except ImportError:
     import fractions  # type: ignore
 
-from mutwo.core import utilities
-from mutwo.ext import parameters as ext_parameters
+from mutwo import core_utilities
+from mutwo import music_parameters
 
 
 class PitchTest(unittest.TestCase):
-    class GenericPitch(ext_parameters.abc.Pitch):
+    class GenericPitch(music_parameters.abc.Pitch):
         """Pitch only for UnitTest with minimal functionality"""
 
         def __init__(self, frequency: float, *args, **kwargs):
@@ -23,59 +23,59 @@ class PitchTest(unittest.TestCase):
         def frequency(self) -> float:
             return self._frequency
 
-        @utilities.decorators.add_copy_option
-        def add(self, pitch_interval: ext_parameters.PitchInterval) -> GenericPitch:
+        @core_utilities.add_copy_option
+        def add(self, pitch_interval: music_parameters.PitchInterval) -> GenericPitch:
             self._frequency = self.cents_to_ratio(pitch_interval.cents) * self.frequency
             return self
 
-        @utilities.decorators.add_copy_option
+        @core_utilities.add_copy_option
         def subtract(
-            self, pitch_interval: ext_parameters.PitchInterval
+            self, pitch_interval: music_parameters.PitchInterval
         ) -> GenericPitch:
             self._frequency = self.frequency / self.cents_to_ratio(pitch_interval.cents)
             return self
 
     def test_abstract_error(self):
-        self.assertRaises(TypeError, ext_parameters.abc.Pitch)
+        self.assertRaises(TypeError, music_parameters.abc.Pitch)
 
     def test_hertz_to_cents(self):
-        self.assertEqual(1200, ext_parameters.abc.Pitch.hertz_to_cents(440, 880))
-        self.assertEqual(-1200, ext_parameters.abc.Pitch.hertz_to_cents(880, 440))
-        self.assertEqual(0, ext_parameters.abc.Pitch.hertz_to_cents(10, 10))
+        self.assertEqual(1200, music_parameters.abc.Pitch.hertz_to_cents(440, 880))
+        self.assertEqual(-1200, music_parameters.abc.Pitch.hertz_to_cents(880, 440))
+        self.assertEqual(0, music_parameters.abc.Pitch.hertz_to_cents(10, 10))
         self.assertEqual(
-            702, round(ext_parameters.abc.Pitch.hertz_to_cents(440, 440 * 3 / 2))
+            702, round(music_parameters.abc.Pitch.hertz_to_cents(440, 440 * 3 / 2))
         )
 
     def test_ratio_to_cents(self):
         self.assertEqual(
-            1200, ext_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(2, 1))
+            1200, music_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(2, 1))
         )
         self.assertEqual(
-            -1200, ext_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(1, 2))
+            -1200, music_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(1, 2))
         )
         self.assertEqual(
-            0, ext_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(1, 1))
+            0, music_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(1, 1))
         )
         self.assertEqual(
             702,
-            round(ext_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(3, 2))),
+            round(music_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(3, 2))),
         )
 
     def test_cents_to_ratio(self):
         self.assertEqual(
-            fractions.Fraction(2, 1), ext_parameters.abc.Pitch.cents_to_ratio(1200)
+            fractions.Fraction(2, 1), music_parameters.abc.Pitch.cents_to_ratio(1200)
         )
         self.assertEqual(
-            fractions.Fraction(1, 2), ext_parameters.abc.Pitch.cents_to_ratio(-1200)
+            fractions.Fraction(1, 2), music_parameters.abc.Pitch.cents_to_ratio(-1200)
         )
         self.assertEqual(
-            fractions.Fraction(1, 1), ext_parameters.abc.Pitch.cents_to_ratio(0)
+            fractions.Fraction(1, 1), music_parameters.abc.Pitch.cents_to_ratio(0)
         )
 
     def test_hertz_to_midi_pitch_number(self):
-        self.assertEqual(69, ext_parameters.abc.Pitch.hertz_to_midi_pitch_number(440))
+        self.assertEqual(69, music_parameters.abc.Pitch.hertz_to_midi_pitch_number(440))
         self.assertEqual(
-            60, round(ext_parameters.abc.Pitch.hertz_to_midi_pitch_number(261))
+            60, round(music_parameters.abc.Pitch.hertz_to_midi_pitch_number(261))
         )
 
     def test_initialise_envelope_from_none(self):
@@ -86,7 +86,7 @@ class PitchTest(unittest.TestCase):
                 [
                     [
                         0,
-                        ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+                        music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
                             0
                         ),
                     ]
@@ -104,25 +104,19 @@ class PitchTest(unittest.TestCase):
 
 class PitchIntervalEnvelopeTest(unittest.TestCase):
     def setUp(cls):
-        pitch_interval0 = (
-            ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
-                1200
-            )
+        pitch_interval0 = music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+            1200
         )
-        pitch_interval1 = (
-            ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
-                0
-            )
+        pitch_interval1 = music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+            0
         )
-        pitch_interval2 = (
-            ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
-                -100
-            )
+        pitch_interval2 = music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+            -100
         )
-        cls.pitch = ext_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch_class(
+        cls.pitch = music_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch_class(
             440
         )(
-            envelope=ext_parameters.abc.Pitch.PitchIntervalEnvelope(
+            envelope=music_parameters.abc.Pitch.PitchIntervalEnvelope(
                 [[0, pitch_interval0], [10, pitch_interval1], [20, pitch_interval2]]
             )
         )
@@ -145,7 +139,7 @@ class PitchIntervalEnvelopeTest(unittest.TestCase):
         ):
             self.assertEqual(
                 self.pitch.envelope.parameter_at(absolute_time),
-                ext_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+                music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
                     cents
                 ),
             )
@@ -163,7 +157,7 @@ class PitchIntervalEnvelopeTest(unittest.TestCase):
             point_list.append(
                 (
                     position,
-                    ext_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch(
+                    music_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch(
                         frequency
                     ),
                 )
@@ -180,8 +174,8 @@ class PitchIntervalEnvelopeTest(unittest.TestCase):
         ):
             self.assertAlmostEqual(
                 self.pitch_envelope.value_at(position),  # type: ignore
-                ext_parameters.abc.Pitch.hertz_to_cents(
-                    ext_parameters.pitches_constants.PITCH_ENVELOPE_REFERENCE_FREQUENCY,
+                music_parameters.abc.Pitch.hertz_to_cents(
+                    music_parameters.constants.PITCH_ENVELOPE_REFERENCE_FREQUENCY,
                     frequency,
                 ),  # type: ignore
             )
@@ -201,90 +195,92 @@ class PitchIntervalEnvelopeTest(unittest.TestCase):
 class VolumeTest(unittest.TestCase):
     def test_decibel_to_amplitude_ratio(self):
         self.assertEqual(
-            ext_parameters.abc.Volume.decibel_to_amplitude_ratio(0),
+            music_parameters.abc.Volume.decibel_to_amplitude_ratio(0),
             1,
         )
         self.assertEqual(
             round(
-                ext_parameters.abc.Volume.decibel_to_amplitude_ratio(-6),
+                music_parameters.abc.Volume.decibel_to_amplitude_ratio(-6),
                 2,
             ),
             0.5,
         )
         self.assertEqual(
             round(
-                ext_parameters.abc.Volume.decibel_to_amplitude_ratio(-12),
+                music_parameters.abc.Volume.decibel_to_amplitude_ratio(-12),
                 2,
             ),
             0.25,
         )
         # different reference amplitude
         self.assertEqual(
-            ext_parameters.abc.Volume.decibel_to_amplitude_ratio(0, 0.5),
+            music_parameters.abc.Volume.decibel_to_amplitude_ratio(0, 0.5),
             0.5,
         )
         self.assertEqual(
-            ext_parameters.abc.Volume.decibel_to_amplitude_ratio(0, 2),
+            music_parameters.abc.Volume.decibel_to_amplitude_ratio(0, 2),
             2,
         )
 
     def test_decibel_to_power_ratio(self):
         self.assertEqual(
-            ext_parameters.abc.Volume.decibel_to_power_ratio(0),
+            music_parameters.abc.Volume.decibel_to_power_ratio(0),
             1,
         )
         self.assertEqual(
-            ext_parameters.abc.Volume.decibel_to_power_ratio(-6),
+            music_parameters.abc.Volume.decibel_to_power_ratio(-6),
             0.251188643150958,
         )
         self.assertEqual(
-            ext_parameters.abc.Volume.decibel_to_power_ratio(6),
+            music_parameters.abc.Volume.decibel_to_power_ratio(6),
             3.9810717055349722,
         )
 
     def test_amplitude_ratio_to_decibel(self):
         self.assertEqual(
-            ext_parameters.abc.Volume.amplitude_ratio_to_decibel(1),
+            music_parameters.abc.Volume.amplitude_ratio_to_decibel(1),
             0,
         )
         self.assertEqual(
-            ext_parameters.abc.Volume.amplitude_ratio_to_decibel(
+            music_parameters.abc.Volume.amplitude_ratio_to_decibel(
                 0.5, reference_amplitude=0.5
             ),
             0,
         )
         self.assertAlmostEqual(
-            ext_parameters.abc.Volume.amplitude_ratio_to_decibel(0.50118), -6, places=3
+            music_parameters.abc.Volume.amplitude_ratio_to_decibel(0.50118),
+            -6,
+            places=3,
         )
         self.assertAlmostEqual(
-            ext_parameters.abc.Volume.amplitude_ratio_to_decibel(0.25),
+            music_parameters.abc.Volume.amplitude_ratio_to_decibel(0.25),
             -12.041,
             places=3,
         )
         self.assertEqual(
-            ext_parameters.abc.Volume.amplitude_ratio_to_decibel(0),
+            music_parameters.abc.Volume.amplitude_ratio_to_decibel(0),
             float("-inf"),
         )
 
     def test_power_ratio_to_decibel(self):
         self.assertEqual(
-            ext_parameters.abc.Volume.power_ratio_to_decibel(1),
+            music_parameters.abc.Volume.power_ratio_to_decibel(1),
             0,
         )
         self.assertEqual(
-            ext_parameters.abc.Volume.power_ratio_to_decibel(
+            music_parameters.abc.Volume.power_ratio_to_decibel(
                 0.5, reference_amplitude=0.5
             ),
             0,
         )
         self.assertAlmostEqual(
-            ext_parameters.abc.Volume.power_ratio_to_decibel(0.25), -6, places=1
+            music_parameters.abc.Volume.power_ratio_to_decibel(0.25), -6, places=1
         )
         self.assertAlmostEqual(
-            ext_parameters.abc.Volume.power_ratio_to_decibel(0.06309), -12, places=3
+            music_parameters.abc.Volume.power_ratio_to_decibel(0.06309), -12, places=3
         )
         self.assertEqual(
-            ext_parameters.abc.Volume.power_ratio_to_decibel(0),
+            music_parameters.abc.Volume.power_ratio_to_decibel(0),
             float("-inf"),
         )
 
@@ -292,10 +288,11 @@ class VolumeTest(unittest.TestCase):
         amplitude0 = 1
         amplitude1 = 0
         self.assertEqual(
-            ext_parameters.abc.Volume.amplitude_ratio_to_midi_velocity(amplitude0), 127
+            music_parameters.abc.Volume.amplitude_ratio_to_midi_velocity(amplitude0),
+            127,
         )
         self.assertEqual(
-            ext_parameters.abc.Volume.amplitude_ratio_to_midi_velocity(amplitude1), 0
+            music_parameters.abc.Volume.amplitude_ratio_to_midi_velocity(amplitude1), 0
         )
 
 
