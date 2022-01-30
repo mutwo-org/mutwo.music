@@ -10,10 +10,10 @@ from mutwo import core_constants
 from mutwo import core_converters
 from mutwo import music_converters
 
-__all__ = ("LoudnessToAmplitudeConverter",)
+__all__ = ("LoudnessToAmplitude",)
 
 
-class LoudnessToAmplitudeConverter(core_converters.abc.Converter):
+class LoudnessToAmplitude(core_converters.abc.Converter):
     """Make an approximation of the needed amplitude for a perceived Loudness.
 
     :param loudspeaker_frequency_response: Optionally the frequency response

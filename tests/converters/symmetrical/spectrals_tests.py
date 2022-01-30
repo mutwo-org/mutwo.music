@@ -4,9 +4,9 @@ from mutwo import music_converters
 from mutwo import music_parameters
 
 
-class TwoPitchesToCommonHarmonicsConverterTest(unittest.TestCase):
+class TwoPitchesToCommonHarmonicsTest(unittest.TestCase):
     def test_convert(self):
-        converter = music_converters.TwoPitchesToCommonHarmonicsConverter(True, 1, 16)
+        converter = music_converters.TwoPitchesToCommonHarmonics(True, 1, 16)
 
         self.assertEqual(
             converter.convert(

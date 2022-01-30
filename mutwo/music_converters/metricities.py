@@ -8,10 +8,10 @@ import typing
 from mutwo import core_converters
 from mutwo import core_utilities
 
-__all__ = ("RhythmicalStrataToIndispensabilityConverter",)
+__all__ = ("RhythmicalStrataToIndispensability",)
 
 
-class RhythmicalStrataToIndispensabilityConverter(core_converters.abc.Converter):
+class RhythmicalStrataToIndispensability(core_converters.abc.Converter):
     """Builds metrical indispensability for a rhythmical strata.
 
     This technique has been described by Clarence Barlow in `On the Quantification
@@ -39,7 +39,7 @@ class RhythmicalStrataToIndispensabilityConverter(core_converters.abc.Converter)
             factorised = tuple(
                 sorted(core_utilities.factorise(prime_number - 1), reverse=True)
             )
-            q = RhythmicalStrataToIndispensabilityConverter._indispensability_of_nth_beat(
+            q = RhythmicalStrataToIndispensability._indispensability_of_nth_beat(
                 beat_index - int(beat_index / prime_number), factorised
             )
             return int(q + (2 * math.sqrt((q + 1) / prime_number)))
@@ -64,7 +64,7 @@ class RhythmicalStrataToIndispensabilityConverter(core_converters.abc.Converter)
                 operator.mul, tuple(rhythmical_strata[z + 1 - k] for k in range(r + 1))
             )
             local_result = 1 + (int(1 + (up / down)) % rhythmical_strata[z - r])
-            base_indispensability = RhythmicalStrataToIndispensabilityConverter._indispensability_of_nth_beat_for_simple_meter(
+            base_indispensability = RhythmicalStrataToIndispensability._indispensability_of_nth_beat_for_simple_meter(
                 local_result, rhythmical_strata[z - r]
             )
             product = functools.reduce(
@@ -95,7 +95,7 @@ class RhythmicalStrataToIndispensabilityConverter(core_converters.abc.Converter)
         **Example:**
 
         >>> from mutwo.converters import symmetrical
-        >>> metricity_converter = symmetrical.metricities.RhythmicalStrataToIndispensabilityConverter()
+        >>> metricity_converter = symmetrical.metricities.RhythmicalStrataToIndispensability()
         >>> metricity_converter.convert((2, 3))  # time signature 3/4
         (5, 0, 3, 1, 4, 2)
         >>> metricity_converter.convert((3, 2))  # time signature 6/8
@@ -107,7 +107,7 @@ class RhythmicalStrataToIndispensabilityConverter(core_converters.abc.Converter)
 
         length = functools.reduce(operator.mul, rhythmical_strata_to_convert)
         return tuple(
-            RhythmicalStrataToIndispensabilityConverter._indispensability_of_nth_beat(
+            RhythmicalStrataToIndispensability._indispensability_of_nth_beat(
                 i + 1, rhythmical_strata_to_convert
             )
             for i in range(length)

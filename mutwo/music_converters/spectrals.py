@@ -3,10 +3,10 @@ import typing
 from mutwo import core_converters
 from mutwo import music_parameters
 
-__all__ = ("TwoPitchesToCommonHarmonicsConverter",)
+__all__ = ("TwoPitchesToCommonHarmonics",)
 
 
-class TwoPitchesToCommonHarmonicsConverter(core_converters.abc.Converter):
+class TwoPitchesToCommonHarmonics(core_converters.abc.Converter):
     """Find the common harmonics between two pitches.
 
     :param tonality: ``True`` for finding common harmonics, ``False`` for finding
@@ -28,7 +28,7 @@ class TwoPitchesToCommonHarmonicsConverter(core_converters.abc.Converter):
             (tonality, tonality) if tonality is not None else (True, False)
         )
         self._tonality_to_partial_tuple_dict = {
-            tonality: TwoPitchesToCommonHarmonicsConverter._make_partials(
+            tonality: TwoPitchesToCommonHarmonics._make_partials(
                 lowest_partial, highest_partial, tonality
             )
             for tonality in (True, False)

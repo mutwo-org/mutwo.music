@@ -4,10 +4,10 @@ import unittest
 from mutwo import music_converters
 
 
-class RhythmicalStrataToIndispensabilityConverterTest(unittest.TestCase):
+class RhythmicalStrataToIndispensabilityTest(unittest.TestCase):
     def test_convert(self):
         converter = (
-            music_converters.RhythmicalStrataToIndispensabilityConverter()
+            music_converters.RhythmicalStrataToIndispensability()
         )
 
         # 3/4
