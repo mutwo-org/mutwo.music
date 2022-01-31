@@ -7,12 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2022-01-31
+
+### Added
+- various standard converters to extract from a simple event musical parameters:
+    - `SimpleEventToPitchList`
+    - `SimpleEventToVolume`
+    - `SimpleEventToPlayingIndicatorCollection`
+    - `SimpleEventToNotationIndicatorCollection`
+    - `SimpleEventToGraceNoteSequentialEvent`
+    - `SimpleEventToAfterGraceNoteSequentialEvent`
+
+
 ## [0.6.0] - 2022-01-30
 
 ### Changed
 - `LoudnessToAmplitudeConverter` to `LoudnessToAmplitude`
 - `RhythmicalStrataToIndispensabilityConverter` to `RhythmicalStrataToIndispensability`
 - `TwoPitchesToCommonHarmonicsConverter` to `TwoPitchesToCommonHarmonics`
+
 
 ## [0.5.0] - 2022-01-30
 

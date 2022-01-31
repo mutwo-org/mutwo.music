@@ -5,12 +5,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 extras_require = {
-    "testing": ["nose", "coveralls", "mutwo.ext-common-generators>=0.3.0, <1.0.0"]
+    "testing": ["nose", "coveralls", "mutwo.ext-common-generators>=0.4.0, <1.0.0"]
 }
 
 setuptools.setup(
     name="mutwo.ext-music",
-    version="0.6.2",
+    version="0.7.0",
     license="GPL",
     description="music extension for event based framework for generative art",
     long_description=long_description,
@@ -28,7 +28,7 @@ setuptools.setup(
     ],
     setup_requires=[],
     install_requires=[
-        "mutwo.ext-core>=0.52.1, <0.53.0",
+        "mutwo.ext-core>=0.54.0, <1.00.0",
     ],
     extras_require=extras_require,
     python_requires=">=3.9, <4",
