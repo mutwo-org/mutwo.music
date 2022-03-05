@@ -9,14 +9,9 @@ Music extension for event based library [Mutwo](https://github.com/mutwo-org/mut
 
 This extension implements:
 
-- `mutwo.ext.events.music`
-- `mutwo.ext.parameters.abc`: `Pitch`, `PitchInterval`, `Volume`, ...
-- `mutwo.ext.parameters.pitches`
-- `mutwo.ext.parameters.volumes`
-- `mutwo.ext.parameters.`...
-- `mutwo.ext.converters.symmetrical.grace_notes`
-- `mutwo.ext.converters.symmetrical.playing_indicators`
-- `mutwo.ext.converters.symmetrical.`...
+- `mutwo.music_converters`
+- `mutwo.music_events`
+- `mutwo.music_parameters`
 
 ### Installation
 
