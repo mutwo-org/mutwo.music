@@ -31,40 +31,26 @@ not active).
 
 Set playing indicators of :class:`NoteLike`:
 
->>> from mutwo.events import music
->>> my_note = music.NoteLike('c', 1 / 4, 'mf')
->>> my_note.playing_indicators.articulation.name = "."  # add staccato
+>>> from mutwo import music_events
+>>> my_note = music_events.NoteLike('c', 1 / 4, 'mf')
+>>> my_note.playing_indicator_collection.articulation.name = "."  # add staccato
 >>> my_chord = music.NoteLike('c e g', 1 / 2, 'f')
->>> my_chord.playing_indicators.arpeggio.direction= "up"  # add arpeggio
->>> my_chord.playing_indicators.laissez_vibrer = True  # and laissez_vibrer
+>>> my_chord.playing_indicator_collection.arpeggio.direction= "up"  # add arpeggio
+>>> my_chord.playing_indicator_collection.laissez_vibrer = True  # and laissez_vibrer
 
 Attach :class:`PlayingIndicatorCollection` to :class:`SimpleEvent`:
 
->>> from mutwo.events import basic
->>> from mutwo.music_parameters import playing_indicators
->>> my_simple_event = basic.SimpleEvent()
->>> my_simple_event.playing_indicators = playing_indicators.PlayingIndicatorCollection()
+>>> from mutwo import core_events
+>>> from mutwo import music_parameters
+>>> my_simple_event = core_events.SimpleEvent()
+>>> my_simple_event.playing_indicator_collection = music_parameters.PlayingIndicatorCollection()
 """
 
 import dataclasses
+import inspect
 import typing
 
 from mutwo import music_parameters
-
-__all__ = (
-    "Tremolo",
-    "Articulation",
-    "Arpeggio",
-    "Pedal",
-    "Trill",
-    "StringContactPoint",
-    "Hairpin",
-    "Ornamentation",
-    "ArtificalHarmonic",
-    "PreciseNaturalHarmonic",
-    "Fermata",
-    "PlayingIndicatorCollection",
-)
 
 
 @dataclasses.dataclass()
@@ -74,23 +60,17 @@ class Tremolo(music_parameters.abc.ImplicitPlayingIndicator):
 
 @dataclasses.dataclass()
 class Articulation(music_parameters.abc.ImplicitPlayingIndicator):
-    name: typing.Optional[
-        music_parameters.constants.ARTICULATION_LITERAL
-    ] = None
+    name: typing.Optional[music_parameters.constants.ARTICULATION_LITERAL] = None
 
 
 @dataclasses.dataclass()
 class Arpeggio(music_parameters.abc.ImplicitPlayingIndicator):
-    direction: typing.Optional[
-        music_parameters.constants.DIRECTION_LITERAL
-    ] = None
+    direction: typing.Optional[music_parameters.constants.DIRECTION_LITERAL] = None
 
 
 @dataclasses.dataclass()
 class Pedal(music_parameters.abc.ImplicitPlayingIndicator):
-    pedal_type: typing.Optional[
-        music_parameters.constants.PEDAL_TYPE_LITERAL
-    ] = None
+    pedal_type: typing.Optional[music_parameters.constants.PEDAL_TYPE_LITERAL] = None
     pedal_activity: typing.Optional[bool] = True
 
 
@@ -103,9 +83,7 @@ class StringContactPoint(music_parameters.abc.ImplicitPlayingIndicator):
 
 @dataclasses.dataclass()
 class Ornamentation(music_parameters.abc.ImplicitPlayingIndicator):
-    direction: typing.Optional[
-        music_parameters.constants.DIRECTION_LITERAL
-    ] = None
+    direction: typing.Optional[music_parameters.constants.DIRECTION_LITERAL] = None
     n_times: int = 1
 
 
@@ -140,9 +118,7 @@ class Fermata(music_parameters.abc.ImplicitPlayingIndicator):
 
 @dataclasses.dataclass()
 class Hairpin(music_parameters.abc.ImplicitPlayingIndicator):
-    symbol: typing.Optional[
-        music_parameters.constants.HAIRPIN_SYMBOL_LITERAL
-    ] = None
+    symbol: typing.Optional[music_parameters.constants.HAIRPIN_SYMBOL_LITERAL] = None
 
 
 @dataclasses.dataclass()
@@ -233,3 +209,12 @@ class PlayingIndicatorCollection(
                 )
         else:
             super().__setattr__(parameter_name, value)
+
+
+# Dynamically define __all__ in order to catch all PlayingIndicator classes
+__all__ = tuple(
+    name
+    for name, cls in globals().items()
+    if inspect.isclass(cls)
+    and music_parameters.abc.PlayingIndicator in inspect.getmro(cls)
+) + ("PlayingIndicatorCollection",)
