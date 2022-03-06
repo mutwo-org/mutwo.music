@@ -601,7 +601,7 @@ class JustIntonationPitch(
         ratio = str(self.ratio)
         if len(ratio) == 1:
             ratio += "/1"
-        return f"JustIntonationPitch('{ratio}')"
+        return f"{type(self).__name__}('{ratio}')"
 
     def __abs__(self):
         if self.numerator > self.denominator:
