@@ -92,7 +92,9 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
                 ]
             ] = None,
             apply_parameter_on_event: typing.Optional[
-                typing.Callable[[core_events.abc.Event, core_constants.ParameterType], None]
+                typing.Callable[
+                    [core_events.abc.Event, core_constants.ParameterType], None
+                ]
             ] = None,
             **kwargs,
         ):
@@ -115,37 +117,14 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
             )
 
         @classmethod
-        def make_generic_pitch_class(cls, frequency: core_constants.Real) -> type[Pitch]:
-            @core_utilities.add_copy_option
-            def generic_add(self, pitch_interval: PitchInterval) -> Pitch:
-                self.frequency = (
-                    Pitch.cents_to_ratio(pitch_interval.cents) * self.frequency
-                )
-                return self
-
-            @core_utilities.add_copy_option
-            def generic_subtract(self, pitch_interval: PitchInterval) -> Pitch:
-                self.frequency = self.frequency / Pitch.cents_to_ratio(
-                    pitch_interval.cents
-                )
-                return self
-
-            generic_pitch_class = type(
-                "GenericPitch",
-                (Pitch,),
-                {
-                    "frequency": frequency,
-                    "add": generic_add,
-                    "subtract": generic_subtract,
-                    "__repr__": lambda self: f"GenericPitchInterval(frequency = {self.frequency})",
-                },
-            )
-
-            return generic_pitch_class
-
-        @classmethod
-        def make_generic_pitch(cls, frequency: core_constants.Real) -> Pitch:
-            return cls.make_generic_pitch_class(frequency)
+        def frequency_and_envelope_to_pitch(
+            cls,
+            frequency: core_constants.Real,
+            envelope: typing.Optional[
+                typing.Union[Pitch.PitchIntervalEnvelope, typing.Sequence]
+            ] = None,
+        ) -> Pitch:
+            return music_parameters.DirectPitch(frequency, envelope=envelope)
 
         @classmethod
         def _value_to_parameter(
@@ -160,7 +139,7 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
                 Pitch.cents_to_ratio(value)
                 * music_parameters.constants.PITCH_ENVELOPE_REFERENCE_FREQUENCY
             )
-            return cls.make_generic_pitch(frequency)
+            return cls.frequency_and_envelope_to_pitch(frequency)
 
         @classmethod
         def _event_to_parameter(
@@ -175,7 +154,9 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
                     music_parameters.constants.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
                 )
             else:
-                return cls.make_generic_pitch(music_parameters.constants.DEFAULT_CONCERT_PITCH)
+                return cls.frequency_and_envelope_to_pitch(
+                    music_parameters.constants.DEFAULT_CONCERT_PITCH
+                )
 
         @classmethod
         def _apply_parameter_on_event(
@@ -221,7 +202,9 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
                 [core_constants.ParameterType], core_events.Envelope.Value
             ] = lambda parameter: parameter.cents,
             apply_parameter_on_event: typing.Optional[
-                typing.Callable[[core_events.abc.Event, core_constants.ParameterType], None]
+                typing.Callable[
+                    [core_events.abc.Event, core_constants.ParameterType], None
+                ]
             ] = None,
             base_parameter_and_relative_parameter_to_absolute_parameter: typing.Optional[
                 typing.Callable[
@@ -252,36 +235,30 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
                 **kwargs,
             )
 
-        @staticmethod
-        def make_generic_pitch_interval(cents: core_constants.Real) -> PitchInterval:
-            return type(
-                "GenericPitchInterval",
-                (PitchInterval,),
-                {
-                    "cents": cents,
-                    "__repr__": lambda self: f"GenericPitchInterval(cents = {self.cents})",
-                },
-            )()
+        @classmethod
+        def cents_to_pitch_interval(cls, cents: core_constants.Real) -> PitchInterval:
+            return music_parameters.DirectPitchInterval(cents)
 
         @classmethod
         def _event_to_parameter(
             cls, event: core_events.abc.Event
         ) -> core_constants.ParameterType:
             if hasattr(
-                event, music_parameters.constants.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME
+                event,
+                music_parameters.constants.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
             ):
                 return getattr(
                     event,
                     music_parameters.constants.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
                 )
             else:
-                return cls.make_generic_pitch_interval(0)
+                return cls.cents_to_pitch_interval(0)
 
         @classmethod
         def _value_to_parameter(
             cls, value: core_events.Envelope.Value
         ) -> core_constants.ParameterType:
-            return cls.make_generic_pitch_interval(value)
+            return cls.cents_to_pitch_interval(value)
 
         @classmethod
         def _apply_parameter_on_event(
@@ -305,14 +282,16 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
             typing.Union[Pitch.PitchIntervalEnvelope, typing.Sequence]
         ] = None,
     ):
-        super().__init__(envelope)
+        self.envelope = envelope
 
     # ###################################################################### #
     #     conversion methods between different pitch describing units        #
     # ###################################################################### #
 
     @staticmethod
-    def hertz_to_cents(frequency0: core_constants.Real, frequency1: core_constants.Real) -> float:
+    def hertz_to_cents(
+        frequency0: core_constants.Real, frequency1: core_constants.Real
+    ) -> float:
         """Calculates the difference in cents between two frequencies.
 
         :param frequency0: The first frequency in Hertz.
@@ -412,13 +391,11 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
         ],
     ):
         if not envelope_or_envelope_argument:
-            generic_pitch_interval = (
-                self.PitchIntervalEnvelope.make_generic_pitch_interval(0)
+            generic_pitch_interval = self.PitchIntervalEnvelope.cents_to_pitch_interval(
+                0
             )
             envelope = self.PitchIntervalEnvelope([[0, generic_pitch_interval]])
-        elif isinstance(
-            envelope_or_envelope_argument, core_events.RelativeEnvelope
-        ):
+        elif isinstance(envelope_or_envelope_argument, core_events.RelativeEnvelope):
             envelope = envelope_or_envelope_argument
         else:
             envelope = self.PitchIntervalEnvelope(envelope_or_envelope_argument)

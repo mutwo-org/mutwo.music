@@ -86,7 +86,7 @@ class PitchTest(unittest.TestCase):
                 [
                     [
                         0,
-                        music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+                        music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(
                             0
                         ),
                     ]
@@ -104,18 +104,21 @@ class PitchTest(unittest.TestCase):
 
 class PitchIntervalEnvelopeTest(unittest.TestCase):
     def setUp(cls):
-        pitch_interval0 = music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
-            1200
+        pitch_interval0 = (
+            music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(
+                1200
+            )
         )
-        pitch_interval1 = music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
-            0
+        pitch_interval1 = (
+            music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(0)
         )
-        pitch_interval2 = music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
-            -100
+        pitch_interval2 = (
+            music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(
+                -100
+            )
         )
-        cls.pitch = music_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch_class(
-            440
-        )(
+        cls.pitch = music_parameters.abc.Pitch.PitchEnvelope.frequency_and_envelope_to_pitch(
+            440,
             envelope=music_parameters.abc.Pitch.PitchIntervalEnvelope(
                 [[0, pitch_interval0], [10, pitch_interval1], [20, pitch_interval2]]
             )
@@ -139,7 +142,7 @@ class PitchIntervalEnvelopeTest(unittest.TestCase):
         ):
             self.assertEqual(
                 self.pitch.envelope.parameter_at(absolute_time),
-                music_parameters.abc.Pitch.PitchIntervalEnvelope.make_generic_pitch_interval(
+                music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(
                     cents
                 ),
             )
@@ -157,7 +160,7 @@ class PitchIntervalEnvelopeTest(unittest.TestCase):
             point_list.append(
                 (
                     position,
-                    music_parameters.abc.Pitch.PitchEnvelope.make_generic_pitch(
+                    music_parameters.abc.Pitch.PitchEnvelope.frequency_and_envelope_to_pitch(
                         frequency
                     ),
                 )
