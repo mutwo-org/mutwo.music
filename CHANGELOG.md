@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [0.8.0] - 2022-03-11
+
+### Changed
+- simplify the structure of `Pitch.PitchEnvelope` and `Pitch.PitchIntervalEnvelope`
+    - renamed `make_generic_pitch_interval` to `cents_to_pitch_interval`
+    - renamed `make_generic_pitch` to `frequency_to_pitch`
+    - don't create on-the-fly classes, but simply use `DirectPitch` and `DirectPitchInterval`
+
+
 ## [0.7.0] - 2022-01-31
 
 ### Added
