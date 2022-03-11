@@ -28,7 +28,7 @@ setuptools.setup(
     ],
     setup_requires=[],
     install_requires=[
-        "mutwo.ext-core>=0.54.0, <1.00.0",
+        "mutwo.ext-core>=0.56.0, <1.00.0",
     ],
     extras_require=extras_require,
     python_requires=">=3.9, <4",
