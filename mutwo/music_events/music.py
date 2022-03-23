@@ -93,11 +93,11 @@ class NoteLike(core_events.SimpleEvent):
     ):
         if playing_indicator_collection is None:
             playing_indicator_collection = (
-                music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
+                music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
             )
         if notation_indicator_collection is None:
             notation_indicator_collection = (
-                music_events.constants.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
+                music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
             )
         if grace_note_sequential_event is None:
             grace_note_sequential_event = core_events.SequentialEvent([])

@@ -1,5 +1,12 @@
 import setuptools  # type: ignore
 
+MAJOR, MINOR, PATCH = 0, 9, 0
+VERSION = f"{MAJOR}.{MINOR}.{PATCH}"
+"""This project uses semantic versioning.
+See https://semver.org/
+Before MAJOR = 1, there is no promise for
+backwards compatibility between minor versions.
+"""
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -10,7 +17,7 @@ extras_require = {
 
 setuptools.setup(
     name="mutwo.ext-music",
-    version="0.8.0",
+    version=VERSION,
     license="GPL",
     description="music extension for event based framework for generative art",
     long_description=long_description,

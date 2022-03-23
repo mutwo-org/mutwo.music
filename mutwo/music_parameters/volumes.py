@@ -88,12 +88,12 @@ class WesternVolume(music_parameters.abc.Volume):
     ):
         if minimum_decibel is None:
             minimum_decibel = (
-                music_parameters.constants.DEFAULT_MINIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
+                music_parameters.configurations.DEFAULT_MINIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
             )
 
         if maximum_decibel is None:
             maximum_decibel = (
-                music_parameters.constants.DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
+                music_parameters.configurations.DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
             )
 
         self.name = name
@@ -132,9 +132,7 @@ class WesternVolume(music_parameters.abc.Volume):
                 np.linspace(
                     minima,
                     maxima,
-                    len(
-                        music_parameters.constants.STANDARD_DYNAMIC_INDICATOR
-                    ),
+                    len(music_parameters.constants.STANDARD_DYNAMIC_INDICATOR),
                     dtype=dtype,
                 ),
             )
@@ -217,9 +215,7 @@ class WesternVolume(music_parameters.abc.Volume):
     @name.setter
     def name(self, name: str) -> None:
         try:
-            assert (
-                name in music_parameters.constants.DYNAMIC_INDICATOR_TUPLE
-            )
+            assert name in music_parameters.constants.DYNAMIC_INDICATOR_TUPLE
         except AssertionError:
             message = (
                 "unknown dynamic name '{}'. Supported dynamic names are '{}'.".format(

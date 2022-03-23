@@ -47,13 +47,13 @@ class SimpleEventToPlayingIndicatorCollectionTest(unittest.TestCase):
     def test_convert_with_attribute(self):
         self.assertEqual(
             self.converter(music_events.NoteLike()),
-            music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS(),
+            music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS(),
         )
 
     def test_convert_without_attribute(self):
         self.assertEqual(
             self.converter(core_events.SimpleEvent(10)),
-            music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS(),
+            music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS(),
         )
 
 
@@ -64,27 +64,27 @@ class SimpleEventToNotationIndicatorCollectionTest(unittest.TestCase):
     def test_convert_with_attribute(self):
         self.assertEqual(
             self.converter(music_events.NoteLike()),
-            music_events.constants.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS(),
+            music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS(),
         )
 
     def test_convert_without_attribute(self):
         self.assertEqual(
             self.converter(core_events.SimpleEvent(10)),
-            music_events.constants.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS(),
+            music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS(),
         )
 
     def test_convert_with_default_value_change(self):
         """Ensure changing the default value affects the converter"""
 
         default_notation_indicators_collection_class = (
-            music_events.constants.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS
+            music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS
         )
-        music_events.constants.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS = (
+        music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS = (
             lambda: "TEST"
         )
         self.assertEqual(self.converter(core_events.SimpleEvent(10)), "TEST")
         # Cleanup
-        music_events.constants.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS = (
+        music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS = (
             default_notation_indicators_collection_class
         )
 

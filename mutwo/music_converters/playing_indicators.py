@@ -46,7 +46,7 @@ class PlayingIndicatorConverter(core_converters.abc.Converter):
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[core_events.SimpleEvent], music_parameters.PlayingIndicatorCollection], optional
 
     To write a new PlayingIndicatorConverter the abstract method
@@ -96,7 +96,7 @@ class PlayingIndicatorConverter(core_converters.abc.Converter):
         playing_indicator_collection = core_utilities.call_function_except_attribute_error(
             self._simple_event_to_playing_indicator_collection,
             simple_event_to_convert,
-            music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS(),
+            music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS(),
         )
         playing_indicator = core_utilities.call_function_except_attribute_error(
             lambda playing_indicator_collection: getattr(
@@ -144,7 +144,7 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[core_events.SimpleEvent], music_parameters.PlayingIndicatorCollection,], optional
     :param set_pitch_list_for_simple_event: Function which assigns
         a list of :class:`~mutwo.music_parameters.abc.Pitch` objects to a
@@ -243,7 +243,7 @@ class StacattoConverter(PlayingIndicatorConverter):
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[core_events.SimpleEvent], music_parameters.PlayingIndicatorCollection,], optional
     """
 
@@ -302,7 +302,7 @@ class ArticulationConverter(PlayingIndicatorConverter):
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[core_events.SimpleEvent], music_parameters.PlayingIndicatorCollection,], optional
     """
 
@@ -396,7 +396,7 @@ class TrillConverter(PlayingIndicatorConverter):
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
         collection can be extracted), mutwo will build a playing indicator collection
-        from :const:`~mutwo.music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+        from :const:`~mutwo.music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
     :type simple_event_to_playing_indicator_collection: typing.Callable[[core_events.SimpleEvent], music_parameters.PlayingIndicatorCollection,], optional
     """
 

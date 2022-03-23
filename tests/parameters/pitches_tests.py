@@ -136,21 +136,21 @@ class WesternPitchTest(unittest.TestCase):
         pitch3 = music_parameters.WesternPitch("as", 4)
         pitch4 = music_parameters.WesternPitch("bqs", 4)
         self.assertAlmostEqual(
-            pitch0.frequency, music_parameters.constants.DEFAULT_CONCERT_PITCH
+            pitch0.frequency, music_parameters.configurations.DEFAULT_CONCERT_PITCH
         )
         self.assertAlmostEqual(
-            pitch1.frequency, music_parameters.constants.DEFAULT_CONCERT_PITCH * 0.5
+            pitch1.frequency, music_parameters.configurations.DEFAULT_CONCERT_PITCH * 0.5
         )
         self.assertAlmostEqual(
-            pitch2.frequency, music_parameters.constants.DEFAULT_CONCERT_PITCH * 2
+            pitch2.frequency, music_parameters.configurations.DEFAULT_CONCERT_PITCH * 2
         )
         self.assertAlmostEqual(
             pitch3.frequency,
-            music_parameters.constants.DEFAULT_CONCERT_PITCH * pitch3.step_factor,
+            music_parameters.configurations.DEFAULT_CONCERT_PITCH * pitch3.step_factor,
         )
         self.assertAlmostEqual(
             pitch4.frequency,
-            music_parameters.constants.DEFAULT_CONCERT_PITCH
+            music_parameters.configurations.DEFAULT_CONCERT_PITCH
             * (pitch4.step_factor ** 2.5),
         )
 

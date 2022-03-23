@@ -77,7 +77,7 @@ class SimpleEventToPlayingIndicatorCollection(SimpleEventToAttributeWithDefaultV
         super().__init__(attribute_name, exception_value)
 
     def _get_default_exception_value(self) -> typing.Any:
-        return music_events.constants.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
+        return music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
 
 
 class SimpleEventToNotationIndicatorCollection(SimpleEventToAttributeWithDefaultValue):
@@ -91,7 +91,7 @@ class SimpleEventToNotationIndicatorCollection(SimpleEventToAttributeWithDefault
         super().__init__(attribute_name, exception_value)
 
     def _get_default_exception_value(self) -> typing.Any:
-        return music_events.constants.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
+        return music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
 
 
 class SimpleEventToGraceNoteSequentialEvent(core_converters.SimpleEventToAttribute):

@@ -147,15 +147,15 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
         ) -> core_constants.ParameterType:
             if hasattr(
                 event,
-                music_parameters.constants.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
+                music_parameters.configurations.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
             ):
                 return getattr(
                     event,
-                    music_parameters.constants.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
+                    music_parameters.configurations.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
                 )
             else:
                 return cls.frequency_and_envelope_to_pitch(
-                    music_parameters.constants.DEFAULT_CONCERT_PITCH
+                    music_parameters.configurations.DEFAULT_CONCERT_PITCH
                 )
 
         @classmethod
@@ -164,7 +164,7 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
         ):
             setattr(
                 event,
-                music_parameters.constants.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
+                music_parameters.configurations.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
                 parameter,
             )
 
@@ -245,11 +245,11 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
         ) -> core_constants.ParameterType:
             if hasattr(
                 event,
-                music_parameters.constants.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
+                music_parameters.configurations.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
             ):
                 return getattr(
                     event,
-                    music_parameters.constants.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
+                    music_parameters.configurations.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
                 )
             else:
                 return cls.cents_to_pitch_interval(0)
@@ -266,7 +266,7 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
         ):
             setattr(
                 event,
-                music_parameters.constants.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
+                music_parameters.configurations.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
                 parameter,
             ),
 
@@ -596,12 +596,12 @@ class Volume(abc.ABC):
 
         if minimum_decibel is None:
             minimum_decibel = (
-                music_parameters.constants.DEFAULT_MINIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
+                music_parameters.configurations.DEFAULT_MINIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
             )
 
         if maximum_decibel is None:
             maximum_decibel = (
-                music_parameters.constants.DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
+                music_parameters.configurations.DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
             )
 
         if decibel_to_convert > maximum_decibel:

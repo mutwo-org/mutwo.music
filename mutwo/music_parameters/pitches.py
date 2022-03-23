@@ -9,8 +9,8 @@ For a straight frequency-based approach one may use :class:`DirectPitch`.
 
 If desired the default concert pitch can be adjusted after importing :mod:`mutwo`:
 
-    >>> from mutwo.music_parameters import pitches_core_constants
-    >>> pitches_core_constants.DEFAULT_CONCERT_PITCH = 443
+    >>> from mutwo import music_parameters
+    >>> music_parameters.configurations.DEFAULT_CONCERT_PITCH = 443
 
 All pitch objects with a concert pitch attribute that become initialised after
 overriding the default concert pitch value will by default use the new
@@ -216,7 +216,7 @@ class JustIntonationPitch(
         super().__init__(*args, **kwargs)
 
         if concert_pitch is None:
-            concert_pitch = music_parameters.constants.DEFAULT_CONCERT_PITCH
+            concert_pitch = music_parameters.configurations.DEFAULT_CONCERT_PITCH
 
         self.exponent_tuple = (
             self._translate_ratio_or_fractions_argument_to_exponent_tuple(
@@ -788,7 +788,7 @@ class JustIntonationPitch(
         }
         return music_parameters.CommaCompound(
             prime_to_exponent_dict,
-            music_parameters.constants.DEFAULT_PRIME_TO_COMMA_DICT,
+            music_parameters.configurations.DEFAULT_PRIME_TO_COMMA_DICT,
         )
 
     @property
@@ -1436,7 +1436,7 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
             **kwargs,
         )
         if concert_pitch is None:
-            concert_pitch = music_parameters.constants.DEFAULT_CONCERT_PITCH
+            concert_pitch = music_parameters.configurations.DEFAULT_CONCERT_PITCH
 
         self._n_pitch_classes_per_octave = n_pitch_classes_per_octave
         self.pitch_class = pitch_class
@@ -1612,7 +1612,7 @@ class WesternPitch(EqualDividedOctavePitch):
         It uses an equal divided octave system in 12 chromatic steps. Accidentals are
         indicated by (s = sharp) and (f = flat). Further microtonal accidentals are
         supported (see
-        :const:`mutwo.music_parameters.constants.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT`
+        :const:`mutwo.music_parameters.configurations.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT`
         for all supported accidentals).
     :param octave: The octave of the new :class:`WesternPitch` object. Indications for the
         specific octave follow the MIDI Standard where 4 is defined as one line.
@@ -1634,12 +1634,12 @@ class WesternPitch(EqualDividedOctavePitch):
     ):
         if concert_pitch_pitch_class is None:
             concert_pitch_pitch_class = (
-                music_parameters.constants.DEFAULT_CONCERT_PITCH_PITCH_CLASS_FOR_WESTERN_PITCH
+                music_parameters.configurations.DEFAULT_CONCERT_PITCH_PITCH_CLASS_FOR_WESTERN_PITCH
             )
 
         if concert_pitch_octave is None:
             concert_pitch_octave = (
-                music_parameters.constants.DEFAULT_CONCERT_PITCH_OCTAVE_FOR_WESTERN_PITCH
+                music_parameters.configurations.DEFAULT_CONCERT_PITCH_OCTAVE_FOR_WESTERN_PITCH
             )
 
         (
@@ -1697,10 +1697,10 @@ class WesternPitch(EqualDividedOctavePitch):
         """Helper function to translate an accidental to its pitch class modification.
 
         Raises an error if the accidental hasn't been defined yet in
-        mutwo.music_parameters.constants.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT.
+        mutwo.music_parameters.configurations.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT.
         """
         try:
-            return music_parameters.constants.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT[
+            return music_parameters.configurations.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT[
                 accidental
             ]
         except KeyError:
@@ -1743,11 +1743,11 @@ class WesternPitch(EqualDividedOctavePitch):
         closest_pitch_class_modification: fractions.Fraction = core_utilities.find_closest_item(
             difference_to_closest_diatonic_pitch,
             tuple(
-                music_parameters.constants.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT.keys()
+                music_parameters.configurations.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT.keys()
             ),
         )
         closest_accidental = (
-            music_parameters.constants.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT[
+            music_parameters.configurations.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT[
                 closest_pitch_class_modification
             ]
         )
@@ -1763,7 +1763,7 @@ class WesternPitch(EqualDividedOctavePitch):
 
         The returned pitch class name uses a Western nomenclature of English
         diatonic note names. Accidental names are defined in
-        mutwo.music_parameters.constants.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT.
+        mutwo.music_parameters.configurations.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT.
         For floating point numbers the closest accidental will be chosen.
         """
 
