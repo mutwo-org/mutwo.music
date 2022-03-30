@@ -18,6 +18,18 @@ class DirectPitch_Test(unittest.TestCase):
         self.assertEqual(frequency1, music_parameters.DirectPitch(frequency1).frequency)
         self.assertEqual(frequency2, music_parameters.DirectPitch(frequency2).frequency)
 
+    def test_get_pitch_interval(self):
+        pitch0 = music_parameters.DirectPitch(200)
+        pitch1 = music_parameters.DirectPitch(400)
+        self.assertEqual(
+            pitch0.get_pitch_interval(pitch1),
+            music_parameters.DirectPitchInterval(1200),
+        )
+        self.assertEqual(
+            pitch1.get_pitch_interval(pitch0),
+            music_parameters.DirectPitchInterval(-1200),
+        )
+
 
 class MidiPitch_Test(unittest.TestCase):
     def test_property_frequency(self):
@@ -139,7 +151,8 @@ class WesternPitchTest(unittest.TestCase):
             pitch0.frequency, music_parameters.configurations.DEFAULT_CONCERT_PITCH
         )
         self.assertAlmostEqual(
-            pitch1.frequency, music_parameters.configurations.DEFAULT_CONCERT_PITCH * 0.5
+            pitch1.frequency,
+            music_parameters.configurations.DEFAULT_CONCERT_PITCH * 0.5,
         )
         self.assertAlmostEqual(
             pitch2.frequency, music_parameters.configurations.DEFAULT_CONCERT_PITCH * 2
@@ -166,6 +179,31 @@ class JustIntonationPitchTest(unittest.TestCase):
         self.assertEqual(
             music_parameters.JustIntonationPitch("1/17").ratio,
             fractions.Fraction(1, 17),
+        )
+
+    def test_get_pitch_interval(self):
+        pitch0 = music_parameters.JustIntonationPitch("1/1")
+        pitch1 = music_parameters.JustIntonationPitch("2/1")
+        pitch2 = music_parameters.DirectPitch(
+            music_parameters.configurations.DEFAULT_CONCERT_PITCH
+        )
+        pitch3 = music_parameters.DirectPitch(
+            music_parameters.configurations.DEFAULT_CONCERT_PITCH * 2
+        )
+        self.assertEqual(pitch0.get_pitch_interval(pitch1), pitch1)
+        self.assertEqual(
+            pitch1.get_pitch_interval(pitch0), pitch1.inverse(mutate=False)
+        )
+        self.assertEqual(
+            pitch0.get_pitch_interval(pitch2), music_parameters.DirectPitchInterval(0)
+        )
+        self.assertEqual(
+            pitch0.get_pitch_interval(pitch3),
+            music_parameters.DirectPitchInterval(1200),
+        )
+        self.assertEqual(
+            pitch3.get_pitch_interval(pitch0),
+            music_parameters.DirectPitchInterval(-1200),
         )
 
     def test_constructor_from_ratio(self):

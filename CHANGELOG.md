@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.10.0] - 2022-03-30
+
+### Added
+- `get_pitch_interval` method to `Pitch` class
+- `PitchAmbitus` class and `ambituses` module with `OctaveAmbitus` class
+
+
 ## [0.9.0] - 2022-03-23
+
+### Changed
 - split `constants` namespaces to `constants` / `configurations` (depending on use case)
 
 

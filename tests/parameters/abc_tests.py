@@ -117,10 +117,12 @@ class PitchIntervalEnvelopeTest(unittest.TestCase):
                 -100
             )
         )
-        cls.pitch = music_parameters.abc.Pitch.PitchEnvelope.frequency_and_envelope_to_pitch(
-            440,
-            envelope=music_parameters.abc.Pitch.PitchIntervalEnvelope(
-                [[0, pitch_interval0], [10, pitch_interval1], [20, pitch_interval2]]
+        cls.pitch = (
+            music_parameters.abc.Pitch.PitchEnvelope.frequency_and_envelope_to_pitch(
+                440,
+                envelope=music_parameters.abc.Pitch.PitchIntervalEnvelope(
+                    [[0, pitch_interval0], [10, pitch_interval1], [20, pitch_interval2]]
+                ),
             )
         )
         cls.pitch_envelope = cls.pitch.resolve_envelope(1)
@@ -296,6 +298,48 @@ class VolumeTest(unittest.TestCase):
         )
         self.assertEqual(
             music_parameters.abc.Volume.amplitude_ratio_to_midi_velocity(amplitude1), 0
+        )
+
+
+class PitchAmbitusTest(unittest.TestCase):
+    class GenericPitchAmbitus(music_parameters.abc.PitchAmbitus):
+        def pitch_to_period(
+            self, _: music_parameters.abc.Pitch
+        ) -> music_parameters.abc.PitchInterval:
+            return music_parameters.DirectPitchInterval(1200)
+
+    def test_find_pitch_variant_tuple(self):
+        pitch_ambitus = self.GenericPitchAmbitus(
+            music_parameters.DirectPitch(220),
+            music_parameters.DirectPitch(880),
+        )
+        self.assertEqual(
+            pitch_ambitus.find_pitch_variant_tuple(music_parameters.DirectPitch(220)),
+            (
+                music_parameters.DirectPitch(220),
+                music_parameters.DirectPitch(440),
+                music_parameters.DirectPitch(880),
+            ),
+        )
+
+    def test_filter_pitch_sequence(self):
+        ambitus = music_parameters.OctaveAmbitus(
+            music_parameters.JustIntonationPitch("1/2"),
+            music_parameters.JustIntonationPitch("2/1"),
+        )
+        self.assertEqual(
+            ambitus.filter_pitch_sequence(
+                [
+                    music_parameters.JustIntonationPitch("3/8"),
+                    music_parameters.JustIntonationPitch("3/4"),
+                    music_parameters.JustIntonationPitch("3/2"),
+                    music_parameters.JustIntonationPitch("3/1"),
+                ]
+            ),
+            (
+                music_parameters.JustIntonationPitch("3/4"),
+                music_parameters.JustIntonationPitch("3/2"),
+            ),
         )
 
 

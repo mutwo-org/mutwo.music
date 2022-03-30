@@ -1119,6 +1119,13 @@ class JustIntonationPitch(
 
         return "".join((new_diatonic_pitch, new_accidentals))
 
+
+    def get_pitch_interval(self, pitch_to_compare: Pitch) -> PitchInterval:
+        if isinstance(pitch_to_compare, JustIntonationPitch):
+            return pitch_to_compare - self
+        else:
+            return super().get_pitch_interval(pitch_to_compare)
+
     @core_utilities.add_copy_option
     def register(self, octave: int) -> JustIntonationPitch:  # type: ignore
         """Move :class:`JustIntonationPitch` to the given octave.

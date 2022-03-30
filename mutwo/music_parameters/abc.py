@@ -11,6 +11,7 @@ newly created parameter class.
 from __future__ import annotations
 
 import abc
+import copy
 import dataclasses
 import functools
 import math
@@ -31,6 +32,7 @@ __all__ = (
     "PitchInterval",
     "Pitch",
     "Volume",
+    "PitchAmbitus",
     "PlayingIndicator",
     "NotationIndicator",
 )
@@ -60,6 +62,9 @@ class PitchInterval(abc.ABC):
 
     def __lt__(self, other: PitchInterval) -> bool:
         return self.cents < other.cents
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}(cents = {self.cents})"
 
 
 @functools.total_ordering  # type: ignore
@@ -437,6 +442,28 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
             resolve_envelope_class = Pitch.PitchEnvelope
         return super().resolve_envelope(duration, resolve_envelope_class)
 
+    def get_pitch_interval(self, pitch_to_compare: Pitch) -> PitchInterval:
+        """Get :class:`PitchInterval` between itself and other pitch
+
+        :param pitch_to_compare: The pitch which shall be compared to
+            the active pitch.
+        :type pitch_to_compare: Pitch
+        :return: :class:`PitchInterval` between
+
+        **Example:**
+
+        >>> from mutwo import music_parameters
+        >>> a4 = music_parameters.DirectPitch(frequency=440)
+        >>> a5 = music_parameters.DirectPitch(frequency=880)
+        >>> a4.get_pitch_interval(a5)
+        DirectPitchInterval(cents = 1200)
+        """
+
+        cent_difference = self.ratio_to_cents(
+            pitch_to_compare.frequency / self.frequency
+        )
+        return music_parameters.DirectPitchInterval(cent_difference)
+
 
 @functools.total_ordering  # type: ignore
 class Volume(abc.ABC):
@@ -648,6 +675,146 @@ class Volume(abc.ABC):
             return self.amplitude == other.amplitude  # type: ignore
         except AttributeError:
             return False
+
+
+class PitchAmbitus(abc.ABC):
+    """Abstract base class for all pitch ambituses.
+
+    To setup a new PitchAmbitus class override the abstract method
+    `pitch_to_period`.
+    """
+
+    def __init__(self, minima_pitch: Pitch, maxima_pitch: Pitch) -> None:
+        try:
+            assert minima_pitch < maxima_pitch
+        except AssertionError:
+            raise ValueError(
+                (
+                    f"Found minima_pitch: {minima_pitch} and "
+                    f"maxima_pitch={maxima_pitch}. The minima pitch has to be "
+                    "a lower pitch than the maxima pitch!"
+                )
+            )
+
+        self.minima_pitch = minima_pitch
+        self.maxima_pitch = maxima_pitch
+
+    # ######################################################## #
+    #                      abstract methods                    #
+    # ######################################################## #
+
+    @abc.abstractmethod
+    def pitch_to_period(self, pitch: Pitch) -> PitchInterval:
+        raise NotImplementedError
+
+    # ######################################################## #
+    #                     magic methods                        #
+    # ######################################################## #
+
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}{self.border_tuple}"
+
+    def __str__(self) -> str:
+        return repr(self)
+
+    def __iter__(self) -> typing.Iterator[Pitch]:
+        return iter(self.border_tuple)
+
+    def __getitem__(self, index: int) -> Pitch:
+        return self.border_tuple[index]
+
+    # ######################################################## #
+    #                       properties                         #
+    # ######################################################## #
+
+    @property
+    def border_tuple(self) -> tuple[Pitch, Pitch]:
+        return (self.minima_pitch, self.maxima_pitch)
+
+    @property
+    def range(self) -> PitchInterval:
+        return self.minima_pitch.get_pitch_interval(self.maxima_pitch)
+
+    # ######################################################## #
+    #                       public methods                     #
+    # ######################################################## #
+
+    def find_pitch_variant_tuple(
+        self, pitch: Pitch, period: typing.Optional[PitchInterval] = None
+    ) -> tuple[Pitch, ...]:
+        """Find all pitch variants (in all octaves) of the given pitch
+
+        :param pitch: The pitch which variants shall be found.
+        :type pitch: Pitch
+        :param period: The repeating period (usually an octave). If the
+            period is set to `None` the function will fallback to them
+            objects method :method:`pitch_to_period`. Default to `None`.
+        :type period: typing.Optional[PitchInterval]
+        """
+
+        if period is None:
+            period = self.pitch_to_period(pitch)
+
+        pitch_variant_list = []
+
+        is_first = True
+        for loop_condition, append_condition, change_pitch in (
+            (
+                lambda dummy_pitch: dummy_pitch <= self.maxima_pitch,
+                lambda dummy_pitch: dummy_pitch >= self.minima_pitch,
+                lambda dummy_pitch: dummy_pitch.add(period),
+            ),
+            (
+                lambda dummy_pitch: dummy_pitch >= self.minima_pitch,
+                lambda dummy_pitch: dummy_pitch <= self.maxima_pitch,
+                lambda dummy_pitch: dummy_pitch.subtract(period),
+            ),
+        ):
+            dummy_pitch = copy.copy(pitch)
+            if not is_first:
+                change_pitch(dummy_pitch)
+            while loop_condition(dummy_pitch):
+                if append_condition(dummy_pitch):
+                    pitch_variant_list.append(copy.copy(dummy_pitch))
+                change_pitch(dummy_pitch)
+            is_first = False
+
+        return tuple(sorted(pitch_variant_list))
+
+    def filter_pitch_sequence(
+        self,
+        pitch_to_filter_sequence: typing.Sequence[Pitch],
+    ) -> tuple[Pitch, ...]:
+        """Filter all pitches in a sequence which aren't inside the ambitus.
+
+        :param pitch_to_filter_sequence: A sequence with pitches which shall
+            be filtered.
+        :type pitch_to_filter_sequence: typing.Sequence[Pitch]
+
+        **Example:**
+
+        >>> from mutwo import music_parameters
+        >>> ambitus0 = music_parameters.OctaveAmbitus(
+                music_parameters.JustIntonationPitch('1/2'),
+                music_parameters.JustIntonationPitch('2/1'),
+            )
+        >>> ambitus0.filter_pitch_sequence(
+                [
+                    music_parameters.JustIntonationPitch("3/8"),
+                    music_parameters.JustIntonationPitch("3/4"),
+                    music_parameters.JustIntonationPitch("3/2"),
+                    music_parameters.JustIntonationPitch("3/1"),
+                ]
+            )
+        (JustIntonationPitch('3/4'), JustIntonationPitch('3/2'))
+        """
+
+        return tuple(
+            filter(
+                lambda pitch: pitch >= self.minima_pitch and pitch <= self.maxima_pitch,
+                pitch_to_filter_sequence,
+            )
+        )
 
 
 @dataclasses.dataclass()  # type: ignore
