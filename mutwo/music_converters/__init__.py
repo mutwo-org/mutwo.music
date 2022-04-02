@@ -1,3 +1,4 @@
+from . import configurations
 from . import constants
 
 from .grace_notes import *

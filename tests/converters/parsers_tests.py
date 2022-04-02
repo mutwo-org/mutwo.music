@@ -143,5 +143,52 @@ class SimpleEventToAfterGraceNoteSequentialEventTest(
         )
 
 
+class MutwoParameterDictToNoteLikeTest(unittest.TestCase):
+    def setUp(self):
+        self.mutwo_parameter_dict_to_note_like = (
+            music_converters.MutwoParameterDictToNoteLike()
+        )
+
+    def test_convert(self):
+        playing_indicator_collection = (
+            music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
+        )
+        playing_indicator_collection.articulation.name = "."
+        notation_indicator_collection = (
+            music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
+        )
+        notation_indicator_collection.clef.name = "treble"
+        self.assertEqual(
+            self.mutwo_parameter_dict_to_note_like.convert(
+                {
+                    "pitch_list": [music_parameters.DirectPitch(440)],
+                    "duration": 10,
+                    "volume": music_parameters.WesternVolume("f"),
+                    "grace_note_sequential_event": core_events.SequentialEvent(
+                        [music_events.NoteLike("f", 2, "pp")]
+                    ),
+                    "after_grace_note_sequential_event": core_events.SequentialEvent(
+                        [music_events.NoteLike("g", 0.5, "f")]
+                    ),
+                    "playing_indicator_collection": playing_indicator_collection,
+                    "notation_indicator_collection": notation_indicator_collection,
+                }
+            ),
+            music_events.NoteLike(
+                pitch_list=[music_parameters.DirectPitch(440)],
+                duration=10,
+                volume=music_parameters.WesternVolume("f"),
+                grace_note_sequential_event=core_events.SequentialEvent(
+                    [music_events.NoteLike("f", 2, "pp")]
+                ),
+                after_grace_note_sequential_event=core_events.SequentialEvent(
+                    [music_events.NoteLike("g", 0.5, "f")]
+                ),
+                notation_indicator_collection=notation_indicator_collection,
+                playing_indicator_collection=playing_indicator_collection,
+            ),
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

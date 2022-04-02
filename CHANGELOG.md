@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.11.0] - 2022-04-02
+
+### Added
+- various classes to standardise and simplify conversion of music parameters to simple music events:
+    - `MutwoParameterDictToPitchList`
+    - `MutwoParameterDictToVolume`
+    - `MutwoParameterDictToPlayingIndicatorCollection`
+    - `MutwoParameterDictToNotationIndicatorCollection`
+    - `MutwoParameterDictToGraceNoteSequentialEvent`
+    - `MutwoParameterDictToAfterGraceNoteSequentialEvent`
+    - `MutwoParameterDictToNoteLike`
+
+
 ## [0.10.0] - 2022-03-30
 
 ### Added
