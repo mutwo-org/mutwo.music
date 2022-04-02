@@ -138,6 +138,9 @@ class MidiPitch(music_parameters.abc.Pitch):
         super().__init__(*args, **kwargs)
         self._midi_pitch_number = midi_pitch_number
 
+    def __repr__(self) -> str:
+        return f"{type(self).__name__}(midi_pitch_number = {self.midi_pitch_number})"
+
     @property
     def frequency(self) -> float:
         difference_to_middle_a = self.midi_pitch_number - 69
@@ -1119,8 +1122,9 @@ class JustIntonationPitch(
 
         return "".join((new_diatonic_pitch, new_accidentals))
 
-
-    def get_pitch_interval(self, pitch_to_compare: Pitch) -> PitchInterval:
+    def get_pitch_interval(
+        self, pitch_to_compare: music_parameters.abc.Pitch
+    ) -> music_parameters.abc.PitchInterval:
         if isinstance(pitch_to_compare, JustIntonationPitch):
             return pitch_to_compare - self
         else:
@@ -1753,11 +1757,9 @@ class WesternPitch(EqualDividedOctavePitch):
                 music_parameters.configurations.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT.keys()
             ),
         )
-        closest_accidental = (
-            music_parameters.configurations.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT[
-                closest_pitch_class_modification
-            ]
-        )
+        closest_accidental = music_parameters.configurations.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT[
+            closest_pitch_class_modification
+        ]
         return closest_accidental
 
     @staticmethod
