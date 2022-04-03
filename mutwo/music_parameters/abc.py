@@ -38,8 +38,11 @@ __all__ = (
 )
 
 
-@functools.total_ordering  # type: ignore
-class PitchInterval(abc.ABC):
+class PitchInterval(
+    core_parameters.abc.SingleNumberParameter,
+    value_name="cents",
+    value_return_type=float,
+):
     """Abstract base class for any pitch interval class
 
     If the user wants to define a new pitch class, the abstract
@@ -49,26 +52,15 @@ class PitchInterval(abc.ABC):
     for definition of 'cents'.
     """
 
-    @property
-    @abc.abstractmethod
-    def cents(self) -> float:
-        raise NotImplementedError
-
-    def __eq__(self, other: typing.Any) -> bool:
-        try:
-            return self.cents == other.cents
-        except AttributeError:
-            return False
-
-    def __lt__(self, other: PitchInterval) -> bool:
-        return self.cents < other.cents
-
-    def __repr__(self) -> str:
-        return f"{type(self).__name__}(cents = {self.cents})"
+    pass
 
 
-@functools.total_ordering  # type: ignore
-class Pitch(core_parameters.abc.ParameterWithEnvelope):
+class Pitch(
+    core_parameters.abc.SingleNumberParameter,
+    core_parameters.abc.ParameterWithEnvelope,
+    value_name="frequency",
+    value_return_type=float,
+):
     """Abstract base class for any pitch class.
 
     If the user wants to define a new pitch class, the abstract
@@ -378,12 +370,6 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
     # ###################################################################### #
 
     @property
-    @abc.abstractmethod
-    def frequency(self) -> float:
-        """The frequency in Hertz of the pitch."""
-        raise NotImplementedError
-
-    @property
     def midi_pitch_number(self) -> float:
         """The midi pitch number (from 0 to 127) of the pitch."""
         return self.hertz_to_midi_pitch_number(self.frequency)
@@ -409,15 +395,6 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
     # ###################################################################### #
     #                            comparison methods                          #
     # ###################################################################### #
-
-    def __lt__(self, other: Pitch) -> bool:
-        return self.frequency < other.frequency
-
-    def __eq__(self, other: object) -> bool:
-        try:
-            return self.frequency == other.frequency  # type: ignore
-        except AttributeError:
-            return False
 
     @abc.abstractmethod
     def add(self, pitch_interval: PitchInterval, mutate: bool = True) -> Pitch:
@@ -466,11 +443,15 @@ class Pitch(core_parameters.abc.ParameterWithEnvelope):
 
 
 @functools.total_ordering  # type: ignore
-class Volume(abc.ABC):
+class Volume(
+    core_parameters.abc.SingleNumberParameter,
+    value_name="amplitude",
+    value_return_type=float,
+):
     """Abstract base class for any volume class.
 
     If the user wants to define a new volume class, the abstract
-    property :attr:`` has to be overridden.
+    property :attr:`amplitude` has to be overridden.
     """
 
     @staticmethod
@@ -651,12 +632,6 @@ class Volume(abc.ABC):
 
     # properties
     @property
-    @abc.abstractmethod
-    def amplitude(self) -> core_constants.Real:
-        """The amplitude of the Volume (a number from 0 to 1)."""
-        raise NotImplementedError
-
-    @property
     def decibel(self) -> core_constants.Real:
         """The decibel of the volume (from -120 to 0)"""
         return self.amplitude_ratio_to_decibel(self.amplitude)
@@ -665,16 +640,6 @@ class Volume(abc.ABC):
     def midi_velocity(self) -> int:
         """The velocity of the volume (from 0 to 127)."""
         return self.decibel_to_midi_velocity(self.decibel)
-
-    # comparison methods
-    def __lt__(self, other: Volume) -> bool:
-        return self.amplitude < other.amplitude
-
-    def __eq__(self, other: object) -> bool:
-        try:
-            return self.amplitude == other.amplitude  # type: ignore
-        except AttributeError:
-            return False
 
 
 class PitchAmbitus(abc.ABC):
