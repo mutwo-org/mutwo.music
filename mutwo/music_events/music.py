@@ -62,6 +62,8 @@ class NoteLike(core_events.SimpleEvent):
         Notation indicators alter the visual representation of :class:`NoteLike`
         (e.g. ottava, clefs) without affecting the resulting sound.
     :type notation_indicator_collection: music_parameters.notation_indicator_collection.NotationIndicatorCollection
+    :param lyric:
+    :type lyric: core_parameters.abc.Lyric
 
     By default mutwo doesn't differentiate between Tones, Chords and
     Rests, but rather simply implements one general class which can
@@ -90,6 +92,7 @@ class NoteLike(core_events.SimpleEvent):
         after_grace_note_sequential_event: typing.Optional[GraceNotes] = None,
         playing_indicator_collection: music_parameters.PlayingIndicatorCollection = None,
         notation_indicator_collection: music_parameters.NotationIndicatorCollection = None,
+        lyric: music_parameters.abc.Lyric = music_parameters.DirectLyric(""),
     ):
         if playing_indicator_collection is None:
             playing_indicator_collection = (
@@ -111,6 +114,7 @@ class NoteLike(core_events.SimpleEvent):
         self.after_grace_note_sequential_event = after_grace_note_sequential_event
         self.playing_indicator_collection = playing_indicator_collection
         self.notation_indicator_collection = notation_indicator_collection
+        self.lyric = lyric
 
     # ###################################################################### #
     #                          static methods                                #

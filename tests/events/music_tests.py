@@ -123,6 +123,7 @@ class NoteLikeTest(unittest.TestCase):
             "after_grace_note_sequential_event",
             "duration",
             "grace_note_sequential_event",
+            "lyric",
             "notation_indicator_collection",
             "pitch_list",
             "playing_indicator_collection",

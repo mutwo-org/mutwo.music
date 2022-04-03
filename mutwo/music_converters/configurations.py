@@ -63,3 +63,9 @@ DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME = (
 )
 """Default value for :param:`after_grace_note_sequential_event_keyword_name` parameter in
 :class:`mutwo.core_converters.MutwoParameterDictToAfterGraceNoteSequentialEvent`"""
+
+DEFAULT_LYRIC_TO_SEARCH_NAME = "lyric"
+"""Default value for :param:`lyric_to_search_name` parameter in
+:class:`mutwo.music_converters.MutwoParameterDictToLyric` and
+default value for :param:`attribute_name` in
+:class:`mutwo.music_converters.SimpleEventToLyric`."""

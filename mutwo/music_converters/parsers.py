@@ -19,6 +19,7 @@ from mutwo import music_parameters
 __all__ = (
     "SimpleEventToPitchList",
     "SimpleEventToVolume",
+    "SimpleEventToLyric",
     "SimpleEventToPlayingIndicatorCollection",
     "SimpleEventToNotationIndicatorCollection",
     "SimpleEventToGraceNoteSequentialEvent",
@@ -55,6 +56,20 @@ class SimpleEventToVolume(core_converters.SimpleEventToAttribute):
         if attribute_name is None:
             attribute_name = (
                 music_converters.configurations.DEFAULT_VOLUME_TO_SEARCH_NAME
+            )
+
+        super().__init__(attribute_name, exception_value)
+
+
+class SimpleEventToLyric(core_converters.SimpleEventToAttribute):
+    def __init__(
+        self,
+        attribute_name: typing.Optional[str] = None,
+        exception_value: music_parameters.abc.Volume = music_parameters.DirectLyric(""),
+    ):
+        if attribute_name is None:
+            attribute_name = (
+                music_converters.configurations.DEFAULT_LYRIC_TO_SEARCH_NAME
             )
 
         super().__init__(attribute_name, exception_value)
