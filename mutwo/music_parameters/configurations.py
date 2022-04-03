@@ -155,8 +155,22 @@ DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR: float 
 :method:`~mutwo.music_parameters.abc.Volume.decibel_to_midi_velocity`."""
 
 # ###################################################################### #
-# ###################################################################### #
+#                            configure lyrics                            #
 # ###################################################################### #
 
+DEFAULT_LANGUAGE_CODE = "mb-en1"
+"""The default language code for
+:class:`mutwo.music_parameters.LanguageBasedLyric`. This has to be supported
+by the mbrola backend. To get a list of all supported language codes
+you can run:
+
+>>> import phonemizer
+>>> phonemizer.backend.EspeakMbrolaBackend._all_supported_languages()
+"""
+
+
+# ###################################################################### #
+# ###################################################################### #
+# ###################################################################### #
 # Cleanup module
 del commas, fractions

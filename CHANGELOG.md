@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.12.0] - 2022-04-03
+
+### Changed
+- use `SingleNumberParameter` class from `mutwo.ext-core` for all abstract parameters with one value
+- `cents` attribute of `PitchInterval` to `instance` (in order to standardise attribute names; should be type and not unit)
+- `find_pitch_variant_tuple` to `get_pitch_variant_tuple`
+
+### Added
+- abstract base classes to represent text/lyrics:
+    - `mutwo.music_parameters.abc.Lyric`
+    - `mutwo.music_parameters.abc.Syllable`
+- module for lyrics:
+    - `mutwo.music_parameters.DirectLyric`
+    - `mutwo.music_parameters.LanguageBasedLyric`
+    - `mutwo.music_parameters.LanguageBasedSyllable`
+- new dependency phonemizer
+
+
 ## [0.11.0] - 2022-04-02
 
 ### Added

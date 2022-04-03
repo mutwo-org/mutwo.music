@@ -35,6 +35,8 @@ __all__ = (
     "PitchAmbitus",
     "PlayingIndicator",
     "NotationIndicator",
+    "Lyric",
+    "Syllable",
 )
 
 
@@ -45,10 +47,10 @@ class PitchInterval(
 ):
     """Abstract base class for any pitch interval class
 
-    If the user wants to define a new pitch class, the abstract
+    If the user wants to define a new pitch interval class, the abstract
     property :attr:`interval` has to be overridden.
 
-    Distance is in unit `cents`.
+    :attr:`interval` is stored in unit `cents`.
 
     See `wikipedia entry <https://en.wikipedia.org/wiki/Cent_(music)>`_
     for definition of 'cents'.
@@ -859,3 +861,41 @@ class IndicatorCollection(typing.Generic[T]):
 
     def get_indicator_dict(self) -> dict[str, Indicator]:
         return {key: getattr(self, key) for key in self.__dataclass_fields__.keys()}  # type: ignore
+
+
+class Lyric(
+    core_parameters.abc.SingleValueParameter,
+    value_name="phonetic_representation",
+    value_return_type=str,
+):
+    """Abstract base class for any spoken, sung or written text.
+
+    If the user wants to define a new lyric class, the abstract
+    properties :attr:`phonetic_representation` and
+    :attr:`written_representation` have to be overridden.
+
+    The :attr:`phonetic_representation` should return a string of
+    X-SAMPA format phonemes, separated by space to indicate new words.
+    Consult `wikipedia entry <https://en.wikipedia.org/wiki/X-SAMPA>`_
+    for detailed information regarding X-SAMPA.
+
+    The :attr:`written_representation` should return a string of
+    normal written text, separated by space to indicate new words.
+    """
+
+    @property
+    def written_representation(self) -> str:
+        """Get text as it would be written in natural language"""
+        raise NotImplementedError
+
+
+class Syllable(Lyric):
+    """Syllable mixin for classes which inherit from :class:`Lyric`.
+
+    This adds the new attribute :attr:`is_last_syllable`. This should
+    be `True` if it is the last syllable of a word and `False` if it
+    isn't.
+    """
+
+    def __init__(self, is_last_syllable: bool):
+        self.is_last_syllable = is_last_syllable
