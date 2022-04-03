@@ -25,14 +25,18 @@ class PitchTest(unittest.TestCase):
 
         @core_utilities.add_copy_option
         def add(self, pitch_interval: music_parameters.PitchInterval) -> GenericPitch:
-            self._frequency = self.cents_to_ratio(pitch_interval.cents) * self.frequency
+            self._frequency = (
+                self.cents_to_ratio(pitch_interval.interval) * self.frequency
+            )
             return self
 
         @core_utilities.add_copy_option
         def subtract(
             self, pitch_interval: music_parameters.PitchInterval
         ) -> GenericPitch:
-            self._frequency = self.frequency / self.cents_to_ratio(pitch_interval.cents)
+            self._frequency = self.frequency / self.cents_to_ratio(
+                pitch_interval.interval
+            )
             return self
 
     def test_abstract_error(self):
@@ -308,13 +312,13 @@ class PitchAmbitusTest(unittest.TestCase):
         ) -> music_parameters.abc.PitchInterval:
             return music_parameters.DirectPitchInterval(1200)
 
-    def test_find_pitch_variant_tuple(self):
+    def test_get_pitch_variant_tuple(self):
         pitch_ambitus = self.GenericPitchAmbitus(
             music_parameters.DirectPitch(220),
             music_parameters.DirectPitch(880),
         )
         self.assertEqual(
-            pitch_ambitus.find_pitch_variant_tuple(music_parameters.DirectPitch(220)),
+            pitch_ambitus.get_pitch_variant_tuple(music_parameters.DirectPitch(220)),
             (
                 music_parameters.DirectPitch(220),
                 music_parameters.DirectPitch(440),

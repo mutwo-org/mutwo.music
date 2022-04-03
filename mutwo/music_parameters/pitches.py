@@ -60,20 +60,20 @@ PitchClassOrPitchClassName = typing.Union[core_constants.Real, str]
 class DirectPitchInterval(music_parameters.abc.PitchInterval):
     """Simple interval class which gets directly assigned by its cents value
 
-    :param cents: Defines how big or small the interval is.
-    :type cents: float
+    :param interval: Defines how big or small the interval is in cents.
+    :type interval: float
     """
 
-    def __init__(self, cents: float):
-        self.cents = cents
+    def __init__(self,interval: float):
+        self.interval= interval
 
     @property
-    def cents(self) -> float:
-        return self._cents
+    def interval(self) -> float:
+        return self._interval
 
-    @cents.setter
-    def cents(self, cents: float):
-        self._cents = cents
+    @interval.setter
+    def interval(self, interval: float):
+        self._interval = interval
 
 
 class DirectPitch(music_parameters.abc.Pitch):
@@ -108,14 +108,14 @@ class DirectPitch(music_parameters.abc.Pitch):
     def add(
         self, pitch_interval: music_parameters.abc.PitchInterval, mutate: bool = False
     ) -> DirectPitch:
-        self._frequency = self.cents_to_ratio(pitch_interval.cents) * self.frequency
+        self._frequency = self.cents_to_ratio(pitch_interval.interval) * self.frequency
         return self
 
     @core_utilities.add_copy_option
     def subtract(
         self, pitch_interval: music_parameters.abc.PitchInterval, mutate: bool = False
     ) -> DirectPitch:
-        self._frequency = self.frequency / self.cents_to_ratio(pitch_interval.cents)
+        self._frequency = self.frequency / self.cents_to_ratio(pitch_interval.interval)
         return self
 
 
@@ -159,7 +159,7 @@ class MidiPitch(music_parameters.abc.Pitch):
         self, pitch_interval: music_parameters.abc.PitchInterval, mutate: bool = False
     ) -> MidiPitch:
         self.midi_pitch_number = self.hertz_to_midi_pitch_number(
-            self.cents_to_ratio(pitch_interval.cents) * self.frequency
+            self.cents_to_ratio(pitch_interval.interval) * self.frequency
         )
         return self
 
@@ -168,7 +168,7 @@ class MidiPitch(music_parameters.abc.Pitch):
         self, pitch_interval: music_parameters.abc.PitchInterval, mutate: bool = False
     ) -> MidiPitch:
         self.midi_pitch_number = self.hertz_to_midi_pitch_number(
-            self.frequency / self.cents_to_ratio(pitch_interval.cents)
+            self.frequency / self.cents_to_ratio(pitch_interval.interval)
         )
         return self
 
@@ -722,7 +722,7 @@ class JustIntonationPitch(
         return denominator
 
     @property
-    def cents(self) -> float:
+    def interval(self) -> float:
         return self.ratio_to_cents(self.ratio)
 
     @property
@@ -770,7 +770,7 @@ class JustIntonationPitch(
 
     @property
     def octave(self) -> int:
-        ct = self.cents
+        ct = self.interval
         ref, exp = 1200, 0
         while ref * exp <= ct:
             exp += 1
@@ -813,13 +813,13 @@ class JustIntonationPitch(
         deviation_by_helmholtz_ellis_just_intonation_notation_commas = (
             JustIntonationPitch(
                 self.helmholtz_ellis_just_intonation_notation_commas.ratio
-            ).cents
+            ).interval
         )
         closest_pythagorean_interval = self.closest_pythagorean_interval
         if len(closest_pythagorean_interval.exponent_tuple) >= 2:
             pythagorean_deviation = self.closest_pythagorean_interval.exponent_tuple[
                 1
-            ] * (JustIntonationPitch("3/2").cents - 700)
+            ] * (JustIntonationPitch("3/2").interval - 700)
         else:
             pythagorean_deviation = 0
         return (
@@ -1170,7 +1170,7 @@ class JustIntonationPitch(
         best = None
         for adaption in range(-1, 2):
             candidate: JustIntonationPitch = self.register(reference_register + adaption, mutate=False)  # type: ignore
-            difference = abs((candidate - reference).cents)
+            difference = abs((candidate - reference).interval)
             set_best = True
             if best and difference > best[1]:
                 set_best = False
@@ -1254,7 +1254,7 @@ class JustIntonationPitch(
             self._math(pitch_interval, operator.add)
         else:
             self.exponent_tuple = self._ratio_to_exponent_tuple(
-                self.ratio * self.cents_to_ratio(pitch_interval.cents)
+                self.ratio * self.cents_to_ratio(pitch_interval.interval)
             )
         return self
 
@@ -1280,7 +1280,7 @@ class JustIntonationPitch(
             self._math(pitch_interval, operator.sub)
         else:
             self.exponent_tuple = self._ratio_to_exponent_tuple(
-                self.ratio / self.cents_to_ratio(pitch_interval.cents)
+                self.ratio / self.cents_to_ratio(pitch_interval.interval)
             )
         return self
 

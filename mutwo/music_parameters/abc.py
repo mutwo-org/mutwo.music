@@ -40,13 +40,15 @@ __all__ = (
 
 class PitchInterval(
     core_parameters.abc.SingleNumberParameter,
-    value_name="cents",
+    value_name="interval",
     value_return_type=float,
 ):
     """Abstract base class for any pitch interval class
 
     If the user wants to define a new pitch class, the abstract
-    property :attr:`cents` has to be overridden.
+    property :attr:`interval` has to be overridden.
+
+    Distance is in unit `cents`.
 
     See `wikipedia entry <https://en.wikipedia.org/wiki/Cent_(music)>`_
     for definition of 'cents'.
@@ -197,7 +199,7 @@ class Pitch(
             ] = None,
             parameter_to_value: typing.Callable[
                 [core_constants.ParameterType], core_events.Envelope.Value
-            ] = lambda parameter: parameter.cents,
+            ] = lambda parameter: parameter.interval,
             apply_parameter_on_event: typing.Optional[
                 typing.Callable[
                     [core_events.abc.Event, core_constants.ParameterType], None
@@ -704,7 +706,7 @@ class PitchAmbitus(abc.ABC):
     #                       public methods                     #
     # ######################################################## #
 
-    def find_pitch_variant_tuple(
+    def get_pitch_variant_tuple(
         self, pitch: Pitch, period: typing.Optional[PitchInterval] = None
     ) -> tuple[Pitch, ...]:
         """Find all pitch variants (in all octaves) of the given pitch
