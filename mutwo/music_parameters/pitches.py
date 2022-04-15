@@ -520,10 +520,10 @@ class JustIntonationPitch(
         accidental_counter.update(accidentals)
         for accidental in accidentals:
             if accidental not in ("f", "s"):
-                message = "Found unknown accidental '{}' which will be ignored".format(
-                    accidental
+                warnings.warn(
+                    f"Found unknown accidental '{accidental}' which will be ignored",
+                    RuntimeWarning,
                 )
-                warnings.warn(message)
         return (1 * accidental_counter["s"]) - (1 * accidental_counter["f"])
 
     @staticmethod
@@ -560,10 +560,11 @@ class JustIntonationPitch(
                 )
             )
         else:
-            message = "Unknown type '{}' of object '{}' for 'ratio_or_exponent_tuple' argument.".format(
-                type(ratio_or_exponent_tuple), ratio_or_exponent_tuple
+            raise NotImplementedError(
+                f"Unknown type '{type(ratio_or_exponent_tuple)}' of object "
+                f"'{ratio_or_exponent_tuple}' for 'ratio_or_exponent_tuple' "
+                "argument."
             )
-            raise NotImplementedError(message)
         return exponent_tuple
 
     @core_utilities.add_copy_option
@@ -1464,11 +1465,11 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
                 (pitch_class <= self.n_pitch_classes_per_octave - 1, pitch_class >= 0)
             )
         except AssertionError:
-            message = (
-                "Invalid pitch class {}!. Pitch_class has to be in range (min = 0, max"
-                " = {}).".format(pitch_class, self.n_pitch_classes_per_octave - 1)
+            raise ValueError(
+                f"Invalid pitch class {pitch_class}!. "
+                "Pitch_class has to be in range (min = 0, max"
+                f" = {self.n_pitch_classes_per_octave - 1})."
             )
-            raise ValueError(message)
 
     def _fetch_n_pitch_classes_difference(
         self,
@@ -1554,12 +1555,11 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
         try:
             assert self.n_pitch_classes_per_octave == other.n_pitch_classes_per_octave
         except AssertionError:
-            message = (
+            raise ValueError(
                 "Can't calculate the interval between to different"
                 " EqualDividedOctavePitch objects with different value for"
                 " 'n_pitch_classes_per_octave'."
             )
-            raise ValueError(message)
 
         n_pitch_classes_difference = self.pitch_class - other.pitch_class
         n_octaves_difference = self.octave - other.octave
@@ -1694,10 +1694,11 @@ class WesternPitch(EqualDividedOctavePitch):
             )
             pitch_class_name = pitch_class_or_pitch_class_name
         else:
-            message = "Can't initalise pitch_class by '{}' of type '{}'.".format(
-                pitch_class_or_pitch_class_name, type(pitch_class_or_pitch_class_name)
+            raise TypeError(
+                "Can't initalise pitch_class by "
+                f"'{pitch_class_or_pitch_class_name}' of type"
+                f" '{type(pitch_class_or_pitch_class_name)}'."
             )
-            raise TypeError(message)
 
         return pitch_class, pitch_class_name
 
@@ -1715,12 +1716,10 @@ class WesternPitch(EqualDividedOctavePitch):
                 accidental
             ]
         except KeyError:
-            message = (
-                "Can't initialise WesternPitch with unknown accidental {}!".format(
-                    accidental
-                )
+            raise NotImplementedError(
+                "Can't initialise WesternPitch with "
+                f"unknown accidental {accidental}!"
             )
-            raise NotImplementedError(message)
 
     @staticmethod
     def _translate_pitch_class_name_to_pitch_class(
