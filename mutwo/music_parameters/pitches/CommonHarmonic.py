@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 import typing
 
 try:
@@ -22,6 +23,7 @@ __all__ = (
 ConcertPitch = typing.Union[core_constants.Real, music_parameters.abc.Pitch]
 
 
+@dataclasses.dataclass(frozen=True)
 class Partial(object):
     """Abstract representation of a harmonic spectrum partial.
 
@@ -43,20 +45,8 @@ class Partial(object):
     )
     """
 
-    def __init__(self, nth_partial: int, tonality: bool = True):
-        self._nth_partial = nth_partial
-        self._tonality = tonality
-
-    @property
-    def nth_partial(self) -> int:
-        return self._nth_partial
-
-    @property
-    def tonality(self) -> int:
-        return self._tonality
-
-    def __repr__(self) -> str:
-        return f"Partial({self.nth_partial}, {self.tonality})"
+    nth_partial: int
+    tonality: bool
 
 
 class CommonHarmonic(JustIntonationPitch):
