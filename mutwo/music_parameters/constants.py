@@ -5,7 +5,10 @@ import typing
 #                            pitches constants                           #
 # ###################################################################### #
 
-CENT_CALCULATION_CONSTANT = 1200 / (math.log10(2))
+OCTAVE_IN_CENTS = 1200
+"""How many cents equal one octave"""
+
+CENT_CALCULATION_CONSTANT = OCTAVE_IN_CENTS / (math.log10(2))
 """constant used for cent calculation in mutwo.parameters.abc.Pitch"""
 
 DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT = {

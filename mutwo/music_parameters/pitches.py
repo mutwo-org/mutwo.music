@@ -43,7 +43,6 @@ from mutwo import music_parameters
 
 
 __all__ = (
-    "DirectPitchInterval",
     "DirectPitch",
     "JustIntonationPitch",
     "Partial",
@@ -55,25 +54,6 @@ __all__ = (
 
 ConcertPitch = typing.Union[core_constants.Real, music_parameters.abc.Pitch]
 PitchClassOrPitchClassName = typing.Union[core_constants.Real, str]
-
-
-class DirectPitchInterval(music_parameters.abc.PitchInterval):
-    """Simple interval class which gets directly assigned by its cents value
-
-    :param interval: Defines how big or small the interval is in cents.
-    :type interval: float
-    """
-
-    def __init__(self, interval: float):
-        self.interval = interval
-
-    @property
-    def interval(self) -> float:
-        return self._interval
-
-    @interval.setter
-    def interval(self, interval: float):
-        self._interval = interval
 
 
 class DirectPitch(music_parameters.abc.Pitch):
@@ -777,7 +757,7 @@ class JustIntonationPitch(
 
     @property
     def octave(self) -> int:
-        return int(self.interval // 1200)
+        return int(self.interval // music_parameters.constants.OCTAVE_IN_CENTS)
 
     @property
     def helmholtz_ellis_just_intonation_notation_commas(
@@ -1542,7 +1522,8 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
             self.pitch_class - self.concert_pitch_pitch_class
         )
         distance_to_concert_pitch_in_cents = (
-            n_octaves_distant_to_concert_pitch * 1200
+            n_octaves_distant_to_concert_pitch
+            * music_parameters.constants.OCTAVE_IN_CENTS
         ) + (self.n_cents_per_step * n_pitch_classes_distant_to_concert_pitch)
         distance_to_concert_pitch_as_factor = self.cents_to_ratio(
             distance_to_concert_pitch_in_cents
