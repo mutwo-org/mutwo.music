@@ -64,8 +64,8 @@ class DirectPitchInterval(music_parameters.abc.PitchInterval):
     :type interval: float
     """
 
-    def __init__(self,interval: float):
-        self.interval= interval
+    def __init__(self, interval: float):
+        self.interval = interval
 
     @property
     def interval(self) -> float:
@@ -581,6 +581,12 @@ class JustIntonationPitch(
     #                            magic methods                               #
     # ###################################################################### #
 
+    def __eq__(self, other: typing.Any) -> bool:
+        try:
+            return self.exponent_tuple == other.exponent_tuple
+        except AttributeError:
+            return super().__eq__(self, other)
+
     def __float__(self) -> float:
         """Return the float of a JustIntonationPitch - object.
 
@@ -591,10 +597,10 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((-1, 1))
-        >>> float(jip0)
+        >>> just_intonation_pitch0 = JustIntonationPitch((-1, 1))
+        >>> float(just_intonation_pitch0)
         1.5
-        >>> float(jip0.ratio)
+        >>> float(just_intonation_pitch0.ratio)
         1.5
         """
 
@@ -634,11 +640,11 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((0, 1, 2))
-        >>> jip0.exponent_tuple
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1, 2))
+        >>> just_intonation_pitch0.exponent_tuple
         (2, 3, 5)
-        >>> jip1 = JustIntonationPitch((0, -1, 0, 0, 1), 1)
-        >>> jip1.exponent_tuple
+        >>> just_intonation_pitch1 = JustIntonationPitch((0, -1, 0, 0, 1), 1)
+        >>> just_intonation_pitch1.exponent_tuple
         (2, 3, 5, 7, 11)
         """
 
@@ -675,11 +681,11 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((0, 0, 1,))
-        >>> jip0.ratio
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, 0, 1,))
+        >>> just_intonation_pitch0.ratio
         fractions.Fraction(5, 4)
-        >>> jip0 = JustIntonationPitch("3/2")
-        >>> jip0.ratio
+        >>> just_intonation_pitch0 = JustIntonationPitch("3/2")
+        >>> just_intonation_pitch0.ratio
         fractions.Fraction(3, 2)
         """
 
@@ -693,8 +699,8 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((0, -1,))
-        >>> jip0.numerator
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, -1,))
+        >>> just_intonation_pitch0.numerator
         1
         """
 
@@ -710,8 +716,8 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((0, 1,))
-        >>> jip0.denominator
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1,))
+        >>> just_intonation_pitch0.denominator
         1
         """
 
@@ -731,11 +737,11 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((0, 0, 1,))
-        >>> jip0.factorised
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, 0, 1,))
+        >>> just_intonation_pitch0.factorised
         (2, 2, 5)
-        >>> jip1 = JustIntonationPitch("7/6")
-        >>> jip1.factorised
+        >>> just_intonation_pitch1 = JustIntonationPitch("7/6")
+        >>> just_intonation_pitch1.factorised
         (2, 3, 7)
         """
 
@@ -759,10 +765,10 @@ class JustIntonationPitch(
         numerator_denominator: list[list[list[int]]] = [[[]], [[]]]
         for prime, exponent in zip(prime_tuple_adjusted, exponent_tuple_adjusted):
             if exponent > 0:
-                idx = 0
+                index = 0
             else:
-                idx = 1
-            numerator_denominator[idx].append([prime] * abs(exponent))
+                index = 1
+            numerator_denominator[index].append([prime] * abs(exponent))
         return tuple(
             functools.reduce(operator.add, decomposed)
             for decomposed in numerator_denominator
@@ -770,13 +776,7 @@ class JustIntonationPitch(
 
     @property
     def octave(self) -> int:
-        ct = self.interval
-        ref, exp = 1200, 0
-        while ref * exp <= ct:
-            exp += 1
-        while ref * exp > ct:
-            exp -= 1
-        return exp
+        return int(self.interval // 1200)
 
     @property
     def helmholtz_ellis_just_intonation_notation_commas(
@@ -837,7 +837,7 @@ class JustIntonationPitch(
             counter = collections.Counter(collections.Counter(factorised).values())
             if counter:
                 maxima = max(counter.keys())
-                blueprint.append(tuple(counter[idx + 1] for idx in range(maxima)))
+                blueprint.append(tuple(counter[index + 1] for index in range(maxima)))
             else:
                 blueprint.append(tuple([]))
         return tuple(blueprint)
@@ -853,14 +853,14 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((-2. 1))
-        >>> jip0.tonality
+        >>> just_intonation_pitch0 = JustIntonationPitch((-2. 1))
+        >>> just_intonation_pitch0.tonality
         True
-        >>> jip1 = JustIntonationPitch((-2, -1))
-        >>> jip1.tonality
+        >>> just_intonation_pitch1 = JustIntonationPitch((-2, -1))
+        >>> just_intonation_pitch1.tonality
         False
-        >>> jip2 = JustIntonationPitch([])
-        >>> jip2.tonality
+        >>> just_intonation_pitch2 = JustIntonationPitch([])
+        >>> just_intonation_pitch2.tonality
         True
         """
 
@@ -891,13 +891,13 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((0, 1))
-        >>> jip0.ratio
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1))
+        >>> just_intonation_pitch0.ratio
         fractions.Fraction(3, 2)
-        >>> jip0.harmonic
+        >>> just_intonation_pitch0.harmonic
         3
-        >>> jip1 = JustIntonationPitch((-1,), 2)
-        >>> jip1.harmonic
+        >>> just_intonation_pitch1 = JustIntonationPitch((-1,), 2)
+        >>> just_intonation_pitch1.harmonic
         -3
         """
 
@@ -941,17 +941,17 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((0, 1,))
-        >>> jip1 = JustIntonationPitch()
-        >>> jip2 = JustIntonationPitch((0, 0, 1,))
-        >>> jip3 = JustIntonationPitch((0, 0, -1,))
-        >>> jip0.harmonicity_euler
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1,))
+        >>> just_intonation_pitch1 = JustIntonationPitch()
+        >>> just_intonation_pitch2 = JustIntonationPitch((0, 0, 1,))
+        >>> just_intonation_pitch3 = JustIntonationPitch((0, 0, -1,))
+        >>> just_intonation_pitch0.harmonicity_euler
         4
-        >>> jip1.harmonicity_euler
+        >>> just_intonation_pitch1.harmonicity_euler
         1
-        >>> jip2.harmonicity_euler
+        >>> just_intonation_pitch2.harmonicity_euler
         7
-        >>> jip3.harmonicity_euler
+        >>> just_intonation_pitch3.harmonicity_euler
         8
         """
 
@@ -972,17 +972,17 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> jip0 = JustIntonationPitch((0, 1,))
-        >>> jip1 = JustIntonationPitch()
-        >>> jip2 = JustIntonationPitch((0, 0, 1,))
-        >>> jip3 = JustIntonationPitch((0, 0, -1,))
-        >>> jip0.harmonicity_barlow
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1,))
+        >>> just_intonation_pitch1 = JustIntonationPitch()
+        >>> just_intonation_pitch2 = JustIntonationPitch((0, 0, 1,))
+        >>> just_intonation_pitch3 = JustIntonationPitch((0, 0, -1,))
+        >>> just_intonation_pitch0.harmonicity_barlow
         0.27272727272727276
-        >>> jip1.harmonicity_barlow # 1/1 is infinite harmonic
+        >>> just_intonation_pitch1.harmonicity_barlow # 1/1 is infinite harmonic
         inf
-        >>> jip2.harmonicity_barlow
+        >>> just_intonation_pitch2.harmonicity_barlow
         0.11904761904761904
-        >>> jip3.harmonicity_barlow
+        >>> just_intonation_pitch3.harmonicity_barlow
         -0.10638297872340426
         """
 
@@ -1013,17 +1013,17 @@ class JustIntonationPitch(
         only positive numbers are returned and that (1/1) is
         defined as 1 instead of infinite.
 
-        >>> jip0 = JustIntonationPitch((0, 1,))
-        >>> jip1 = JustIntonationPitch()
-        >>> jip2 = JustIntonationPitch((0, 0, 1,))
-        >>> jip3 = JustIntonationPitch((0, 0, -1,))
-        >>> jip0.harmonicity_simplified_barlow
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1,))
+        >>> just_intonation_pitch1 = JustIntonationPitch()
+        >>> just_intonation_pitch2 = JustIntonationPitch((0, 0, 1,))
+        >>> just_intonation_pitch3 = JustIntonationPitch((0, 0, -1,))
+        >>> just_intonation_pitch0.harmonicity_simplified_barlow
         0.27272727272727276
-        >>> jip1.harmonicity_simplified_barlow # 1/1 is not infinite but 1
+        >>> just_intonation_pitch1.harmonicity_simplified_barlow # 1/1 is not infinite but 1
         1
-        >>> jip2.harmonicity_simplified_barlow
+        >>> just_intonation_pitch2.harmonicity_simplified_barlow
         0.11904761904761904
-        >>> jip3.harmonicity_simplified_barlow # positive return value
+        >>> just_intonation_pitch3.harmonicity_simplified_barlow # positive return value
         0.10638297872340426
         """
 
@@ -1042,17 +1042,17 @@ class JustIntonationPitch(
 
         tenney(1/1) is definied as 0.
 
-        >>> jip0 = JustIntonationPitch((0, 1,))
-        >>> jip1 = JustIntonationPitch()
-        >>> jip2 = JustIntonationPitch((0, 0, 1,))
-        >>> jip3 = JustIntonationPitch((0, 0, -1,))
-        >>> jip0.harmonicity_tenney
+        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1,))
+        >>> just_intonation_pitch1 = JustIntonationPitch()
+        >>> just_intonation_pitch2 = JustIntonationPitch((0, 0, 1,))
+        >>> just_intonation_pitch3 = JustIntonationPitch((0, 0, -1,))
+        >>> just_intonation_pitch0.harmonicity_tenney
         2.584962500721156
-        >>> jip1.harmonicity_tenney
+        >>> just_intonation_pitch1.harmonicity_tenney
         0.0
-        >>> jip2.harmonicity_tenney
+        >>> just_intonation_pitch2.harmonicity_tenney
         4.321928094887363
-        >>> jip3.harmonicity_tenney
+        >>> just_intonation_pitch3.harmonicity_tenney
         -0.10638297872340426
         """
 
