@@ -49,12 +49,3 @@ class MidiPitch(music_parameters.abc.Pitch):
             self.cents_to_ratio(pitch_interval.interval) * self.frequency
         )
         return self
-
-    @core_utilities.add_copy_option
-    def subtract(
-        self, pitch_interval: music_parameters.abc.PitchInterval, mutate: bool = False
-    ) -> MidiPitch:
-        self.midi_pitch_number = self.hertz_to_midi_pitch_number(
-            self.frequency / self.cents_to_ratio(pitch_interval.interval)
-        )
-        return self

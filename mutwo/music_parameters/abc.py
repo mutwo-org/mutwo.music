@@ -70,7 +70,7 @@ class Pitch(
     If the user wants to define a new pitch class, the abstract
     property :attr:`frequency` has to be overridden. Starting
     from mutwo version = 0.46.0 the user will furthermore have
-    to define an :func:`add` and a :func:`subtract` method.
+    to define an :func:`add` method.
     """
 
     class PitchEnvelope(core_events.Envelope):
@@ -404,9 +404,9 @@ class Pitch(
     def add(self, pitch_interval: PitchInterval, mutate: bool = True) -> Pitch:
         raise NotImplementedError
 
-    @abc.abstractmethod
-    def subtract(self, pitch_interval: PitchInterval, mutate: bool = True) -> Pitch:
-        raise NotImplementedError
+    @core_utilities.add_copy_option
+    def subtract(self, pitch_interval: music_parameters.abc.PitchInterval) -> Pitch:
+        return self.add(music_parameters.DirectPitchInterval(-pitch_interval.interval))  # type: ignore
 
     def __add__(self, pitch_interval: PitchInterval) -> Pitch:
         return self.add(pitch_interval, mutate=False)

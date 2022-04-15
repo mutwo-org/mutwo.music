@@ -41,10 +41,3 @@ class DirectPitch(music_parameters.abc.Pitch):
     ) -> DirectPitch:
         self._frequency = self.cents_to_ratio(pitch_interval.interval) * self.frequency
         return self
-
-    @core_utilities.add_copy_option
-    def subtract(
-        self, pitch_interval: music_parameters.abc.PitchInterval, mutate: bool = False
-    ) -> DirectPitch:
-        self._frequency = self.frequency / self.cents_to_ratio(pitch_interval.interval)
-        return self
