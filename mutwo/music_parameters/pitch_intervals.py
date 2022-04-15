@@ -20,3 +20,8 @@ class DirectPitchInterval(music_parameters.abc.PitchInterval):
     @interval.setter
     def interval(self, interval: float):
         self._interval = interval
+
+
+
+class WesternPitchInterval(music_parameters.abc.PitchInterval):
+    pass
