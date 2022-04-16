@@ -915,17 +915,6 @@ class JustIntonationPitch(
         de = ratio.denominator
         return math.log(num * de, 2)
 
-    @property
-    def level(self) -> int:
-        if self.prime_tuple:
-            return abs(
-                functools.reduce(
-                    math.gcd, tuple(filter(lambda x: x != 0, self.exponent_tuple))  # type: ignore
-                )
-            )
-        else:
-            return 1
-
     # ###################################################################### #
     #                            public methods                              #
     # ###################################################################### #
