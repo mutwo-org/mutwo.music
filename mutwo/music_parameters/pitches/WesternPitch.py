@@ -327,3 +327,45 @@ class WesternPitch(EqualDividedOctavePitch):
             pitch_class, previous_pitch_class, previous_pitch_class_name
         )
         self._pitch_class = pitch_class
+
+    # ###################################################################### #
+    #                          public methods                                #
+    # ###################################################################### #
+
+    @core_utilities.add_copy_option
+    def add(  # type: ignore
+        self,
+        pitch_interval: typing.Union[
+            str, music_parameters.abc.PitchInterval, core_constants.Real
+        ],
+    ) -> WesternPitch:  # type: ignore
+        """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""
+        if isinstance(pitch_interval, str):
+            pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
+
+        if isinstance(
+            pitch_interval_or_n_pitch_classes_difference,
+            music_parameters.WesternPitchInterval,
+        ):
+            pass
+
+        else:
+            return super().add(pitch_interval_or_n_pitch_classes_difference)  # type: ignore
+
+    @core_utilities.add_copy_option
+    def subtract(  # type: ignore
+        self,
+        pitch_interval: typing.Union[
+            str, music_parameters.abc.PitchInterval, core_constants.Real
+        ],
+    ) -> WesternPitch:  # type: ignore
+        if isinstance(pitch_interval, str):
+            pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
+
+        if isinstance(
+            pitch_interval,
+            music_parameters.WesternPitchInterval,
+        ):
+            return self.add(pitch_interval.inverse(mutate=False))
+        else:
+            return super().subtract(pitch_interval)  # type: ignore

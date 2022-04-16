@@ -8,13 +8,7 @@ except ImportError:
 #   from mutwo import music_parameters; music_parameters.commas...
 # But in this case we would get a circular import, therefore
 # we have to use this hacky solution.
-
-from . import commas
-
-
-# ###################################################################### #
-#                            configure pitches                           #
-# ###################################################################### #
+from .. import commas
 
 DEFAULT_CONCERT_PITCH = 440
 """The default concert pitch in frequency."""
@@ -140,37 +134,4 @@ DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME = "pitch_interval"
 """Default property parameter name for events in
 :class:`mutwo.music_parameters.Pitch.PitchIntervalEnvelope`."""
 
-# ###################################################################### #
-#                            configure volumes                           #
-# ###################################################################### #
-
-DEFAULT_MINIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR: float = -40
-"""Default value for ``minimum_decibel`` in
-:class:`~mutwo.music_parameters.WesternVolume` and in
-:method:`~mutwo.music_parameters.abc.Volume.decibel_to_midi_velocity`."""
-
-DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR: float = 0
-"""Default value for ``maximum_decibel`` in
-:class:`~mutwo.music_parameters.WesternVolume` and in
-:method:`~mutwo.music_parameters.abc.Volume.decibel_to_midi_velocity`."""
-
-# ###################################################################### #
-#                            configure lyrics                            #
-# ###################################################################### #
-
-DEFAULT_LANGUAGE_CODE = "mb-en1"
-"""The default language code for
-:class:`mutwo.music_parameters.LanguageBasedLyric`. This has to be supported
-by the mbrola backend. To get a list of all supported language codes
-you can run:
-
->>> import phonemizer
->>> phonemizer.backend.EspeakMbrolaBackend._all_supported_languages()
-"""
-
-
-# ###################################################################### #
-# ###################################################################### #
-# ###################################################################### #
-# Cleanup module
 del commas, fractions

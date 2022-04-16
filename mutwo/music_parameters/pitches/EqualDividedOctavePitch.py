@@ -58,6 +58,32 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
         self.concert_pitch_octave = concert_pitch_octave
         self.concert_pitch = concert_pitch  # type: ignore
 
+    # ###################################################################### #
+    #                          magic methods                                 #
+    # ###################################################################### #
+
+    def __sub__(self, other: EqualDividedOctavePitch) -> core_constants.Real:
+        """Calculates the interval between two ``EqualDividedOctave`` pitches."""
+
+        try:
+            assert self.n_pitch_classes_per_octave == other.n_pitch_classes_per_octave
+        except AssertionError:
+            raise ValueError(
+                "Can't calculate the interval between to different"
+                " EqualDividedOctavePitch objects with different value for"
+                " 'n_pitch_classes_per_octave'."
+            )
+
+        n_pitch_classes_difference = self.pitch_class - other.pitch_class
+        n_octaves_difference = self.octave - other.octave
+        return n_pitch_classes_difference + (
+            n_octaves_difference * self.n_pitch_classes_per_octave
+        )
+
+    # ###################################################################### #
+    #                          private methods                               #
+    # ###################################################################### #
+
     def _assert_correct_pitch_class(self, pitch_class: core_constants.Real) -> None:
         """Makes sure the respective pitch_class is within the allowed range."""
 
@@ -74,20 +100,35 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
 
     def _fetch_n_pitch_classes_difference(
         self,
-        pitch_interval_or_n_pitch_classes_difference: typing.Union[
+        pitch_interval: typing.Union[
             music_parameters.abc.PitchInterval, core_constants.Real
         ],
     ) -> core_constants.Real:
         if isinstance(
-            pitch_interval_or_n_pitch_classes_difference,
+            pitch_interval,
             music_parameters.abc.PitchInterval,
         ):
-            return (
-                pitch_interval_or_n_pitch_classes_difference.cents
-                / self.n_cents_per_step
-            )
+            return pitch_interval.cents / self.n_cents_per_step
         else:
-            return pitch_interval_or_n_pitch_classes_difference
+            return pitch_interval
+
+    def _math(
+        self,
+        n_pitch_classes_difference: core_constants.Real,
+        operator: typing.Callable[
+            [core_constants.Real, core_constants.Real], core_constants.Real
+        ],
+    ) -> None:
+        new_pitch_class = operator(self.pitch_class, n_pitch_classes_difference)
+        n_octaves_difference = new_pitch_class // self.n_pitch_classes_per_octave
+        new_pitch_class = new_pitch_class % self.n_pitch_classes_per_octave
+        new_octave = self.octave + n_octaves_difference
+        self.pitch_class = new_pitch_class
+        self.octave = int(new_octave)
+
+    # ###################################################################### #
+    #                          public properties                             #
+    # ###################################################################### #
 
     @property
     def n_pitch_classes_per_octave(self) -> int:
@@ -151,62 +192,36 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
         )
         return float(self.concert_pitch.frequency * distance_to_concert_pitch_as_factor)
 
-    def __sub__(self, other: EqualDividedOctavePitch) -> core_constants.Real:
-        """Calculates the interval between two ``EqualDividedOctave`` pitches."""
-
-        try:
-            assert self.n_pitch_classes_per_octave == other.n_pitch_classes_per_octave
-        except AssertionError:
-            raise ValueError(
-                "Can't calculate the interval between to different"
-                " EqualDividedOctavePitch objects with different value for"
-                " 'n_pitch_classes_per_octave'."
-            )
-
-        n_pitch_classes_difference = self.pitch_class - other.pitch_class
-        n_octaves_difference = self.octave - other.octave
-        return n_pitch_classes_difference + (
-            n_octaves_difference * self.n_pitch_classes_per_octave
-        )
-
-    def _math(
-        self,
-        n_pitch_classes_difference: core_constants.Real,
-        operator: typing.Callable[
-            [core_constants.Real, core_constants.Real], core_constants.Real
-        ],
-    ) -> None:
-        new_pitch_class = operator(self.pitch_class, n_pitch_classes_difference)
-        n_octaves_difference = new_pitch_class // self.n_pitch_classes_per_octave
-        new_pitch_class = new_pitch_class % self.n_pitch_classes_per_octave
-        new_octave = self.octave + n_octaves_difference
-        self.pitch_class = new_pitch_class
-        self.octave = int(new_octave)
+    # ###################################################################### #
+    #                          public methods                                #
+    # ###################################################################### #
 
     @core_utilities.add_copy_option
     def add(  # type: ignore
         self,
-        pitch_interval_or_n_pitch_classes_difference: typing.Union[
+        pitch_interval: typing.Union[
             music_parameters.abc.PitchInterval, core_constants.Real
         ],
     ) -> EqualDividedOctavePitch:  # type: ignore
         """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""
 
         n_pitch_classes_difference = self._fetch_n_pitch_classes_difference(
-            pitch_interval_or_n_pitch_classes_difference
+            pitch_interval
         )
         self._math(n_pitch_classes_difference, operator.add)
 
     @core_utilities.add_copy_option
     def subtract(  # type: ignore
         self,
-        pitch_interval_or_n_pitch_classes_difference: typing.Union[
+        pitch_interval: typing.Union[
             music_parameters.abc.PitchInterval, core_constants.Real
         ],
     ) -> EqualDividedOctavePitch:  # type: ignore
         """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""
-
-        n_pitch_classes_difference = self._fetch_n_pitch_classes_difference(
-            pitch_interval_or_n_pitch_classes_difference
-        )
-        self._math(n_pitch_classes_difference, operator.sub)
+        if isinstance(
+            pitch_interval,
+            music_parameters.abc.PitchInterval,
+        ):
+            return super().subtract(pitch_interval)  # type: ignore
+        else:
+            return self.add(-pitch_interval)
