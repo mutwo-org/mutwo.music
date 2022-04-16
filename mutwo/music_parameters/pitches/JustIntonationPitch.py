@@ -328,13 +328,13 @@ class JustIntonationPitch(
         biggest_prime = max(factorised_num + factorised_den)
         exponent_tuple = [0] * primesieve.count_primes(biggest_prime)
 
-        for prime, fac in factorised_numerator:
+        for prime, factor in factorised_numerator:
             if prime > 1:
-                exponent_tuple[primesieve.count_primes(prime) - 1] += fac
+                exponent_tuple[primesieve.count_primes(prime) - 1] += factor
 
-        for prime, fac in factorised_denominator:
+        for prime, factor in factorised_denominator:
             if prime > 1:
-                exponent_tuple[primesieve.count_primes(prime) - 1] -= fac
+                exponent_tuple[primesieve.count_primes(prime) - 1] -= factor
 
         return tuple(exponent_tuple)
 
@@ -428,7 +428,7 @@ class JustIntonationPitch(
             self.exponent_tuple, other.exponent_tuple
         )
         self.exponent_tuple = tuple(
-            operation(x, y) for x, y in zip(exponent_tuple0, exponent_tuple1)
+            operation(exponent0, exponent1) for exponent0, exponent1 in zip(exponent_tuple0, exponent_tuple1)
         )
 
     # ###################################################################### #
@@ -601,11 +601,12 @@ class JustIntonationPitch(
 
         exponent_tuple = self.exponent_tuple
         prime_tuple = self.prime_tuple
-        exponent_tuple_adjusted, primes_adjusted = type(self)._adjust_exponent_tuple(
-            exponent_tuple, prime_tuple, 1
-        )
+        exponent_tuple_adjusted, prime_tuple_adjusted = type(
+            self
+        )._adjust_exponent_tuple(exponent_tuple, prime_tuple, 1)
         decomposed = (
-            [p] * abs(e) for p, e in zip(primes_adjusted, exponent_tuple_adjusted)
+            [prime] * abs(exponent)
+            for prime, exponent in zip(prime_tuple_adjusted, exponent_tuple_adjusted)
         )
         return tuple(functools.reduce(operator.add, decomposed))
 
@@ -911,9 +912,7 @@ class JustIntonationPitch(
         """
 
         ratio = self.ratio
-        num = ratio.numerator
-        de = ratio.denominator
-        return math.log(num * de, 2)
+        return math.log(ratio.numerator * ratio.denominator, 2)
 
     # ###################################################################### #
     #                            public methods                              #
