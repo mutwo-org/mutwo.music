@@ -76,7 +76,8 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
     """
 
     def __init__(
-        self, interval_name_or_semitone_count: typing.Union[str, core_constants.Real] = 'p1'
+        self,
+        interval_name_or_semitone_count: typing.Union[str, core_constants.Real] = "p1",
     ):
         # Define mapping on the fly, so that it is only necessary to adjust
         # music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT
@@ -158,7 +159,9 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
     ) -> tuple[str, str, bool]:
         is_interval_falling = semitone_count < 0
         semitone_count = abs(semitone_count)
-        semitone_count_reduced = semitone_count % 12
+        semitone_count_reduced = (
+            semitone_count % music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
+        )
         semitone_count_reduced_and_rounded = int(round(semitone_count_reduced))
         if semitone_count_reduced_and_rounded != semitone_count_reduced:
             warnings.warn(
@@ -176,7 +179,9 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         interval_quality_abbreviation = music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT[
             interval_quality
         ]
-        octave_count = int(semitone_count // 12)
+        octave_count = int(
+            semitone_count // music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
+        )
         interval_type = str(int(interval_type) + (octave_count * 7))
         return interval_type, interval_quality_abbreviation, is_interval_falling
 
@@ -237,6 +242,9 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}('{self.name}')"
+
+    def __str__(self) -> str:
+        return repr(self)
 
     # ###################################################################### #
     #                          private methods                               #
@@ -500,6 +508,12 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
     # ###################################################################### #
     #                           public methods                               #
     # ###################################################################### #
+
+    @core_utilities.add_copy_option
+    def inverse_direction(self, mutate: bool = False) -> WesternPitchInterval:
+        """Makes falling interval to rising and vice versa."""
+        self.is_interval_falling = not self.is_interval_falling
+        return self
 
     @core_utilities.add_copy_option
     def inverse(self) -> WesternPitchInterval:

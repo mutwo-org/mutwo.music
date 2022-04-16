@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import bisect
 import numbers
+import operator
 import typing
+import warnings
 
 try:
     import quicktions as fractions  # type: ignore
@@ -22,23 +23,24 @@ ConcertPitch = typing.Union[core_constants.Real, music_parameters.abc.Pitch]
 PitchClassOrPitchClassName = typing.Union[core_constants.Real, str]
 
 
-# TODO(add something similar to scamps SpellingPolicy (don't hard code
-# if mutwo shall write a flat or sharp)
-# TODO(add translation from octave number to notated octave (4 -> ', 5 -> '', ..))
-
-
 class WesternPitch(EqualDividedOctavePitch):
     """Pitch with a traditional Western nomenclature.
 
-    :param pitch_class_or_pitch_class_name: Name or number of the pitch class of the
-        new ``WesternPitch`` object. The nomenclature is English (c, d, e, f, g, a, b).
-        It uses an equal divided octave system in 12 chromatic steps. Accidentals are
-        indicated by (s = sharp) and (f = flat). Further microtonal accidentals are
+    :param pitch_class_or_pitch_class_name: Name or number of the pitch
+        class of the new ``WesternPitch`` object. The nomenclature is
+        English (c, d, e, f, g, a, b). It uses an equal divided octave
+        system in 12 chromatic steps. Accidentals are indicated by
+        (s = sharp) and (f = flat). Further microtonal accidentals are
         supported (see
         :const:`mutwo.music_parameters.configurations.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT`
         for all supported accidentals).
-    :param octave: The octave of the new :class:`WesternPitch` object. Indications for the
-        specific octave follow the MIDI Standard where 4 is defined as one line.
+    :type pitch_class_or_pitch_class_name: PitchClassOrPitchClassName
+    :param octave: The octave of the new :class:`WesternPitch` object.
+        Indications for the specific octave follow the MIDI Standard where
+        4 is defined as one line.
+    :type octave: int
+
+    **Example:**
 
     >>> from mutwo.music_parameters import pitches
     >>> pitches.WesternPitch('cs', 4)  # c-sharp 4
@@ -73,7 +75,7 @@ class WesternPitch(EqualDividedOctavePitch):
         )
 
         super().__init__(
-            12,
+            music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT,
             pitch_class,
             octave,
             concert_pitch_pitch_class,
@@ -183,86 +185,28 @@ class WesternPitch(EqualDividedOctavePitch):
     @staticmethod
     def _pitch_class_to_pitch_class_name(
         pitch_class: core_constants.Real,
-        previous_pitch_class: typing.Optional[core_constants.Real] = None,
-        previous_pitch_class_name: typing.Optional[str] = None,
     ) -> str:
         """Helper function to translate a pitch class in number to a string.
 
         The returned pitch class name uses a Western nomenclature of English
         diatonic note names. Accidental names are defined in
         mutwo.music_parameters.configurations.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT.
-        For floating point numbers the closest accidental will be chosen.
+        For floating point numbers the closest accidental is chosen.
         """
+        diatonic_pitch_classes = tuple(
+            music_parameters.constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT.values()
+        )
+        closest_diatonic_pitch_class_index = core_utilities.find_closest_index(
+            pitch_class, diatonic_pitch_classes
+        )
+        diatonic_pitch_class = diatonic_pitch_classes[
+            closest_diatonic_pitch_class_index
+        ]
+        diatonic_pitch = tuple(
+            music_parameters.constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT.keys()
+        )[closest_diatonic_pitch_class_index]
 
-        # NOTE: it is quite difficult to estimate a new pitch class name from the previous pitch
-        # class name. This doesn't work perfect. If this should work someday, you will need
-        # to write something like a "Interval" class.
-
-        if previous_pitch_class_name and previous_pitch_class and pitch_class != 0:
-            previous_diatonic_pitch_class_name = previous_pitch_class_name[0]
-            previous_diatonic_pitch_class_index = (
-                music_parameters.constants.ASCENDING_DIATONIC_PITCH_NAME_TUPLE.index(
-                    previous_diatonic_pitch_class_name
-                )
-            )
-            previous_diatonic_pitch_class = (
-                music_parameters.constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT[
-                    previous_diatonic_pitch_class_name
-                ]
-            )
-            n_pitch_classes_difference = pitch_class - previous_pitch_class
-            n_diatonic_pitches_to_move = bisect.bisect_left(
-                tuple(
-                    music_parameters.constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT.values()
-                ),
-                n_pitch_classes_difference % 12,
-            )
-            absolute_new_diatonic_pitch_class_index = (
-                previous_diatonic_pitch_class_index + n_diatonic_pitches_to_move
-            )
-            new_diatonic_pitch_class_index = (
-                absolute_new_diatonic_pitch_class_index
-                % len(music_parameters.constants.ASCENDING_DIATONIC_PITCH_NAME_TUPLE)
-            )
-            diatonic_pitch = (
-                music_parameters.constants.ASCENDING_DIATONIC_PITCH_NAME_TUPLE[
-                    new_diatonic_pitch_class_index
-                ]
-            )
-            diatonic_pitch_class = (
-                music_parameters.constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT[
-                    diatonic_pitch
-                ]
-            )
-
-            n_pitch_classes_moved_between_diatonic_pitches = (
-                diatonic_pitch_class - previous_diatonic_pitch_class
-            )
-            accidental_adjustments = (
-                n_pitch_classes_difference
-                - n_pitch_classes_moved_between_diatonic_pitches
-            )
-
-            previous_accidental_adjustments = (
-                previous_pitch_class - previous_diatonic_pitch_class
-            )
-            accidental_adjustments += previous_accidental_adjustments
-
-        else:
-            diatonic_pitch_classes = tuple(
-                music_parameters.constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT.values()
-            )
-            closest_diatonic_pitch_class_index = core_utilities.find_closest_index(
-                pitch_class, diatonic_pitch_classes
-            )
-            diatonic_pitch_class = diatonic_pitch_classes[
-                closest_diatonic_pitch_class_index
-            ]
-            diatonic_pitch = tuple(
-                music_parameters.constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT.keys()
-            )[closest_diatonic_pitch_class_index]
-
-            accidental_adjustments = pitch_class - diatonic_pitch_class
+        accidental_adjustments = pitch_class - diatonic_pitch_class
 
         accidental = WesternPitch._difference_to_closest_diatonic_pitch_to_accidental(
             accidental_adjustments
@@ -277,9 +221,15 @@ class WesternPitch(EqualDividedOctavePitch):
 
     @classmethod
     def from_midi_pitch_number(cls, midi_pitch_number: float) -> WesternPitch:
-        pitch_number = midi_pitch_number - 12
-        pitch_class_number = pitch_number % 12
-        octave_number = int(pitch_number // 12)
+        pitch_number = (
+            midi_pitch_number - music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
+        )
+        pitch_class_number = (
+            pitch_number % music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
+        )
+        octave_number = int(
+            pitch_number // music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
+        )
         return cls(pitch_class_number, octave=octave_number)
 
     # ###################################################################### #
@@ -287,7 +237,141 @@ class WesternPitch(EqualDividedOctavePitch):
     # ###################################################################### #
 
     def __repr__(self) -> str:
-        return "{}({})".format(type(self).__name__, self.name)
+        return f"{type(self).__name__}('{self.pitch_class_name}', {self.octave})"
+
+    def __str__(self) -> str:
+        return repr(self)
+
+    # ###################################################################### #
+    #                         private methods                                #
+    # ###################################################################### #
+
+    def _parse_pitch_interval(
+        self,
+        pitch_interval: typing.Union[
+            str, music_parameters.abc.PitchInterval, core_constants.Real
+        ],
+    ) -> typing.Union[
+        music_parameters.abc.PitchInterval,
+        core_constants.Real,
+        music_parameters.abc.PitchInterval,
+    ]:
+        if isinstance(pitch_interval, str):
+            pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
+        elif isinstance(pitch_interval, core_constants.Real.__args__ + (int,)):
+            # Only convert to western pitch interval in case the interval isn't
+            # microtonal (because WesternPitchInterval doesn't support
+            # microtonality). 0.001 (= 0.1 cents) are set in case for
+            # floating point errors.
+            if abs(round(pitch_interval) - pitch_interval) < 0.001:
+                pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
+        return pitch_interval
+
+    def _western_pitch_interval_to_operator(
+        self, western_pitch_interval: music_parameters.WesternPitchInterval
+    ) -> typing.Callable:
+        return (operator.add, operator.sub)[western_pitch_interval.is_interval_falling]
+
+    def _get_new_diatonic_pitch_class_name_and_octave_count(
+        self, western_pitch_interval_to_add: music_parameters.WesternPitchInterval
+    ) -> tuple[str, int]:
+        current_diatonic_pitch_class_name_index = (
+            music_parameters.constants.ASCENDING_DIATONIC_PITCH_NAME_TUPLE.index(
+                self.diatonic_pitch_class_name
+            )
+        )
+        diatonic_pitch_class_name_index_difference = (
+            int(western_pitch_interval_to_add.interval_type) - 1
+        )
+        absolute_new_diatonic_pitch_class_name_index = (
+            self._western_pitch_interval_to_operator(western_pitch_interval_to_add)(
+                current_diatonic_pitch_class_name_index,
+                diatonic_pitch_class_name_index_difference,
+            )
+        )
+        new_diatonic_pitch_class_name_index = (
+            absolute_new_diatonic_pitch_class_name_index
+            % music_parameters.constants.DIATONIC_PITCH_CLASS_COUNT
+        )
+        octave_count = (
+            absolute_new_diatonic_pitch_class_name_index
+            // music_parameters.constants.DIATONIC_PITCH_CLASS_COUNT
+        )
+
+        new_diatonic_pitch_class_name = (
+            music_parameters.constants.ASCENDING_DIATONIC_PITCH_NAME_TUPLE[
+                new_diatonic_pitch_class_name_index
+            ]
+        )
+
+        return new_diatonic_pitch_class_name, octave_count
+
+    def _get_new_pitch_class_modification(
+        self,
+        western_pitch_interval_to_add: music_parameters.WesternPitchInterval,
+        new_diatonic_pitch_class_name: str,
+    ) -> fractions.Fraction:
+
+        key = (self.diatonic_pitch_class_name, new_diatonic_pitch_class_name)
+        if western_pitch_interval_to_add.is_interval_falling:
+            key = tuple(reversed(key))
+
+        added_cent_deviation = (
+            western_pitch_interval_to_add.interval_quality_cent_deviation
+            + music_parameters.constants.DIATONIC_PITCH_CLASS_NAME_PAIR_TO_COMPENSATION_IN_CENTS_DICT[
+                key
+            ]
+        )
+        added_pitch_class_modification = fractions.Fraction(
+            int(added_cent_deviation),
+            # 100 for cents -> to semitones
+            100,
+        )
+
+        pitch_class_modification = self._western_pitch_interval_to_operator(
+            western_pitch_interval_to_add
+        )(
+            music_parameters.configurations.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT[
+                self.accidental_name
+            ],
+            added_pitch_class_modification,
+        )
+        return pitch_class_modification
+
+    def _add_western_pitch_interval(
+        self, western_pitch_interval_to_add: music_parameters.WesternPitchInterval
+    ):
+        (
+            new_diatonic_pitch_class_name,
+            octave_count,
+        ) = self._get_new_diatonic_pitch_class_name_and_octave_count(
+            western_pitch_interval_to_add
+        )
+        new_pitch_class_modification = self._get_new_pitch_class_modification(
+            western_pitch_interval_to_add, new_diatonic_pitch_class_name
+        )
+
+        try:
+            new_accidental = music_parameters.configurations.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT[
+                new_pitch_class_modification
+            ]
+        except KeyError:
+            # Fall back to default calculation (because the needed accidental
+            # doesn't exist. We would need something even more sharp than
+            # double sharp or even more flat than double flat).
+            warnings.warn(
+                "Couldn't get correct western pitch with "
+                f"interval '{western_pitch_interval_to_add} to"
+                f" '{self}'; pitch_modifiation: "
+                f"{new_pitch_class_modification}.",
+                RuntimeWarning,
+            )
+            return super().add(western_pitch_interval_to_add)
+
+        new_pitch_class_name = f"{new_diatonic_pitch_class_name}{new_accidental}"
+
+        self.pitch_class_name = new_pitch_class_name
+        self.octave += octave_count
 
     # ###################################################################### #
     #                          public properties                             #
@@ -316,17 +400,29 @@ class WesternPitch(EqualDividedOctavePitch):
 
     @EqualDividedOctavePitch.pitch_class.setter  # type: ignore
     def pitch_class(self, pitch_class: core_constants.Real):
-        if hasattr(self, "_pitch_class_name"):
-            previous_pitch_class = self._pitch_class
-            previous_pitch_class_name = self._pitch_class_name
-        else:
-            previous_pitch_class = None
-            previous_pitch_class_name = None
-
-        self._pitch_class_name = self._pitch_class_to_pitch_class_name(
-            pitch_class, previous_pitch_class, previous_pitch_class_name
-        )
+        self._pitch_class_name = self._pitch_class_to_pitch_class_name(pitch_class)
         self._pitch_class = pitch_class
+
+    @property
+    def diatonic_pitch_class_name(self) -> str:
+        """Only get the diatonic part of the pitch name"""
+
+        return self.pitch_class_name[0]
+
+    @property
+    def accidental_name(self) -> str:
+        """Only get accidental part of pitch name"""
+
+        return self.pitch_class_name[1:]
+
+    @property
+    def is_microtonal(self) -> bool:
+        """Return `True` if accidental isn't on chromatic grid."""
+
+        pitch_modifiation = music_parameters.configurations.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT[
+            self.accidental_name
+        ]
+        return pitch_modifiation % fractions.Fraction(1, 1) != 0
 
     # ###################################################################### #
     #                          public methods                                #
@@ -339,18 +435,11 @@ class WesternPitch(EqualDividedOctavePitch):
             str, music_parameters.abc.PitchInterval, core_constants.Real
         ],
     ) -> WesternPitch:  # type: ignore
-        """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""
-        if isinstance(pitch_interval, str):
-            pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
-
-        if isinstance(
-            pitch_interval_or_n_pitch_classes_difference,
-            music_parameters.WesternPitchInterval,
-        ):
-            pass
-
+        pitch_interval = self._parse_pitch_interval(pitch_interval)
+        if isinstance(pitch_interval, music_parameters.WesternPitchInterval):
+            self._add_western_pitch_interval(pitch_interval)
         else:
-            return super().add(pitch_interval_or_n_pitch_classes_difference)  # type: ignore
+            return super().add(pitch_interval)  # type: ignore
 
     @core_utilities.add_copy_option
     def subtract(  # type: ignore
@@ -359,13 +448,8 @@ class WesternPitch(EqualDividedOctavePitch):
             str, music_parameters.abc.PitchInterval, core_constants.Real
         ],
     ) -> WesternPitch:  # type: ignore
-        if isinstance(pitch_interval, str):
-            pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
-
-        if isinstance(
-            pitch_interval,
-            music_parameters.WesternPitchInterval,
-        ):
-            return self.add(pitch_interval.inverse(mutate=False))
+        pitch_interval = self._parse_pitch_interval(pitch_interval)
+        if isinstance(pitch_interval, music_parameters.WesternPitchInterval):
+            return self.add(pitch_interval.inverse_direction(mutate=False))
         else:
             return super().subtract(pitch_interval)  # type: ignore

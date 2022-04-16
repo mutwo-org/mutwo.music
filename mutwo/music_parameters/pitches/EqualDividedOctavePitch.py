@@ -108,7 +108,7 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
             pitch_interval,
             music_parameters.abc.PitchInterval,
         ):
-            return pitch_interval.cents / self.n_cents_per_step
+            return pitch_interval.interval / self.n_cents_per_step
         else:
             return pitch_interval
 

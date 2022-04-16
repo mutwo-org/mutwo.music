@@ -138,8 +138,9 @@ class WesternPitchTest(unittest.TestCase):
         self.assertEqual(pitch4.name, "gts5")
 
     def test_representation(self):
-        pitch0 = music_parameters.WesternPitch("cs", 2)
-        self.assertEqual(repr(pitch0), "WesternPitch(cs2)")
+        self.assertEqual(
+            repr(music_parameters.WesternPitch("cs", 2)), "WesternPitch('cs', 2)"
+        )
 
     def test_property_frequency(self):
         pitch0 = music_parameters.WesternPitch("a", 4)
@@ -165,6 +166,91 @@ class WesternPitchTest(unittest.TestCase):
             pitch4.frequency,
             music_parameters.configurations.DEFAULT_CONCERT_PITCH
             * (pitch4.step_factor ** 2.5),
+        )
+
+    def test_property_diatonic_pitch_class_name(self):
+        self.assertEqual(
+            music_parameters.WesternPitch("cs").diatonic_pitch_class_name, "c"
+        )
+        self.assertEqual(
+            music_parameters.WesternPitch("a").diatonic_pitch_class_name, "a"
+        )
+
+    def test_property_accidental_name(self):
+        self.assertEqual(music_parameters.WesternPitch("cs").accidental_name, "s")
+        self.assertEqual(music_parameters.WesternPitch("a").accidental_name, "")
+        self.assertEqual(music_parameters.WesternPitch("fff").accidental_name, "ff")
+
+    def test_property_is_microtonal(self):
+        for pitch_name, is_microtonal in (
+            ("c", False),
+            ("cs", False),
+            ("ess", False),
+            ("aqf", True),
+            ("dxs", True),
+        ):
+            self.assertEqual(
+                music_parameters.WesternPitch(pitch_name).is_microtonal, is_microtonal
+            )
+
+    def test_add_western_pitch_interval(self):
+        for western_pitch_name, western_pitch_interval_name, expected_western_pitch in (
+            ("c", "p1", music_parameters.WesternPitch("c")),
+            ("cqs", "M2", music_parameters.WesternPitch("dqs")),
+            ("f", "p4", music_parameters.WesternPitch("bf")),
+            ("c", "m3", music_parameters.WesternPitch("ef")),
+            ("c", "m-9", music_parameters.WesternPitch("b", octave=2)),
+            ("d", "M3", music_parameters.WesternPitch("fs")),
+            ("c", "p8", music_parameters.WesternPitch("c", octave=5)),
+            ("c", "m-3", music_parameters.WesternPitch("a", octave=3)),
+        ):
+            self.assertEqual(
+                music_parameters.WesternPitch(western_pitch_name).add(
+                    music_parameters.WesternPitchInterval(western_pitch_interval_name)
+                ),
+                expected_western_pitch,
+            )
+
+    def test_subtract_western_pitch_interval(self):
+        for western_pitch_name, western_pitch_interval_name, expected_western_pitch in (
+            ("c", "p1", music_parameters.WesternPitch("c")),
+            ("f", "p4", music_parameters.WesternPitch("c")),
+            ("c", "m3", music_parameters.WesternPitch("a", octave=3)),
+            ("c", "m-9", music_parameters.WesternPitch("df", octave=5)),
+            ("d", "m3", music_parameters.WesternPitch("b", octave=3)),
+            ("d", "M3", music_parameters.WesternPitch("bf", octave=3)),
+            ("c", "p8", music_parameters.WesternPitch("c", octave=3)),
+            ("c", "m-3", music_parameters.WesternPitch("ef")),
+        ):
+            self.assertEqual(
+                music_parameters.WesternPitch(western_pitch_name).subtract(
+                    music_parameters.WesternPitchInterval(western_pitch_interval_name)
+                ),
+                expected_western_pitch,
+            )
+
+    def test_add_western_pitch_interval_name(self):
+        self.assertEqual(
+            music_parameters.WesternPitch("e").add("A3"),
+            music_parameters.WesternPitch("gss"),
+        )
+
+    def test_subtract_western_pitch_interval_name(self):
+        self.assertEqual(
+            music_parameters.WesternPitch("a").subtract("d6"),
+            music_parameters.WesternPitch("css"),
+        )
+
+    def test_add_semitone_count(self):
+        self.assertEqual(
+            music_parameters.WesternPitch("d").add(4),
+            music_parameters.WesternPitch("fs"),
+        )
+
+    def test_subtract_semitone_count(self):
+        self.assertEqual(
+            music_parameters.WesternPitch("a").subtract(8),
+            music_parameters.WesternPitch("cs"),
         )
 
 

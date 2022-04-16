@@ -1,5 +1,41 @@
 import math
 
+from mutwo import core_utilities
+
+
+def get_diatonic_pitch_class_name_pair_to_compensation_in_cents(
+    diatonic_pitch_name_to_pitch_class_dict: dict[str, int]
+) -> dict[tuple[str, str], float]:
+    reference_tuple = tuple(
+        pitch_class * 100
+        for pitch_class in sorted(diatonic_pitch_name_to_pitch_class_dict.values())
+    )
+
+    diatonic_pitch_class_name_pair_to_compensation_in_cents = {}
+    for scale in core_utilities.cyclic_permutations(
+        sorted(
+            diatonic_pitch_name_to_pitch_class_dict.keys(),
+            key=lambda diatonic_pitch_name: diatonic_pitch_name_to_pitch_class_dict[
+                diatonic_pitch_name
+            ],
+        )
+    ):
+        prime = scale[0]
+        for reference, diatonic_pitch_class_name in zip(reference_tuple, scale):
+            cent_difference = (
+                diatonic_pitch_name_to_pitch_class_dict[diatonic_pitch_class_name]
+                - diatonic_pitch_name_to_pitch_class_dict[prime]
+            ) * 100
+            if cent_difference < 0:
+                cent_difference += OCTAVE_IN_CENTS
+            difference_to_reference = reference - cent_difference
+            diatonic_pitch_class_name_pair_to_compensation_in_cents.update(
+                {(prime, diatonic_pitch_class_name): difference_to_reference}
+            )
+
+    return diatonic_pitch_class_name_pair_to_compensation_in_cents
+
+
 OCTAVE_IN_CENTS = 1200
 """How many cents equal one octave"""
 
@@ -14,6 +50,12 @@ DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT = {
 }
 """Mapping of diatonic pitch name to pitch class for the `WesternPitch` class.
 Mutwo uses a chromatic scale where a change of the number 1 is one half tone."""
+
+CHROMATIC_PITCH_CLASS_COUNT = 12
+"""How many chromatic pitch classes exist"""
+
+DIATONIC_PITCH_CLASS_COUNT = len(DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT)
+"""How many diatonic pitch classes exist"""
 
 ASCENDING_DIATONIC_PITCH_NAME_TUPLE = tuple(
     sorted(
@@ -168,4 +210,20 @@ PITCH_ENVELOPE_REFERENCE_FREQUENCY = 100
 :class:`mutwo.core.parameters.abc.Pitch.PitchEnvelope`. Exact
 number doesn't really matter, it only has to keep consistent."""
 
-del math
+DIATONIC_PITCH_CLASS_NAME_PAIR_TO_COMPENSATION_IN_CENTS_DICT = (
+    get_diatonic_pitch_class_name_pair_to_compensation_in_cents(
+        DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT
+    )
+)
+"""This dictionary maps two diatonic pitch classes to a certain
+cent value. The cent value describes the difference between a major
+or perfect interval and the interval which occurs between the two
+diatonic pitch classes. In other words: the cent value shows the
+difference between an interval between two diatonic pitches (e.g. a
+sixth) and what the interval would be in a major scale between the
+root note and another pitch. This dictionary is used in
+:class:`mutwo.music_parameters.WesternPitch` in order to find out
+a new pitch after being altered by a
+:class:`muwo.music_parameters.WesternPitchInterval`."""
+
+del core_utilities, get_diatonic_pitch_class_name_pair_to_compensation_in_cents, math

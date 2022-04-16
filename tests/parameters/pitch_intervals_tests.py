@@ -366,6 +366,16 @@ class WesternPitchIntervalTest(unittest.TestCase):
                 expected_semitone_count,
             )
 
+    def test_inverse_direction(self):
+        self.assertEqual(
+            music_parameters.WesternPitchInterval("m3").inverse_direction(),
+            music_parameters.WesternPitchInterval("m-3"),
+        )
+        self.assertEqual(
+            music_parameters.WesternPitchInterval("p-11").inverse_direction(),
+            music_parameters.WesternPitchInterval("p11"),
+        )
+
 
 if __name__ == "__name__":
     unittest.main()
