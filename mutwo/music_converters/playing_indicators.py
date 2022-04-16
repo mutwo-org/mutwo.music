@@ -17,7 +17,7 @@ from mutwo import core_constants
 from mutwo import core_converters
 from mutwo import core_events
 from mutwo import core_utilities
-from mutwo import music_events
+from mutwo import music_converters
 from mutwo import music_parameters
 
 
@@ -60,7 +60,7 @@ class PlayingIndicatorConverter(core_converters.abc.Converter):
         simple_event_to_playing_indicator_collection: typing.Callable[
             [core_events.SimpleEvent],
             music_parameters.PlayingIndicatorCollection,
-        ] = lambda simple_event: simple_event.playing_indicator_collection,  # type: ignore
+        ] = music_converters.SimpleEventToPlayingIndicatorCollection(),  # type: ignore
     ):
         self._simple_event_to_playing_indicator_collection = (
             simple_event_to_playing_indicator_collection
@@ -93,10 +93,10 @@ class PlayingIndicatorConverter(core_converters.abc.Converter):
         :type simple_event_to_convert: core_events.SimpleEvent
         """
 
-        playing_indicator_collection = core_utilities.call_function_except_attribute_error(
-            self._simple_event_to_playing_indicator_collection,
-            simple_event_to_convert,
-            music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS(),
+        playing_indicator_collection = (
+            self._simple_event_to_playing_indicator_collection(
+                simple_event_to_convert,
+            )
         )
         playing_indicator = core_utilities.call_function_except_attribute_error(
             lambda playing_indicator_collection: getattr(
@@ -161,11 +161,11 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         duration_for_each_attack: core_constants.DurationType = 0.1,
         simple_event_to_pitch_list: typing.Callable[
             [core_events.SimpleEvent], list[music_parameters.abc.Pitch]
-        ] = lambda simple_event: simple_event.pitch_list,  # type: ignore
+        ] = music_converters.SimpleEventToPitchList(),
         simple_event_to_playing_indicator_collection: typing.Callable[
             [core_events.SimpleEvent],
             music_parameters.PlayingIndicatorCollection,
-        ] = lambda simple_event: simple_event.playing_indicator_collection,  # type: ignore
+        ] = music_converters.SimpleEventToPlayingIndicatorCollection(),
         set_pitch_list_for_simple_event: typing.Callable[
             [core_events.SimpleEvent, list[music_parameters.abc.Pitch]], None
         ] = lambda simple_event, pitch_list: simple_event.set_parameter(  # type: ignore
@@ -192,10 +192,7 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         simple_event_to_convert: core_events.SimpleEvent,
         playing_indicator: music_parameters.Arpeggio,
     ) -> core_events.SequentialEvent[core_events.SimpleEvent]:
-        try:
-            pitch_list = list(self._simple_event_to_pitch_list(simple_event_to_convert))
-        except AttributeError:
-            pitch_list = []
+        pitch_list = list(self._simple_event_to_pitch_list(simple_event_to_convert))
 
         # sort pitches according to Arpeggio direction
         pitch_list.sort(reverse=playing_indicator.direction != "up")
@@ -254,7 +251,7 @@ class StacattoConverter(PlayingIndicatorConverter):
         simple_event_to_playing_indicator_collection: typing.Callable[
             [core_events.SimpleEvent],
             music_parameters.PlayingIndicatorCollection,
-        ] = lambda simple_event: simple_event.playing_indicator_collection,  # type: ignore
+        ] = music_converters.SimpleEventToPlayingIndicatorCollection(),
     ):
         self._allowed_articulation_name_sequence = allowed_articulation_name_sequence
         self._factor = factor
@@ -314,7 +311,7 @@ class ArticulationConverter(PlayingIndicatorConverter):
         simple_event_to_playing_indicator_collection: typing.Callable[
             [core_events.SimpleEvent],
             music_parameters.PlayingIndicatorCollection,
-        ] = lambda simple_event: simple_event.playing_indicator_collection,  # type: ignore
+        ] = music_converters.SimpleEventToPlayingIndicatorCollection(),
     ):
         articulation_name_to_playing_indicator_converter = {}
         for (
@@ -405,11 +402,11 @@ class TrillConverter(PlayingIndicatorConverter):
         trill_size: core_constants.DurationType = fractions.Fraction(1, 16),
         simple_event_to_pitch_list: typing.Callable[
             [core_events.SimpleEvent], list[music_parameters.abc.Pitch]
-        ] = lambda simple_event: simple_event.pitch_list,  # type: ignore
+        ] = music_converters.SimpleEventToPitchList(),
         simple_event_to_playing_indicator_collection: typing.Callable[
             [core_events.SimpleEvent],
             music_parameters.PlayingIndicatorCollection,
-        ] = lambda simple_event: simple_event.playing_indicator_collection,  # type: ignore
+        ] = music_converters.SimpleEventToPitchList(),
     ):
         self._trill_size = trill_size
         self._simple_event_to_pitch_list = simple_event_to_pitch_list
@@ -440,9 +437,7 @@ class TrillConverter(PlayingIndicatorConverter):
         simple_event_to_convert: core_events.SimpleEvent,
         playing_indicator: music_parameters.Trill,
     ) -> core_events.SequentialEvent[core_events.SimpleEvent]:
-        pitch_list = core_utilities.call_function_except_attribute_error(
-            self._simple_event_to_pitch_list, simple_event_to_convert, []
-        )
+        pitch_list = self._simple_event_to_pitch_list(simple_event_to_convert)
         if pitch_list:
             return self._apply_trill(
                 simple_event_to_convert, playing_indicator, pitch_list

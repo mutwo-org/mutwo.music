@@ -8,7 +8,7 @@ import expenvelope
 from mutwo import core_converters
 from mutwo import core_constants
 from mutwo import core_events
-from mutwo import core_utilities
+from mutwo import music_converters
 
 __all__ = ("GraceNotesConverter",)
 
@@ -67,11 +67,11 @@ class GraceNotesConverter(core_converters.abc.EventConverter):
         simple_event_to_grace_note_sequential_event: typing.Callable[
             [core_events.SimpleEvent],
             core_events.SequentialEvent[core_events.SimpleEvent],
-        ] = lambda simple_event: simple_event.grace_note_sequential_event,
+        ] = music_converters.SimpleEventToGraceNoteSequentialEvent(),
         simple_event_to_after_grace_note_sequential_event: typing.Callable[
             [core_events.SimpleEvent],
             core_events.SequentialEvent[core_events.SimpleEvent],
-        ] = lambda simple_event: simple_event.after_grace_note_sequential_event,
+        ] = music_converters.SimpleEventToAfterGraceNoteSequentialEvent(),
     ):
         self._test_input(
             minima_grace_notes_duration_factor,
@@ -104,62 +104,55 @@ class GraceNotesConverter(core_converters.abc.EventConverter):
         try:
             assert minima_number_of_grace_notes < maxima_number_of_grace_notes
         except AssertionError:
-            message = "'minima_number_of_grace_notes' has to be smaller than 'maxima_number_of_grace_notes'!"
-            raise ValueError(message)
+            raise ValueError(
+                "'minima_number_of_grace_notes' has to be smaller "
+                "than 'maxima_number_of_grace_notes'!"
+            )
 
         try:
             assert (
                 minima_grace_notes_duration_factor < maxima_grace_notes_duration_factor
             )
         except AssertionError:
-            message = "'minima_grace_notes_duration_factor' has to be smaller than 'maxima_grace_notes_duration_factor'!"
-            raise ValueError(message)
+            raise ValueError(
+                "'minima_grace_notes_duration_factor' has to "
+                "be smaller than 'maxima_grace_notes_duration_factor'!"
+            )
 
         try:
             assert maxima_grace_notes_duration_factor < 0.5
         except AssertionError:
-            message = "'maxima_grace_notes_duration_factor' has to be smaller than 0.5!"
-            raise ValueError(message)
+            raise ValueError(
+                "'maxima_grace_notes_duration_factor' has "
+                "to be smaller than 0.5!"
+            )
 
         try:
             assert minima_grace_notes_duration_factor > 0
         except AssertionError:
-            message = "'minima_grace_notes_duration_factor' has to be bigger than 0!"
-            raise ValueError(message)
-
-    @staticmethod
-    def _get_before_or_after_grace_note_sequential_event(
-        simple_event_to_convert: core_events.SimpleEvent,
-        simple_event_to_before_or_after_grace_note_sequential_event: typing.Callable[
-            [core_events.SimpleEvent],
-            core_events.SequentialEvent[core_events.SimpleEvent],
-        ],
-    ) -> core_events.SequentialEvent[core_events.SimpleEvent]:
-        return core_utilities.call_function_except_attribute_error(
-            simple_event_to_before_or_after_grace_note_sequential_event,
-            simple_event_to_convert,
-            core_events.SequentialEvent([]),
-        )
+            raise ValueError(
+                "'minima_grace_notes_duration_factor' has "
+                "to be bigger than 0!"
+            )
 
     def _get_grace_note_sequential_event(
         self, simple_event_to_convert: core_events.SimpleEvent
     ) -> core_events.SequentialEvent[core_events.SimpleEvent]:
-        return GraceNotesConverter._get_before_or_after_grace_note_sequential_event(
-            simple_event_to_convert, self._simple_event_to_grace_note_sequential_event
+        return self._simple_event_to_grace_note_sequential_event(
+            simple_event_to_convert
         )
 
     def _get_after_grace_note_sequential_event(
         self, simple_event_to_convert: core_events.SimpleEvent
     ) -> core_events.SequentialEvent[core_events.SimpleEvent]:
-        return GraceNotesConverter._get_before_or_after_grace_note_sequential_event(
-            simple_event_to_convert,
-            self._simple_event_to_after_grace_note_sequential_event,
+        return self._simple_event_to_after_grace_note_sequential_event(
+            simple_event_to_convert
         )
 
     def _convert_simple_event(
         self,
         event_to_convert: core_events.SimpleEvent,
-        absolute_entry_delay: core_constants.DurationType,
+        _: core_constants.DurationType,
     ) -> core_events.SequentialEvent[core_events.SimpleEvent]:
         """Convert instance of :class:`mutwo.core_events.SimpleEvent`."""
 

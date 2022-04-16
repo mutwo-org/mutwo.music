@@ -1,10 +1,10 @@
 from . import configurations
 from . import constants
 
+from .parsers import *
 from .grace_notes import *
 from .loudness import *
 from .metricities import *
-from .parsers import *
 from .playing_indicators import *
 from .spectrals import *
 
