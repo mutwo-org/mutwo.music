@@ -366,6 +366,20 @@ class WesternPitchIntervalTest(unittest.TestCase):
                 expected_semitone_count,
             )
 
+    def test_diatonic_pitch_class_count(self):
+        for interval_name_or_semitone_count, expected_diatonic_pitch_class_count in (
+            (-1, -1),
+            ("m3", 2),
+            ("ddd4", 3),
+            ("M-2", -1),
+        ):
+            self.assertEqual(
+                music_parameters.WesternPitchInterval(
+                    interval_name_or_semitone_count
+                ).diatonic_pitch_class_count,
+                expected_diatonic_pitch_class_count,
+            )
+
     def test_inverse_direction(self):
         self.assertEqual(
             music_parameters.WesternPitchInterval("m3").inverse_direction(),

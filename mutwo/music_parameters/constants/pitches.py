@@ -1,46 +1,106 @@
 import math
 
-from mutwo import core_utilities
+try:
+    import quicktions as fractions  # type: ignore
+except ImportError:
+    import fractions  # type: ignore
 
+from .diatonic_pitch_classes import (
+    DIATONIC_PITCH_CLASS_CONTAINER,
+    OCTAVE_IN_CENTS,
+    DIATONIC_PITCH_CLASS_NAME_PAIR_TO_COMPENSATION_IN_CENTS_DICT,
+)
 
-def get_diatonic_pitch_class_name_pair_to_compensation_in_cents(
-    diatonic_pitch_name_to_pitch_class_dict: dict[str, int]
-) -> dict[tuple[str, str], float]:
-    reference_tuple = tuple(
-        pitch_class * 100
-        for pitch_class in sorted(diatonic_pitch_name_to_pitch_class_dict.values())
-    )
-
-    diatonic_pitch_class_name_pair_to_compensation_in_cents = {}
-    for scale in core_utilities.cyclic_permutations(
-        sorted(
-            diatonic_pitch_name_to_pitch_class_dict.keys(),
-            key=lambda diatonic_pitch_name: diatonic_pitch_name_to_pitch_class_dict[
-                diatonic_pitch_name
-            ],
-        )
-    ):
-        prime = scale[0]
-        for reference, diatonic_pitch_class_name in zip(reference_tuple, scale):
-            cent_difference = (
-                diatonic_pitch_name_to_pitch_class_dict[diatonic_pitch_class_name]
-                - diatonic_pitch_name_to_pitch_class_dict[prime]
-            ) * 100
-            if cent_difference < 0:
-                cent_difference += OCTAVE_IN_CENTS
-            difference_to_reference = reference - cent_difference
-            diatonic_pitch_class_name_pair_to_compensation_in_cents.update(
-                {(prime, diatonic_pitch_class_name): difference_to_reference}
-            )
-
-    return diatonic_pitch_class_name_pair_to_compensation_in_cents
-
-
-OCTAVE_IN_CENTS = 1200
-"""How many cents equal one octave"""
 
 CENT_CALCULATION_CONSTANT = OCTAVE_IN_CENTS / (math.log10(2))
 """constant used for cent calculation in mutwo.parameters.abc.Pitch"""
+
+ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT = {
+    # multiply with 2 because the difference of "1" in pitch
+    # class is defined as one chromatic step (see class
+    # definition of WesternPitch)
+    accidental_name: accidental_value * 2
+    for accidental_name, accidental_value in {
+        # double sharp / double flat
+        "ff": -fractions.Fraction(1, 1),
+        "ss": fractions.Fraction(1, 1),
+        # eleven twelfth-tone
+        "etf": -fractions.Fraction(11, 12),
+        "ets": fractions.Fraction(11, 12),
+        # seven eigth-tone
+        "sef": -fractions.Fraction(7, 8),
+        "ses": fractions.Fraction(7, 8),
+        # two third-tone
+        "trf": -fractions.Fraction(2, 3),
+        "trs": fractions.Fraction(2, 3),
+        # three quarter-tone
+        "tqf": -fractions.Fraction(3, 4),
+        "tqs": fractions.Fraction(3, 4),
+        # seven sixth-tone
+        "sxf": -fractions.Fraction(7, 6),
+        "sxs": fractions.Fraction(7, 6),
+        # nine eight-tone
+        "nef": -fractions.Fraction(9, 8),
+        "nes": fractions.Fraction(9, 8),
+        # seven twelfth-tone
+        "stf": -fractions.Fraction(7, 12),
+        "sts": fractions.Fraction(7, 12),
+        # ordinary sharp / flat
+        "f": -fractions.Fraction(1, 2),
+        "s": fractions.Fraction(1, 2),
+        # five twelfth-tone
+        "ftf": -fractions.Fraction(5, 12),
+        "fts": fractions.Fraction(5, 12),
+        # three eigth-tone
+        "tef": -fractions.Fraction(3, 8),
+        "tes": fractions.Fraction(3, 8),
+        # one third-tone (use "r" to avoid conufsion with twelfth-tone)
+        "rf": -fractions.Fraction(1, 3),
+        "rs": fractions.Fraction(1, 3),
+        # one quarter-tone
+        "qf": -fractions.Fraction(1, 4),
+        "qs": fractions.Fraction(1, 4),
+        # one sixth-tone (use x to avoid confusion with double-sharp ss)
+        "xf": -fractions.Fraction(1, 6),
+        "xs": fractions.Fraction(1, 6),
+        # one eigth-tone
+        "ef": -fractions.Fraction(1, 8),
+        "es": fractions.Fraction(1, 8),
+        # one twelfth-tone
+        "tf": -fractions.Fraction(1, 12),
+        "ts": fractions.Fraction(1, 12),
+        # no accidental / empty string
+        "": fractions.Fraction(0, 1),
+    }.items()
+}
+"""Mapping of accidental name to pitch class modification for the
+`WesternPitch` class."""
+
+PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT = {
+    accidental_value: accidental_name
+    for accidental_name, accidental_value in ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT.items()
+}
+"""Mapping of pitch class modifications name accidental name for the
+`WesternPitch` class. This global variable is defined in reference to
+``ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION``."""
+
+RISING_ACCIDENTAL_NAME_TUPLE = tuple(
+    accidental_name
+    for accidental_name, pitch_class_modification in ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT.items()
+    if pitch_class_modification > 0
+)
+"""Lists all accidental names with rising quality. This is used
+in :class:`mutwo.music_parameters.WesternPitch` (in property
+:attr:`enharmonic_pitch_tuple`."""
+
+FALLING_ACCIDENTAL_NAME_TUPLE = tuple(
+    accidental_name
+    for accidental_name, pitch_class_modification in ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT.items()
+    if pitch_class_modification < 0
+)
+"""Lists all accidental names with falling quality. This is used
+in :class:`mutwo.music_parameters.WesternPitch` (in property
+:attr:`enharmonic_pitch_tuple`."""
 
 DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT = {
     diatonic_pitch_name: pitch_class
@@ -53,19 +113,6 @@ Mutwo uses a chromatic scale where a change of the number 1 is one half tone."""
 
 CHROMATIC_PITCH_CLASS_COUNT = 12
 """How many chromatic pitch classes exist"""
-
-DIATONIC_PITCH_CLASS_COUNT = len(DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT)
-"""How many diatonic pitch classes exist"""
-
-ASCENDING_DIATONIC_PITCH_NAME_TUPLE = tuple(
-    sorted(
-        DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT.keys(),
-        key=lambda diatonic_pitch_name: DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT[
-            diatonic_pitch_name
-        ],
-    )
-)
-"""Tuple with diatonic pitch names in ascending order."""
 
 # is used in mutwo.parameters.pitches.JustIntonationPitch
 DIATONIC_PITCH_NAME_CYCLE_OF_FIFTH_TUPLE = tuple("f c g d a e b".split(" "))
@@ -210,20 +257,8 @@ PITCH_ENVELOPE_REFERENCE_FREQUENCY = 100
 :class:`mutwo.core.parameters.abc.Pitch.PitchEnvelope`. Exact
 number doesn't really matter, it only has to keep consistent."""
 
-DIATONIC_PITCH_CLASS_NAME_PAIR_TO_COMPENSATION_IN_CENTS_DICT = (
-    get_diatonic_pitch_class_name_pair_to_compensation_in_cents(
-        DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT
-    )
+del (
+    # Cleanup
+    fractions,
+    math,
 )
-"""This dictionary maps two diatonic pitch classes to a certain
-cent value. The cent value describes the difference between a major
-or perfect interval and the interval which occurs between the two
-diatonic pitch classes. In other words: the cent value shows the
-difference between an interval between two diatonic pitches (e.g. a
-sixth) and what the interval would be in a major scale between the
-root note and another pitch. This dictionary is used in
-:class:`mutwo.music_parameters.WesternPitch` in order to find out
-a new pitch after being altered by a
-:class:`muwo.music_parameters.WesternPitchInterval`."""
-
-del core_utilities, get_diatonic_pitch_class_name_pair_to_compensation_in_cents, math

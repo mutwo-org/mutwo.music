@@ -193,6 +193,44 @@ class WesternPitchTest(unittest.TestCase):
                 music_parameters.WesternPitch(pitch_name).is_microtonal, is_microtonal
             )
 
+    def test_property_enharmonic_pitch_tuple(self):
+        for pitch_name, expected_enharmonic_pitch_tuple in (
+            (
+                "c",
+                (
+                    music_parameters.WesternPitch("bs"),
+                    music_parameters.WesternPitch("dff"),
+                ),
+            ),
+            (
+                "ds",
+                (music_parameters.WesternPitch("ef"),),
+            ),
+            (
+                "a",
+                (
+                    music_parameters.WesternPitch("gss"),
+                    music_parameters.WesternPitch("bff"),
+                ),
+            ),
+            (
+                "bs",
+                (music_parameters.WesternPitch("c"),),
+            ),
+            (
+                "gss",
+                (music_parameters.WesternPitch("a"),),
+            ),
+            (
+                "ff",
+                (music_parameters.WesternPitch("e"),),
+            ),
+        ):
+            self.assertEqual(
+                music_parameters.WesternPitch(pitch_name).enharmonic_pitch_tuple,
+                expected_enharmonic_pitch_tuple,
+            )
+
     def test_add_western_pitch_interval(self):
         for western_pitch_name, western_pitch_interval_name, expected_western_pitch in (
             ("c", "p1", music_parameters.WesternPitch("c")),

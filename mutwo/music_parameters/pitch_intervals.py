@@ -440,6 +440,14 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         return cent_deviation
 
     @property
+    def diatonic_pitch_class_count(self) -> int:
+        """How many diatonic pitch classes have to be moved"""
+        diatonic_pitch_class_count = int(self.interval_type) - 1
+        if self.is_interval_falling:
+            return - diatonic_pitch_class_count
+        return diatonic_pitch_class_count
+
+    @property
     def name(self) -> str:
         """Full interval name"""
 
@@ -511,7 +519,14 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
 
     @core_utilities.add_copy_option
     def inverse_direction(self, mutate: bool = False) -> WesternPitchInterval:
-        """Makes falling interval to rising and vice versa."""
+        """Makes falling interval to rising and vice versa.
+
+        **Example:**
+
+        >>> from mutwo import music_parameters
+        >>> music_parameters.WesternPitchInterval('m3').inverse_direction()
+        WesternPitchInterval('m-3')
+        """
         self.is_interval_falling = not self.is_interval_falling
         return self
 
