@@ -102,15 +102,6 @@ FALLING_ACCIDENTAL_NAME_TUPLE = tuple(
 in :class:`mutwo.music_parameters.WesternPitch` (in property
 :attr:`enharmonic_pitch_tuple`."""
 
-DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT = {
-    diatonic_pitch_name: pitch_class
-    for diatonic_pitch_name, pitch_class in zip(
-        "c d e f g a b".split(" "), (0, 2, 4, 5, 7, 9, 11)
-    )
-}
-"""Mapping of diatonic pitch name to pitch class for the `WesternPitch` class.
-Mutwo uses a chromatic scale where a change of the number 1 is one half tone."""
-
 CHROMATIC_PITCH_CLASS_COUNT = 12
 """How many chromatic pitch classes exist"""
 

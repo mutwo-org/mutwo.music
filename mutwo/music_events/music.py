@@ -129,7 +129,7 @@ class NoteLike(core_events.SimpleEvent):
         # assumes it is a WesternPitch name
         elif (
             pitch_indication[0]
-            in music_parameters.constants.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT.keys()
+            in music_parameters.constants.DIATONIC_PITCH_CLASS_CONTAINER
         ):
             if pitch_indication[-1].isdigit():
                 pitch_name, octave = pitch_indication[:-1], int(pitch_indication[-1])
@@ -140,13 +140,13 @@ class NoteLike(core_events.SimpleEvent):
             return pitch
 
         else:
-            message = (
-                "Can't build pitch from pitch_indication '{}'. Supported string formats"
-                " are (1) ratios divided by a forward slash (for instance '3/2' or"
-                " '4/3') and (2) names of western pitch classes with an optional number"
-                " to indicate the octave (for instance 'c4', 'as' or 'fqs2')."
+            raise NotImplementedError(
+                f"Can't build pitch from pitch_indication '{pitch_indication}'."
+                " Supported string formats are (1) ratios divided by a forward "
+                "slash (for instance '3/2' or '4/3') and (2) names of western "
+                "pitch classes with an optional number to indicate the octave "
+                "(for instance 'c4', 'as' or 'fqs2')."
             )
-            raise NotImplementedError(message)
 
     @staticmethod
     def _convert_fraction_to_pitch(
