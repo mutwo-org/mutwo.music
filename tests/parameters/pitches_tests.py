@@ -291,6 +291,89 @@ class WesternPitchTest(unittest.TestCase):
             music_parameters.WesternPitch("cs"),
         )
 
+    def test_base_interval_type_and_interval_quality_semitone_count_to_interval_quality(
+        self,
+    ):
+        for (
+            base_interval_type,
+            interval_quality_semitone_count,
+            expected_interval_quality,
+        ) in (
+            ("5", 0, "p"),
+            ("4", 2, "AA"),
+            ("1", -1, "d"),
+            ("2", 0, "M"),
+            ("7", -1, "m"),
+            ("6", 1, "A"),
+            ("6", -3, "dd"),
+        ):
+            self.assertEqual(
+                music_parameters.WesternPitch._base_interval_type_and_interval_quality_semitone_count_to_interval_quality(
+                    base_interval_type, interval_quality_semitone_count
+                ),
+                expected_interval_quality,
+            )
+
+    def test_get_pitch_interval(self):
+        for pitch0, pitch1, expected_pitch_interval in (
+            (
+                music_parameters.WesternPitch("c"),
+                music_parameters.WesternPitch("f"),
+                music_parameters.WesternPitchInterval("p4"),
+            ),
+            (
+                music_parameters.WesternPitch("c"),
+                music_parameters.WesternPitch("f", octave=3),
+                music_parameters.WesternPitchInterval("p-5"),
+            ),
+            (
+                music_parameters.WesternPitch("d"),
+                music_parameters.WesternPitch("a"),
+                music_parameters.WesternPitchInterval("p5"),
+            ),
+            (
+                music_parameters.WesternPitch("c"),
+                music_parameters.WesternPitch("es"),
+                music_parameters.WesternPitchInterval("A3"),
+            ),
+            (
+                music_parameters.WesternPitch("d"),
+                music_parameters.WesternPitch("bss"),
+                music_parameters.WesternPitchInterval("AA6"),
+            ),
+            (
+                music_parameters.WesternPitch("c"),
+                music_parameters.WesternPitch("c", octave=5),
+                music_parameters.WesternPitchInterval("p8"),
+            ),
+            (
+                music_parameters.WesternPitch("b"),
+                music_parameters.WesternPitch("f", octave=5),
+                music_parameters.WesternPitchInterval("d5"),
+            ),
+            (
+                music_parameters.WesternPitch("d"),
+                music_parameters.WesternPitch("f"),
+                music_parameters.WesternPitchInterval("m3"),
+            ),
+            (
+                music_parameters.WesternPitch("f"),
+                music_parameters.WesternPitch("d"),
+                music_parameters.WesternPitchInterval("m-3"),
+            ),
+            (
+                music_parameters.WesternPitch("df"),
+                music_parameters.WesternPitch("f"),
+                music_parameters.WesternPitchInterval("M3"),
+            ),
+            (
+                music_parameters.WesternPitch("f"),
+                music_parameters.WesternPitch("df"),
+                music_parameters.WesternPitchInterval("M-3"),
+            ),
+        ):
+            self.assertEqual(pitch0.get_pitch_interval(pitch1), expected_pitch_interval)
+
 
 class JustIntonationPitchTest(unittest.TestCase):
     def test_constructor_from_string(self):

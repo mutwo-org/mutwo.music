@@ -117,20 +117,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
                 (int(interval_type) - 1)
                 // music_parameters.constants.WESTERN_PITCH_INTERVAL_BASE_TYPE_COUNT
             )
-        )
-
-    @staticmethod
-    def _is_interval_type_perfect(interval_type: str) -> bool:
-        interval_base_type = WesternPitchInterval._interval_type_to_interval_base_type(
-            interval_type
-        )
-        return (
-            interval_base_type in music_parameters.constants.PERFECT_INTERVAL_TYPE_TUPLE
-        )
-
-    @staticmethod
-    def _is_interval_type_imperfect(interval_type: str) -> bool:
-        return not WesternPitchInterval._is_interval_type_perfect(interval_type)
+        ) 
 
     @staticmethod
     def _interval_name_to_interval_data(interval_name: str) -> tuple[str, str, bool]:
@@ -237,6 +224,23 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
                 )
 
     # ###################################################################### #
+    #                      static public methods                             #
+    # ###################################################################### #
+
+    @staticmethod
+    def is_interval_type_perfect(interval_type: str) -> bool:
+        interval_base_type = WesternPitchInterval._interval_type_to_interval_base_type(
+            interval_type
+        )
+        return (
+            interval_base_type in music_parameters.constants.PERFECT_INTERVAL_TYPE_TUPLE
+        )
+
+    @staticmethod
+    def is_interval_type_imperfect(interval_type: str) -> bool:
+        return not WesternPitchInterval.is_interval_type_perfect(interval_type)
+
+    # ###################################################################### #
     #                          magic methods                                 #
     # ###################################################################### #
 
@@ -304,7 +308,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
     def _raise_error_if_interval_quality_and_interval_type_do_not_fit(
         self, interval_quality: str, interval_type: str
     ):
-        is_perfect_interval = WesternPitchInterval._is_interval_type_perfect(
+        is_perfect_interval = WesternPitchInterval.is_interval_type_perfect(
             interval_type
         )
         interval_quality_tuple = (
@@ -478,7 +482,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         'minor' and 'major' qualities.
         """
 
-        return WesternPitchInterval._is_interval_type_perfect(self.interval_type)
+        return WesternPitchInterval.is_interval_type_perfect(self.interval_type)
 
     @property
     def is_imperfect_interval(self) -> bool:
@@ -492,7 +496,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         'perfect' quality.
         """
 
-        return WesternPitchInterval._is_interval_type_imperfect(self.interval_type)
+        return WesternPitchInterval.is_interval_type_imperfect(self.interval_type)
 
     @property
     def interval(self) -> float:

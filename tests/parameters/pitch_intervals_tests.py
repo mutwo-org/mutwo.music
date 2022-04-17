@@ -47,7 +47,7 @@ class WesternPitchIntervalTest(unittest.TestCase):
             ("15", True),
         ):
             self.assertEqual(
-                music_parameters.WesternPitchInterval._is_interval_type_perfect(
+                music_parameters.WesternPitchInterval.is_interval_type_perfect(
                     interval_type
                 ),
                 is_interval_type_perfect,
@@ -63,7 +63,7 @@ class WesternPitchIntervalTest(unittest.TestCase):
             ("15", False),
         ):
             self.assertEqual(
-                music_parameters.WesternPitchInterval._is_interval_type_imperfect(
+                music_parameters.WesternPitchInterval.is_interval_type_imperfect(
                     interval_type
                 ),
                 is_interval_type_imperfect,

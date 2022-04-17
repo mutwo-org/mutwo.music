@@ -92,6 +92,33 @@ class WesternPitch(EqualDividedOctavePitch):
     # ###################################################################### #
 
     @staticmethod
+    def _base_interval_type_and_interval_quality_semitone_count_to_interval_quality(
+        base_interval_type: str, interval_quality_semitone_count: int
+    ) -> str:
+        is_interval_type_perfect = (
+            music_parameters.WesternPitchInterval.is_interval_type_perfect(
+                base_interval_type
+            )
+        )
+        if is_interval_type_perfect:
+            if interval_quality_semitone_count == 0:
+                interval_quality = "p"
+            elif interval_quality_semitone_count > 0:
+                interval_quality = "A" * interval_quality_semitone_count
+            else:
+                interval_quality = "d" * abs(interval_quality_semitone_count)
+        else:
+            if interval_quality_semitone_count == 0:
+                interval_quality = "M"
+            elif interval_quality_semitone_count == -1:
+                interval_quality = "m"
+            elif interval_quality_semitone_count > 0:
+                interval_quality = "A" * interval_quality_semitone_count
+            else:
+                interval_quality = "d" * abs(interval_quality_semitone_count + 1)
+        return interval_quality
+
+    @staticmethod
     def _pitch_class_or_pitch_class_name_to_pitch_class_and_pitch_class_name(
         pitch_class_or_pitch_class_name: PitchClassOrPitchClassName,
     ) -> tuple:
@@ -464,6 +491,69 @@ class WesternPitch(EqualDividedOctavePitch):
         else:
             return super().subtract(pitch_interval)  # type: ignore
 
+    def _get_western_pitch_interval(
+        self, pitch_to_compare: music_parameters.WesternPitch
+    ) -> music_parameters.WesternPitchInterval:
+        # First we need to fetch the basic interval type:
+        # we can check the distance between the diatonic pitch class
+        # names for this purpose.
+
+        diatonic_pitch_class_self, diatonic_pitch_class_other = (
+            music_parameters.constants.DIATONIC_PITCH_CLASS_CONTAINER[
+                self.diatonic_pitch_class_name
+            ],
+            music_parameters.constants.DIATONIC_PITCH_CLASS_CONTAINER[
+                pitch_to_compare.diatonic_pitch_class_name
+            ],
+        )
+
+        diatonic_pitch_class_count, octave_count = (
+            diatonic_pitch_class_other - diatonic_pitch_class_self
+        )
+
+        # Then we can add the octaves to our basic interval
+        # type.
+        octave_count += pitch_to_compare.octave - self.octave
+
+        base_interval_type = diatonic_pitch_class_count + 1
+        interval_type = base_interval_type + (
+            abs(octave_count)
+            * music_parameters.constants.DIATONIC_PITCH_CLASS_CONTAINER.diatonic_pitch_class_count
+        )
+
+        # Next we have to figure out the interval quality.
+        # To figure out the interval quality we need to compare
+        # (1) the accidentals of both pitches (2) the
+        # compensation between the diatonic pitch classes.
+
+        interval_quality_semitone_count = -(
+            music_parameters.constants.DIATONIC_PITCH_CLASS_NAME_PAIR_TO_COMPENSATION_IN_CENTS_DICT[
+                (diatonic_pitch_class_self, diatonic_pitch_class_other)
+            ]
+            / 100
+        )
+
+        pitch_modification_self, pitch_modification_other = (
+            music_parameters.constants.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT[
+                self.accidental_name
+            ],
+            music_parameters.constants.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT[
+                pitch_to_compare.accidental_name
+            ],
+        )
+
+        interval_quality_semitone_count += (
+            pitch_modification_other - pitch_modification_self
+        )
+
+        interval_quality = WesternPitch._base_interval_type_and_interval_quality_semitone_count_to_interval_quality(
+            str(base_interval_type), int(interval_quality_semitone_count)
+        )
+
+        return music_parameters.WesternPitchInterval(
+            f"{interval_quality}{interval_type}"
+        )
+
     def get_pitch_interval(
         self, pitch_to_compare: music_parameters.abc.Pitch
     ) -> music_parameters.abc.PitchInterval:
@@ -475,20 +565,11 @@ class WesternPitch(EqualDividedOctavePitch):
             and not self.is_microtonal
             and not pitch_to_compare.is_microtonal
         ):
-            # First we need to fetch the basic interval type:
-            # we can check the distance between the diatonic pitch class
-            # names for this purpose. We have to count different depending
-            # on whether the first or the second pitch is higher.
-
-            # Then we can add the octaves to our basic interval
-            # type.
-
-            # Next we have to figure out the interval quality.
-            # To figure out the interval quality we need to compare
-            # (1) the accidentals of both pitches (2) the
-            # compensation between the diatonic pitch classes.
-
-            pass
-
+            if pitch_to_compare < self:
+                pitch_interval = pitch_to_compare._get_western_pitch_interval(self)
+                pitch_interval.inverse_direction()
+            else:
+                pitch_interval = self._get_western_pitch_interval(pitch_to_compare)
+            return pitch_interval
         else:
             return super().get_pitch_interval(pitch_to_compare)
