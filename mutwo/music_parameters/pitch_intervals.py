@@ -117,7 +117,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
                 (int(interval_type) - 1)
                 // music_parameters.constants.WESTERN_PITCH_INTERVAL_BASE_TYPE_COUNT
             )
-        ) 
+        )
 
     @staticmethod
     def _interval_name_to_interval_data(interval_name: str) -> tuple[str, str, bool]:
@@ -391,6 +391,12 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
 
         return self._interval_quality
 
+    @property
+    def interval_type_base_type(self) -> str:
+        return WesternPitchInterval._interval_type_to_interval_base_type(
+            self.interval_type
+        )
+
     @interval_quality.setter
     def interval_quality(self, interval_quality: str):
         # Test if interval_quality string is allowed
@@ -448,7 +454,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         """How many diatonic pitch classes have to be moved"""
         diatonic_pitch_class_count = int(self.interval_type) - 1
         if self.is_interval_falling:
-            return - diatonic_pitch_class_count
+            return -diatonic_pitch_class_count
         return diatonic_pitch_class_count
 
     @property
@@ -515,6 +521,37 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
     def semitone_count(self, semitone_count: core_constants.Real):
         self._set_attribute_by_interval_data(
             *WesternPitchInterval._semitone_count_to_interval_data(semitone_count)
+        )
+
+    @property
+    def can_be_simplified(self) -> bool:
+        """`True` if interval could be written in a simpler way, `False` otherwise."""
+
+        diminished_abbreviation = music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT[
+            music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_AUGMENTED
+        ]
+        augmented_abbreviation = music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT[
+            music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_DIMINISHED
+        ]
+
+        # Special treatment for tritone which can't be written in any other way
+        # but as a diminished or augmented interval
+        if (
+            self.interval_type_base_type == "4"
+            and self.interval_quality == diminished_abbreviation
+        ) or (
+            self.interval_type_base_type == "5"
+            and self.interval_quality == augmented_abbreviation
+        ):
+            return False
+
+        # Otherwise: if there is an augmented or diminished interval
+        # we can be sure it could also be written in another, simpler way.
+        return any(
+            [
+                interval_quality in (diminished_abbreviation, augmented_abbreviation)
+                for interval_quality in self.interval_quality
+            ]
         )
 
     # ###################################################################### #

@@ -96,6 +96,22 @@ class WesternPitchIntervalTest(unittest.TestCase):
                 expected_interval_data,
             )
 
+    def test_interval_type_base_type(self):
+        for interval_name, expected_interval_base_type in (
+            ("m3", "3"),
+            ("p8", "1"),
+            ("p4", "4"),
+            ("dd11", "4"),
+            ("AA4", "4"),
+            ("m-6", "6"),
+        ):
+            self.assertEqual(
+                music_parameters.WesternPitchInterval(
+                    interval_name
+                ).interval_type_base_type,
+                expected_interval_base_type,
+            )
+
     def test_interval_name_to_interval_data(self):
         for interval_name, expected_interval_data in (
             ("p4", ("4", "p", False)),
@@ -378,6 +394,23 @@ class WesternPitchIntervalTest(unittest.TestCase):
                     interval_name_or_semitone_count
                 ).diatonic_pitch_class_count,
                 expected_diatonic_pitch_class_count,
+            )
+
+    def test_can_be_simplified(self):
+        for interval_name, can_be_simplified in (
+            ("m3", False),
+            ("M-6", False),
+            ("A8", True),
+            ("A4", False),
+            ("d5", False),
+            ("dd5", True),
+            ("p1", False),
+            ("m9", False),
+            ("d13", True),
+        ):
+            self.assertEqual(
+                music_parameters.WesternPitchInterval(interval_name).can_be_simplified,
+                can_be_simplified,
             )
 
     def test_inverse_direction(self):
