@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.14.0] - 2022-04-18
+
+### Added
+- `music_parameters.WesternPitchInterval`
+- default `subtract` method for `mutwo.music_parameters.abc.Pitch`
+- `diatonic_pitch_class_name` property for `WesternPitch`
+- `accidental_name` property for `WesternPitch`
+- `is_microtonal` property for `WesternPitch`
+- `enharmonic_pitch_tuple` property for `WesternPitch`
+- `music_converters.ImproveWesternPitchListSequenceReadability`
+- new dependency `gradient_free_optimizers`
+- new constant `music_parameters.constants.DIATONIC_PITCH_CLASS_CONTAINER`
+
+### Changed
+- `add` and `subtract` methods of `WesternPitch` (cleanup) -> support for `WesternPitchInterval` now
+- `get_pitch_interval` of `WesternPitch` returns `WesternPitchInterval` if possible
+- `music_converters.TwoPitchesToCommonHarmonics` to `music_converters.TwoPitchesToCommonHarmonicTuple`
+- usage of standard music parser classes for playing_indicators and grace_notes converters
+- `music_parameters.configurations.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT` to `music_parameters.constants.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT`
+- `music_parameters.configurations.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT` to `music_parameters.constants.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT`
+
+### Removed
+- constant `music_parameters.constant.DIATONIC_PITCH_NAME_TO_PITCH_CLASS_DICT`
+- constant `music_parameters.constant.ASCENDING_DIATONIC_PITCH_NAME_TUPLE`
+- constant `music_parameters.constant.DIATONIC_PITCH_CLASS_COUNT`
+- obscure `level` property of `JustIntonationPitch`
+
+
 ## [0.12.0] - 2022-04-03
 
 ### Changed
