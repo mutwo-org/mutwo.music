@@ -198,7 +198,7 @@ class WesternPitchTest(unittest.TestCase):
             (
                 "c",
                 (
-                    music_parameters.WesternPitch("bs"),
+                    music_parameters.WesternPitch("bs", octave=3),
                     music_parameters.WesternPitch("dff"),
                 ),
             ),
@@ -215,7 +215,7 @@ class WesternPitchTest(unittest.TestCase):
             ),
             (
                 "bs",
-                (music_parameters.WesternPitch("c"),),
+                (music_parameters.WesternPitch("c", octave=5),),
             ),
             (
                 "gss",

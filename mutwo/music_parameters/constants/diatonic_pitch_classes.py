@@ -130,13 +130,22 @@ class DiatonicPitchClass(str):
         return self.__index
 
     @property
-    def neighbour_tuple(self) -> tuple[DiatonicPitchClass, DiatonicPitchClass]:
-        return tuple(
-            DIATONIC_PITCH_CLASS_CONTAINER.get_diatonic_pitch_class_by(
-                index=self._unlimited_index_to_index(self.index + value)
+    def neighbour_tuple(
+        self,
+    ) -> tuple[
+        tuple[DiatonicPitchClass, OctaveCount], tuple[DiatonicPitchClass, OctaveCount]
+    ]:
+        neighbour_list = []
+        for value in (-1, 1):
+            unlimited_index = self.index + value
+            index, octave_count = self._unlimited_index_to_index(
+                unlimited_index
+            ), self._unlimited_index_to_octave_count(unlimited_index)
+            diatonic_pitch = DIATONIC_PITCH_CLASS_CONTAINER.get_diatonic_pitch_class_by(
+                index=index
             )
-            for value in (-1, 1)
-        )
+            neighbour_list.append((diatonic_pitch, octave_count))
+        return tuple(neighbour_list)
 
     def as_string(self) -> str:
         return self.__diatonic_pitch_class_name

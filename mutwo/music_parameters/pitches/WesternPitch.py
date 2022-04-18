@@ -429,28 +429,30 @@ class WesternPitch(EqualDividedOctavePitch):
         """
 
         (
-            previous_diatonic_pitch_class,
-            next_diatonic_pitch_class,
+            previous_neighbour,
+            next_neighbour,
         ) = music_parameters.constants.DIATONIC_PITCH_CLASS_CONTAINER[
             self.diatonic_pitch_class_name
         ].neighbour_tuple
 
         enharmonic_pitch_list = []
-        for diatonic_pitch_class, accidental_sequence in (
+        for neighbour, accidental_sequence in (
             (
-                previous_diatonic_pitch_class,
+                previous_neighbour,
                 music_parameters.constants.RISING_ACCIDENTAL_NAME_TUPLE,
             ),
             (
-                next_diatonic_pitch_class,
+                next_neighbour,
                 music_parameters.constants.FALLING_ACCIDENTAL_NAME_TUPLE,
             ),
         ):
+            diatonic_pitch_class, octave_count = neighbour
             for accidental_name in ("",) + accidental_sequence:
                 if (
                     (
                         potential_enharmonic_pitch := WesternPitch(
-                            f"{diatonic_pitch_class}{accidental_name}", self.octave
+                            f"{diatonic_pitch_class}{accidental_name}",
+                            self.octave + octave_count,
                         )
                     ).pitch_class
                     % music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
