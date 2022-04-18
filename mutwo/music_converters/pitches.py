@@ -175,7 +175,7 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
         self,
         pitch_name_tuple_to_interval_quality_dict: PitchNameTupleToIntervalQualityDict,
         real_search_space: RealSearchSpace,
-    ) -> typing.Callable[[dict], int]:
+    ) -> typing.Callable[[dict], float]:
         def compare_two_pitches(
             pitch0: music_parameters.WesternPitch, pitch1: music_parameters.WesternPitch
         ) -> int:
@@ -183,7 +183,7 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
                 tuple(sorted([pitch0.pitch_class_name, pitch1.pitch_class_name]))
             ]
 
-        def objective_function(solution: dict[str, int]) -> int:
+        def objective_function(solution: dict[str, int]) -> float:
             fitness = 0
             western_pitch_list_tuple = ImproveWesternPitchListSequenceReadability._get_western_pitch_list_tuple(
                 solution, real_search_space
