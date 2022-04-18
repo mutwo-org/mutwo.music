@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.15.0] - 2022-04-18
+
+### Added
+- `music_parameters.WoodwindFingering`
+- `music_parameters.Cue`
+
+
 ## [0.14.0] - 2022-04-18
 
 ### Added
