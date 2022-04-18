@@ -18,6 +18,16 @@ __all__ = ("ImproveWesternPitchListSequenceReadability",)
 class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
     """Adjust accidentals of pitches for a tonal-like visual representation
 
+    :param simultaneous_pitch_weight: Factor with which the weights of the
+        resulting fitness from pitches of the same pitch list will be
+        multiplied. Use higher value if a good form of simultaneous pitches
+        is more important for you. Default to 1.
+    :type simultaneous_pitch_weight: float
+    :param sequential_pitch_weight: Factor with which the weights of the
+        resulting fitness from pitches of neighbouring pitch lists will be
+        multiplied. Use higher value if a good form of sequential pitches
+        is more important for you. Default to 0.7.
+    :type sequential_pitch_weight: float
     :param iteration_count: How many iterations the heuristic algorithm shall
         run. Use higher number for better (but slower) results. Default to
         10000.
@@ -62,11 +72,15 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
 
     def __init__(
         self,
+        simultaneous_pitch_weight: float = 1,
+        sequential_pitch_weight: float = 0.7,
         iteration_count: int = 10000,
         optimizer_class: gradient_free_optimizers.optimizers.base_optimizer.BaseOptimizer = gradient_free_optimizers.RandomSearchOptimizer,
         verbosity_list: list[str] = [],
         seed: typing.Optional[int] = 100,
     ):
+        self._simultaneous_pitch_weight = simultaneous_pitch_weight
+        self._sequential_pitch_weight = sequential_pitch_weight
         self._iteration_count = iteration_count
         self._optimizer_class = optimizer_class
         self._verbosity_list = verbosity_list
@@ -123,9 +137,10 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
                     pitch_class_name_set.add(pitch.pitch_class_name)
 
         pitch_name_tuple_to_interval_quality_dict = {}
-        for pitch_class_name0, pitch_class_name1 in itertools.combinations_with_replacement(
-            pitch_class_name_set, 2
-        ):
+        for (
+            pitch_class_name0,
+            pitch_class_name1,
+        ) in itertools.combinations_with_replacement(pitch_class_name_set, 2):
             pitch_interval = music_parameters.WesternPitch(
                 pitch_class_name0
             ).get_pitch_interval(music_parameters.WesternPitch(pitch_class_name1))
@@ -156,8 +171,8 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
                 real_search_space.update({index_name: pitch_variant})
         return search_space, real_search_space
 
-    @staticmethod
     def _get_objective_function(
+        self,
         pitch_name_tuple_to_interval_quality_dict: PitchNameTupleToIntervalQualityDict,
         real_search_space: RealSearchSpace,
     ) -> typing.Callable[[dict], int]:
@@ -175,7 +190,10 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
             )
             for western_pitch_list in western_pitch_list_tuple:
                 for pitch0, pitch1 in itertools.combinations(western_pitch_list, 2):
-                    fitness += compare_two_pitches(pitch0, pitch1)
+                    fitness += (
+                        compare_two_pitches(pitch0, pitch1)
+                        * self._simultaneous_pitch_weight
+                    )
 
             for western_pitch_list0, western_pitch_list1 in zip(
                 western_pitch_list_tuple, western_pitch_list_tuple[1:]
@@ -183,7 +201,10 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
                 for pitch0, pitch1 in itertools.product(
                     western_pitch_list0, western_pitch_list1
                 ):
-                    fitness += compare_two_pitches(pitch0, pitch1)
+                    fitness += (
+                        compare_two_pitches(pitch0, pitch1)
+                        * self._sequential_pitch_weight
+                    )
 
             # We prefer if there are not so many double-sharps and
             # double-flats, therefore we will punish the algorithm
@@ -276,10 +297,8 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
         ) = ImproveWesternPitchListSequenceReadability._get_search_space_and_real_search_space(
             pitch_variant_list_tuple
         )
-        objective_function = (
-            ImproveWesternPitchListSequenceReadability._get_objective_function(
-                pitch_name_tuple_to_interval_quality_dict, real_search_space
-            )
+        objective_function = self._get_objective_function(
+            pitch_name_tuple_to_interval_quality_dict, real_search_space
         )
 
         optimizer = self._optimizer_class(search_space, random_state=self._seed)
