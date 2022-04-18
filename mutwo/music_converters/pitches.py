@@ -26,7 +26,7 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
         This can be any optimizer defined in the
         `gradient_free_optimizers <https://github.com/SimonBlanke/Gradient-Free-Optimizers>`_
         package. Default to
-        :class:`gradient_free_optimizers.SimulatedAnnealingOptimizer`.
+        :class:`gradient_free_optimizers.RandomSearchOptimizer`.
     :type: gradient_free_optimizers.optimizers.base_optimizer.BaseOptimizer,
     :param verbosity_list: From 'gradient_free_optimizers' documentation:
         "The verbosity list determines what part of the optimization
@@ -147,7 +147,11 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
         real_search_space = {}
         for pitch_list_index, pitch_variant_list in enumerate(pitch_variant_list_tuple):
             for pitch_variant_index, pitch_variant in enumerate(pitch_variant_list):
-                index_name = f"{pitch_list_index}{ImproveWesternPitchListSequenceReadability._space_separator}{pitch_variant_index}"
+                index_name = "{}{}{}".format(
+                    pitch_list_index,
+                    ImproveWesternPitchListSequenceReadability._space_separator,
+                    pitch_variant_index,
+                )
                 search_space.update({index_name: tuple(range(len(pitch_variant)))})
                 real_search_space.update({index_name: pitch_variant})
         return search_space, real_search_space
