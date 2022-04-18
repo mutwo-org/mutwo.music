@@ -67,6 +67,10 @@ class ImproveWesternPitchListSequenceReadabilityTest(unittest.TestCase):
                     [(music_parameters.WesternPitch("e"),)],
                 ),
                 {
+                    ("c", "c"): False,
+                    ("e", "e"): False,
+                    ("g", "g"): False,
+                    ("css", "css"): False,
                     ("c", "e"): False,
                     ("c", "g"): False,
                     ("c", "css"): True,
@@ -174,6 +178,9 @@ class ImproveWesternPitchListSequenceReadabilityTest(unittest.TestCase):
                         music_parameters.WesternPitch("c"),
                         music_parameters.WesternPitch("gs"),
                     ],
+                    [
+                        music_parameters.WesternPitch("c"),
+                    ],
                 ]
             ),
             (
@@ -190,6 +197,9 @@ class ImproveWesternPitchListSequenceReadabilityTest(unittest.TestCase):
                 [
                     music_parameters.WesternPitch("c"),
                     music_parameters.WesternPitch("af"),
+                ],
+                [
+                    music_parameters.WesternPitch("c"),
                 ],
             ),
         )

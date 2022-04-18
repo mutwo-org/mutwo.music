@@ -123,7 +123,7 @@ class ImproveWesternPitchListSequenceReadability(core_converters.abc.Converter):
                     pitch_class_name_set.add(pitch.pitch_class_name)
 
         pitch_name_tuple_to_interval_quality_dict = {}
-        for pitch_class_name0, pitch_class_name1 in itertools.combinations(
+        for pitch_class_name0, pitch_class_name1 in itertools.combinations_with_replacement(
             pitch_class_name_set, 2
         ):
             pitch_interval = music_parameters.WesternPitch(
