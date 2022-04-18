@@ -126,6 +126,20 @@ class Trill(music_parameters.abc.ImplicitPlayingIndicator):
     pitch: typing.Optional[music_parameters.abc.Pitch] = None
 
 
+@dataclasses.dataclass()
+class WoodwindFingering(music_parameters.abc.ImplicitPlayingIndicator):
+    cc: typing.Optional[typing.Tuple[str, ...]] = None
+    left_hand: typing.Optional[typing.Tuple[str, ...]] = None
+    right_hand: typing.Optional[typing.Tuple[str, ...]] = None
+    instrument: str = "clarinet"
+
+
+@dataclasses.dataclass()
+class Cue(music_parameters.abc.ImplicitPlayingIndicator):
+    """Cue for electronics etc."""
+    cue_count: typing.Optional[int] = None
+
+
 @dataclasses.dataclass
 class PlayingIndicatorCollection(
     music_parameters.abc.IndicatorCollection[music_parameters.abc.PlayingIndicator]
@@ -144,6 +158,7 @@ class PlayingIndicatorCollection(
     breath_mark: music_parameters.abc.PlayingIndicator = dataclasses.field(
         default_factory=music_parameters.abc.ExplicitPlayingIndicator
     )
+    cue: Cue = dataclasses.field(default_factory=Cue)
     duration_line_dashed: music_parameters.abc.PlayingIndicator = dataclasses.field(
         default_factory=music_parameters.abc.ExplicitPlayingIndicator
     )
@@ -177,6 +192,9 @@ class PlayingIndicatorCollection(
     )
     tremolo: Tremolo = dataclasses.field(default_factory=Tremolo)
     trill: Trill = dataclasses.field(default_factory=Trill)
+    woodwind_fingering: WoodwindFingering = dataclasses.field(
+        default_factory=WoodwindFingering
+    )
 
     def __setattr__(self, parameter_name: str, value: bool):
         """Overriding default behaviour to allow syntactic sugar.
