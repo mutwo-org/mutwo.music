@@ -932,6 +932,31 @@ class JustIntonationPitchTest(unittest.TestCase):
         p1.intersection(music_parameters.JustIntonationPitch("9/1"), strict=True)
         self.assertEqual(p1, music_parameters.JustIntonationPitch("1/1"))
 
+    def test_equal(self):
+        for pitch, any_object, expected_value in (
+            (
+                music_parameters.JustIntonationPitch("3/2"),
+                music_parameters.JustIntonationPitch("3/2"),
+                True,
+            ),
+            (
+                music_parameters.JustIntonationPitch("3/2"),
+                music_parameters.JustIntonationPitch("3/1"),
+                False,
+            ),
+            (
+                music_parameters.JustIntonationPitch("1/1"),
+                music_parameters.WesternPitch("a", 4),
+                True,
+            ),
+            (
+                music_parameters.JustIntonationPitch("7/4"),
+                fractions.Fraction(7, 4),
+                False,
+            ),
+        ):
+            self.assertEqual(pitch == any_object, expected_value)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -439,7 +439,7 @@ class JustIntonationPitch(
         try:
             return self.exponent_tuple == other.exponent_tuple
         except AttributeError:
-            return super().__eq__(self, other)
+            return super().__eq__(other)
 
     def __float__(self) -> float:
         """Return the float of a JustIntonationPitch - object.
