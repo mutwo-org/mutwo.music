@@ -122,7 +122,7 @@ FERMATA_TYPE_LITERAL = typing.Literal[
 'allowed' means merely that all defined strings here
 should work with the `abjad` module in mutwos frontend module."""
 
-HAIRPIN_SYMBOL_LITERAL = typing.Literal["<", ">", "!"]
+HAIRPIN_SYMBOL_LITERAL = typing.Literal["<", ">", "<>", "!"]
 """A sequence of all allowed hairpin symbols.
 
 'allowed' means merely that all defined strings here

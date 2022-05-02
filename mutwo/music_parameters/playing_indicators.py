@@ -119,6 +119,7 @@ class Fermata(music_parameters.abc.ImplicitPlayingIndicator):
 @dataclasses.dataclass()
 class Hairpin(music_parameters.abc.ImplicitPlayingIndicator):
     symbol: typing.Optional[music_parameters.constants.HAIRPIN_SYMBOL_LITERAL] = None
+    niente: bool = False
 
 
 @dataclasses.dataclass()
@@ -137,6 +138,7 @@ class WoodwindFingering(music_parameters.abc.ImplicitPlayingIndicator):
 @dataclasses.dataclass()
 class Cue(music_parameters.abc.ImplicitPlayingIndicator):
     """Cue for electronics etc."""
+
     cue_count: typing.Optional[int] = None
 
 

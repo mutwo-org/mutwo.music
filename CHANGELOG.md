@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.16.0] - 2022-05-02
+
+### Added
+- `niente` to `music_parameters.Hairpin`
+- `<>` to allowed hairpin symbols
+
+
 ## [0.15.0] - 2022-04-18
 
 ### Added
