@@ -28,37 +28,37 @@ class NoteLike(core_events.SimpleEvent):
     """NoteLike represents traditional discreet musical objects.
 
     :param pitch_list: The pitch or pitches of the event. This can
-        be a pitch object (any class that inherits from ``mutwo.ext.parameters.abc.Pitch``)
+        be a pitch object (any class that inherits from ``mutwo.music_parameters.abc.Pitch``)
         or a list of pitch objects. Furthermore mutwo supports syntactic sugar
         to convert other objects on the fly to pitch objects: Atring can be
         read as pitch class names to build
-        :class:`mutwo.ext.parameters.pitches.WesternPitch` objects or as ratios to
-        build :class:`mutwo.ext.parameters.pitches.JustIntonationPitch` objects.
-        Fraction will also build :class:`mutwo.ext.parameters.pitches.JustIntonationPitch`
+        :class:`mutwo.music_parameters.WesternPitch` objects or as ratios to
+        build :class:`mutwo.music_parameters.JustIntonationPitch` objects.
+        Fraction will also build :class:`mutwo.music_parameters.JustIntonationPitch`
         objects. Other numbers (integer and float) will be read as pitch class numbers
-        to make :class:`mutwo.ext.parameters.pitches.WesternPitch` objects.
+        to make :class:`mutwo.music_parameters.WesternPitch` objects.
     :param duration: The duration of ``NoteLike``. This can be any number.
         The unit of the duration is up to the interpretation of the user and the
         respective converter routine that will be used.
     :param volume: The volume of the event. Can either be a object of
-        :mod:`mutwo.ext.parameters.volumes`, a number or a string. If the number
+        :mod:`mutwo.music_parameters.abc.Volume`, a number or a string. If the number
         ranges from 0 to 1, mutwo automatically generates a
-        :class:`mutwo.ext.parameters.volumes.DirectVolume` object (and the number
+        :class:`mutwo.music_parameters.DirectVolume` object (and the number
         will be interpreted as the amplitude). If the
         number is smaller than 0, automatically generates a
-        :class:`mutwo.ext.parameters.volumes.DecibelVolume` object (and the number
+        :class:`mutwo.music_parameters.volumes.DecibelVolume` object (and the number
         will be interpreted as decibel). If the argument is a string,
-        `mutwo` will try to initialise a :class:`mutwo.ext.parameters.volumes.WesternVolume`
+        `mutwo` will try to initialise a :class:`mutwo.music_parameters.volumes.WesternVolume`
         object.
     :param grace_note_sequential_event:
     :type grace_note_sequential_event: core_events.SequentialEvent[NoteLike]
     :param after_grace_note_sequential_event:
     :type after_grace_note_sequential_event: core_events.SequentialEvent[NoteLike]
-    :param playing_indicator_collection: A :class:`~mutwo.ext.parameters.playing_indicator_collection.PlayingIndicatorCollection`.
+    :param playing_indicator_collection: A :class:`~mutwo.music_parameters.playing_indicator_collection.PlayingIndicatorCollection`.
         Playing indicators alter the sound of :class:`NoteLike` (e.g.
         tremolo, fermata, pizzicato).
     :type playing_indicator_collection: music_parameters.playing_indicator_collection.PlayingIndicatorCollection
-    :param notation_indicator_collection: A :class:`~mutwo.ext.parameters.notation_indicator_collection.NotationIndicatorCollection`.
+    :param notation_indicator_collection: A :class:`~mutwo.music_parameters.notation_indicator_collection.NotationIndicatorCollection`.
         Notation indicators alter the visual representation of :class:`NoteLike`
         (e.g. ottava, clefs) without affecting the resulting sound.
     :type notation_indicator_collection: music_parameters.notation_indicator_collection.NotationIndicatorCollection
@@ -73,14 +73,14 @@ class NoteLike(core_events.SimpleEvent):
 
     **Example:**
 
-    >>> from mutwo.ext.parameters import pitches
-    >>> from mutwo.events import music
-    >>> tone = music.NoteLike(pitches.WesternPitch('a'), 1, 1)
-    >>> other_tone = music.NoteLike('3/2', 1, 0.5)
-    >>> chord = music.NoteLike(
-        [pitches.WesternPitch('a'), pitches.JustIntonationPitch('3/2')], 1, 1
+    >>> from mutwo import music_parameters
+    >>> from mutwo import music_events
+    >>> tone = music_events.NoteLike(music_parameters.WesternPitch('a'), 1, 1)
+    >>> other_tone = music_events.NoteLike('3/2', 1, 0.5)
+    >>> chord = music_events.NoteLike(
+        [music_parameters.WesternPitch('a'), music_parameters.JustIntonationPitch('3/2')], 1, 1
     )
-    >>> other_chord = music.NoteLike('c4 dqs3 10/7', 1, 3)
+    >>> other_chord = music_events.NoteLike('c4 dqs3 10/7', 1, 3)
     """
 
     def __init__(
@@ -273,7 +273,7 @@ class NoteLike(core_events.SimpleEvent):
 
     @property
     def grace_note_sequential_event(self) -> GraceNotes:
-        """Fast NoteLikes before the actual :class:`NoteLike`"""
+        """:class:`core_events.SequentialEvent` before :class:`NoteLike`"""
 
         return self._grace_note_sequential_event
 
@@ -290,7 +290,7 @@ class NoteLike(core_events.SimpleEvent):
 
     @property
     def after_grace_note_sequential_event(self) -> GraceNotes:
-        """Fast NoteLikes after the actual :class:`NoteLike`"""
+        """:class:`core_events.SequentialEvent` after :class:`NoteLike`"""
 
         return self._after_grace_note_sequential_event
 
