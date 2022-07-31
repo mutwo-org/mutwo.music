@@ -3,8 +3,6 @@
 import copy
 import typing
 
-import expenvelope
-
 from mutwo import core_converters
 from mutwo import core_constants
 from mutwo import core_events
@@ -88,9 +86,11 @@ class GraceNotesConverter(core_converters.abc.EventConverter):
         )
 
         self._n_grace_notes_to_grace_note_duration_factor_envelope = (
-            expenvelope.Envelope.from_points(
-                (minima_number_of_grace_notes, minima_grace_notes_duration_factor),
-                (maxima_number_of_grace_notes, maxima_grace_notes_duration_factor),
+            core_events.Envelope(
+                (
+                    (minima_number_of_grace_notes, minima_grace_notes_duration_factor),
+                    (maxima_number_of_grace_notes, maxima_grace_notes_duration_factor),
+                )
             )
         )
 
@@ -123,16 +123,14 @@ class GraceNotesConverter(core_converters.abc.EventConverter):
             assert maxima_grace_notes_duration_factor < 0.5
         except AssertionError:
             raise ValueError(
-                "'maxima_grace_notes_duration_factor' has "
-                "to be smaller than 0.5!"
+                "'maxima_grace_notes_duration_factor' has " "to be smaller than 0.5!"
             )
 
         try:
             assert minima_grace_notes_duration_factor > 0
         except AssertionError:
             raise ValueError(
-                "'minima_grace_notes_duration_factor' has "
-                "to be bigger than 0!"
+                "'minima_grace_notes_duration_factor' has " "to be bigger than 0!"
             )
 
     def _get_grace_note_sequential_event(

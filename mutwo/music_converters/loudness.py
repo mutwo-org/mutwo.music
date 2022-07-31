@@ -2,12 +2,11 @@
 
 import math
 
-import expenvelope  # type: ignore
-
 from mutwo_third_party import pydsm
 
 from mutwo import core_constants
 from mutwo import core_converters
+from mutwo import core_events
 from mutwo import music_converters
 
 __all__ = ("LoudnessToAmplitude",)
@@ -19,7 +18,7 @@ class LoudnessToAmplitude(core_converters.abc.Converter):
     :param loudspeaker_frequency_response: Optionally the frequency response
         of the used loudspeaker can be added for balancing out uneven curves in
         the loudspeakers frequency response. The frequency response is defined
-        with an ``expenvelope.Envelope`` object.
+        with a ``core_events.Envelope`` object.
     :type loudspeaker_frequency_response: expenvelope.Envelope
     :param interpolation_order: The interpolation order of the equal loudness
         contour interpolation.
@@ -30,15 +29,15 @@ class LoudnessToAmplitude(core_converters.abc.Converter):
 
     def __init__(
         self,
-        loudspeaker_frequency_response: expenvelope.Envelope = expenvelope.Envelope.from_points(
-            (0, 80), (2000, 80)
+        loudspeaker_frequency_response: core_events.Envelope = core_events.Envelope(
+            ((0, 80), (2000, 80))
         ),
         interpolation_order: int = 4,
     ):
         self._interpolation_order = interpolation_order
         self._loudspeaker_frequency_response = loudspeaker_frequency_response
         self._loudspeaker_frequency_response_average = (
-            loudspeaker_frequency_response.average_level()
+            loudspeaker_frequency_response.get_average_value()
         )
 
     # ###################################################################### #
