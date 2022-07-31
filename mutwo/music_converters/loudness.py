@@ -19,7 +19,7 @@ class LoudnessToAmplitude(core_converters.abc.Converter):
         of the used loudspeaker can be added for balancing out uneven curves in
         the loudspeakers frequency response. The frequency response is defined
         with a ``core_events.Envelope`` object.
-    :type loudspeaker_frequency_response: expenvelope.Envelope
+    :type loudspeaker_frequency_response: mutwo.core_events.Envelope
     :param interpolation_order: The interpolation order of the equal loudness
         contour interpolation.
     :type interpolation_order: int
