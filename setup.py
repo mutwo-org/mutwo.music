@@ -35,7 +35,7 @@ setuptools.setup(
     ],
     setup_requires=[],
     install_requires=[
-        "mutwo.ext-core>=0.59.0, <0.60.0",
+        "mutwo.ext-core>=0.61.1, <1.0.0",
         "phonemizer>=3.1.1, <4.0.0",
         "gradient-free-optimizers>=1.0.7, <2.0.0",
     ],

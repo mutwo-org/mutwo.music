@@ -127,6 +127,7 @@ class NoteLikeTest(unittest.TestCase):
             "notation_indicator_collection",
             "pitch_list",
             "playing_indicator_collection",
+            "tempo_envelope",
             "volume",
         )
         self.assertEqual(

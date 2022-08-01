@@ -175,7 +175,11 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         super().__init__(
             simple_event_to_playing_indicator_collection=simple_event_to_playing_indicator_collection
         )
-        self._duration_for_each_attack = duration_for_each_attack
+        self._duration_for_each_attack = (
+            core_events.configurations.UNKNOWN_OBJECT_TO_DURATION(
+                duration_for_each_attack
+            )
+        )
         self._simple_event_to_pitch_list = simple_event_to_pitch_list
         self._set_pitch_list_for_simple_event = set_pitch_list_for_simple_event
 
@@ -210,7 +214,7 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         # set correct duration for each event
         n_events = len(converted_event)
         duration_of_each_attack = self._duration_for_each_attack
-        if n_events * duration_of_each_attack > simple_event_to_convert.duration:
+        if duration_of_each_attack * n_events > simple_event_to_convert.duration:
             duration_of_each_attack = simple_event_to_convert.duration / n_events
 
         for nth_event in range(n_events - 1):
