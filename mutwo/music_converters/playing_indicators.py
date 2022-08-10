@@ -19,6 +19,7 @@ from mutwo import core_events
 from mutwo import core_utilities
 from mutwo import music_converters
 from mutwo import music_parameters
+from mutwo import music_utilities
 
 
 __all__ = (
@@ -72,17 +73,17 @@ class PlayingIndicatorConverter(core_converters.abc.Converter):
         simple_event_to_convert: core_events.SimpleEvent,
         playing_indicator: music_parameters.abc.PlayingIndicator,
     ) -> core_events.SequentialEvent[core_events.SimpleEvent]:
-        raise NotImplementedError()
+        ...
 
     @property
     @abc.abstractmethod
     def playing_indicator_name(self) -> str:
-        raise NotImplementedError()
+        ...
 
     @property
     @abc.abstractmethod
     def default_playing_indicator(self) -> music_parameters.abc.PlayingIndicator:
-        raise NotImplementedError
+        ...
 
     def convert(
         self, simple_event_to_convert: core_events.SimpleEvent
@@ -208,17 +209,17 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         )
 
         # apply pitches on events
-        for nth_event, pitch in enumerate(pitch_list):
-            self._set_pitch_list_for_simple_event(converted_event[nth_event], [pitch])
+        for event_index, pitch in enumerate(pitch_list):
+            self._set_pitch_list_for_simple_event(converted_event[event_index], [pitch])
 
         # set correct duration for each event
-        n_events = len(converted_event)
+        event_count = len(converted_event)
         duration_of_each_attack = self._duration_for_each_attack
-        if duration_of_each_attack * n_events > simple_event_to_convert.duration:
-            duration_of_each_attack = simple_event_to_convert.duration / n_events
+        if duration_of_each_attack * event_count > simple_event_to_convert.duration:
+            duration_of_each_attack = simple_event_to_convert.duration / event_count
 
-        for nth_event in range(n_events - 1):
-            converted_event[nth_event].duration = duration_of_each_attack
+        for event_index in range(event_count - 1):
+            converted_event[event_index].duration = duration_of_each_attack
 
         converted_event[-1].duration -= (
             converted_event.duration - simple_event_to_convert.duration
@@ -323,17 +324,14 @@ class ArticulationConverter(PlayingIndicatorConverter):
             playing_indicator_converter,
         ) in articulation_name_tuple_to_playing_indicator_converter.items():
             for articulation_name in articulation_name_tuple:
-                try:
-                    assert (
-                        articulation_name
-                        not in articulation_name_to_playing_indicator_converter
-                    )
-                except AssertionError:
+                if (
+                    articulation_name
+                    not in articulation_name_to_playing_indicator_converter
+                ):
                     warnings.warn(
-                        "Found two playing indicator converter mappings for "
-                        f"articulation name '{articulation_name}'! "
-                        "Mutwo will use the playing indicator converter "
-                        f"'{playing_indicator_converter}'."
+                        music_utilities.DuplicatePlayingIndicatorConverterMappingWarning(
+                            articulation_name, playing_indicator_converter
+                        )
                     )
                 articulation_name_to_playing_indicator_converter.update(
                     {articulation_name: playing_indicator_converter}
@@ -422,13 +420,13 @@ class TrillConverter(PlayingIndicatorConverter):
         trill: music_parameters.Trill,
         pitch_list: list[music_parameters.abc.Pitch],
     ) -> core_events.SequentialEvent[core_events.SimpleEvent]:
-        n_trill_items = simple_event_to_convert.duration // self._trill_size
+        trill_item_count = simple_event_to_convert.duration // self._trill_size
         remaining = simple_event_to_convert.duration - (
-            n_trill_items * self._trill_size
+            trill_item_count * self._trill_size
         )
         sequential_event = core_events.SequentialEvent([])
         pitch_cycle = itertools.cycle((pitch_list, trill.pitch))
-        for _ in range(int(n_trill_items)):
+        for _ in range(int(trill_item_count)):
             simple_event = simple_event_to_convert.set_parameter(
                 "duration", self._trill_size, mutate=False
             ).set_parameter("pitch_list", next(pitch_cycle))
