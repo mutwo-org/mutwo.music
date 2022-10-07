@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.18.0] - 2022-10-07
+
+### Added
+- nix installation
+
+### Changed
+- dependency from `phonemizer` to `epitran`
+- prime calculations from `primesieve` to `sympy`
+
 ## [0.17.0] - 2022-08-10
 
 ### Added
