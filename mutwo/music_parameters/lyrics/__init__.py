@@ -1,27 +1,13 @@
 """Define lyrics to be sung, spoken or written"""
 
-import warnings
-
-import phonemizer
-
 from mutwo import music_parameters
 
-__all__ = ("DirectLyric",)
+from .text_based_lyrics import *
 
-if phonemizer.backend.EspeakMbrolaBackend.is_available():
-    from .text_based_lyrics import *
+__all__ = ("DirectLyric",) + text_based_lyrics.__all__
 
-    __all__ = __all__ + text_based_lyrics.__all__
+del text_based_lyrics
 
-else:
-    warnings.warn(
-        (
-            "Couldn't find backend Espeak Mbrola. "
-            "Can't import TextBasedLyric classes. "
-            "Please install backend first if you want to use the classes."
-        ),
-        RuntimeWarning,
-    )
 
 
 class DirectLyric(music_parameters.abc.Lyric):

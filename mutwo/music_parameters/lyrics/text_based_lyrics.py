@@ -1,6 +1,6 @@
 import typing
 
-import phonemizer
+import epitran
 
 from mutwo import music_parameters
 
@@ -20,10 +20,6 @@ class LanguageBasedLyric(music_parameters.abc.Lyric):
     :type language_code: typing.Optional[str]
     """
 
-    _language_code_tuple = (
-        phonemizer.backend.EspeakMbrolaBackend._all_supported_languages()
-    )
-
     def __init__(
         self, written_representation: str, language_code: typing.Optional[str] = None
     ):
@@ -39,16 +35,9 @@ class LanguageBasedLyric(music_parameters.abc.Lyric):
 
     @language_code.setter
     def language_code(self, language_code: str):
-        try:
-            assert language_code in self._language_code_tuple
-        except AssertionError:
-            raise ValueError(
-                (
-                    f"Found invalid language code '{language_code}'. "
-                    "Please use one of the supported language codes: \n\n"
-                    f"{self._language_code_tuple}"
-                )
-            )
+        # Epitran will raise an error (FileNotFound) in case
+        # the language_code doesn't exist.
+        self._epitran = epitran.Epitran(language_code)
         self._language_code = language_code
 
     @property
@@ -63,12 +52,7 @@ class LanguageBasedLyric(music_parameters.abc.Lyric):
     def phonetic_representation(self) -> str:
         word_tuple = self.written_representation.split(" ")
         return " ".join(
-            [
-                phonemizer.phonemize(
-                    word, backend="espeak-mbrola", language=self.language_code
-                )
-                for word in word_tuple
-            ]
+            ["".join(self._epitran.xsampa_list(word)) for word in word_tuple]
         )
 
 
@@ -92,13 +76,13 @@ class LanguageBasedSyllable(music_parameters.abc.Syllable, LanguageBasedLyric):
     itself will return different values for :attr:`phonetic_representation`.
     For instance:
 
-    >>> LanguageBasedLyric('hello').phonetic_representation
-    "h@l@U"
+    >>> LanguageBasedLyric('hallo').phonetic_representation
+    "halo:"
     >>> # And now splitted to syllables:
-    >>> LanguageBasedSyllable('hel').phonetic_representation
-    "he5"
+    >>> LanguageBasedSyllable('hal').phonetic_representation
+    "hA:l"
     >>> LanguageBasedSyllable('lo').phonetic_representation
-    "l@U"
+    "lo:"
     """
 
     def __init__(self, is_last_syllable: bool, *args, **kwargs):
