@@ -5,6 +5,8 @@ import math
 import operator
 import typing
 
+from sympy.ntheory import factorint
+
 from mutwo import core_converters
 from mutwo import core_utilities
 
@@ -37,7 +39,7 @@ class RhythmicalStrataToIndispensability(core_converters.abc.Converter):
             return int(prime_number / 4)
         else:
             factorised = tuple(
-                sorted(core_utilities.factorise(prime_number - 1), reverse=True)
+                sorted(factorint(prime_number - 1, multiple=True), reverse=True)
             )
             q = RhythmicalStrataToIndispensability._indispensability_of_nth_beat(
                 beat_index - int(beat_index / prime_number), factorised

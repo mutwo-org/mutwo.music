@@ -33,8 +33,9 @@ setuptools.setup(
     ],
     setup_requires=[],
     install_requires=[
-        "mutwo.core>=0.61.2, <0.62.0",
+        "mutwo.core>=0.62.0, <1.00.0",
         "phonemizer>=3.1.1, <4.0.0",
+        "sympy>=1.10.1, <2.0.0",
         "gradient-free-optimizers>=1.0.7, <2.0.0",
     ],
     extras_require=extras_require,

@@ -8,8 +8,10 @@ import operator
 import typing
 import warnings
 
-import primesieve  # type: ignore
-from primesieve import numpy as primesieve_numpy
+from sympy import primepi
+from sympy import prime
+from sympy import primerange
+from sympy.ntheory import factorint
 
 try:
     import quicktions as fractions  # type: ignore
@@ -319,22 +321,23 @@ class JustIntonationPitch(
         (-1, 1)
         """
 
-        factorised_numerator = core_utilities.factors(ratio.numerator)
-        factorised_denominator = core_utilities.factors(ratio.denominator)
+        factorised_numerator = factorint(ratio.numerator)
+        factorised_denominator = factorint(ratio.denominator)
 
-        factorised_num = core_utilities.factorise(ratio.numerator)
-        factorised_den = core_utilities.factorise(ratio.denominator)
+        try:
+            biggest_prime = max(tuple(factorised_numerator.keys()) + tuple(factorised_denominator.keys()))
+        except ValueError:
+            biggest_prime = 2
 
-        biggest_prime = max(factorised_num + factorised_den)
-        exponent_tuple = [0] * primesieve.count_primes(biggest_prime)
+        exponent_tuple = [0] * primepi(biggest_prime)
 
-        for prime, factor in factorised_numerator:
+        for prime, factor in factorised_numerator.items():
             if prime > 1:
-                exponent_tuple[primesieve.count_primes(prime) - 1] += factor
+                exponent_tuple[primepi(prime) - 1] += factor
 
-        for prime, factor in factorised_denominator:
+        for prime, factor in factorised_denominator.items():
             if prime > 1:
-                exponent_tuple[primesieve.count_primes(prime) - 1] -= factor
+                exponent_tuple[primepi(prime) - 1] -= factor
 
         return tuple(exponent_tuple)
 
@@ -357,7 +360,7 @@ class JustIntonationPitch(
         2.6666666666666665
         """
 
-        decomposed = core_utilities.factorise(num)
+        decomposed = factorint(num, multiple=True)
         return JustIntonationPitch._indigestibility_of_factorised(decomposed)
 
     @staticmethod
@@ -502,7 +505,7 @@ class JustIntonationPitch(
         (2, 3, 5, 7, 11)
         """
 
-        return tuple(primesieve_numpy.n_primes(len(self.exponent_tuple)))
+        return tuple(primerange(prime(len(self.exponent_tuple) + 1)))
 
     @property
     def occupied_primes(self) -> tuple:
@@ -770,7 +773,7 @@ class JustIntonationPitch(
     @property
     def primes_for_numerator_and_denominator(self) -> tuple:
         return tuple(
-            tuple(sorted(set(core_utilities.factorise(n))))
+            tuple(sorted(set(factorint(n, multiple=True))))
             for n in (self.numerator, self.denominator)
         )
 
