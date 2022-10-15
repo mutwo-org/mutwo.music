@@ -20,6 +20,8 @@ class LanguageBasedLyric(music_parameters.abc.Lyric):
     :type language_code: typing.Optional[str]
     """
 
+    language_code_to_epitran_dict: dict[str, epitran.Epitran] = {}
+
     def __init__(
         self, written_representation: str, language_code: typing.Optional[str] = None
     ):
@@ -35,9 +37,13 @@ class LanguageBasedLyric(music_parameters.abc.Lyric):
 
     @language_code.setter
     def language_code(self, language_code: str):
-        # Epitran will raise an error (FileNotFound) in case
-        # the language_code doesn't exist.
-        self._epitran = epitran.Epitran(language_code)
+        if language_code not in self.language_code_to_epitran_dict:
+            # Epitran will raise an error (FileNotFound) in case
+            # the language_code doesn't exist.
+            epitran_ = epitran.Epitran(language_code)
+            self.language_code_to_epitran_dict.update({language_code: epitran_})
+
+        self._epitran = self.language_code_to_epitran_dict[language_code]
         self._language_code = language_code
 
     @property
