@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 extras_require = {
-    "testing": ["nose", "coveralls", "mutwo.common>=0.10.0, <1.0.0"]
+    "testing": ["pytest>=7.1.1", "mutwo.common>=0.11.0, <1.0.0"]
 }
 
 setuptools.setup(
@@ -33,11 +33,11 @@ setuptools.setup(
     ],
     setup_requires=[],
     install_requires=[
-        "mutwo.core>=0.62.0, <1.0.0",
+        "mutwo.core>=1.0.0, <2.0.0",
         "epitran>=1.23, <2.0.0",
         "sympy>=1.10.1, <2.0.0",
         "gradient-free-optimizers>=1.0.7, <2.0.0",
     ],
     extras_require=extras_require,
-    python_requires=">=3.9, <4",
+    python_requires=">=3.10, <4",
 )
