@@ -1,15 +1,15 @@
 with import <nixpkgs> {};
-with pkgs.python3Packages;
+with pkgs.python310Packages;
 
 let
 
-  mutwo-core-archive = builtins.fetchTarball "https://github.com/mutwo-org/mutwo.core/archive/97aea97f996973955889630c437ceaea405ea0a7.tar.gz";
+  mutwo-core-archive = builtins.fetchTarball "https://github.com/mutwo-org/mutwo.core/archive/069a407e5ac1bd140d92180e21e64dd094df83c5.tar.gz";
   mutwo-core = import (mutwo-core-archive + "/default.nix");
 
-  mutwo-common-archive = builtins.fetchTarball "https://github.com/mutwo-org/mutwo.common/archive/9a0f12a72b5b6224b8a55227273a4fe6870c6300.tar.gz";
+  mutwo-common-archive = builtins.fetchTarball "https://github.com/mutwo-org/mutwo.common/archive/fdb55be3160d42fc8ba13db2885b7a5abe28e1c0.tar.gz";
   mutwo-common = import (mutwo-common-archive + "/default.nix");
 
-  panphon = pkgs.python39Packages.buildPythonPackage rec {
+  panphon = pkgs.python310Packages.buildPythonPackage rec {
     name = "panphon";
     src = fetchFromGitHub {
       owner = "dmort27";
@@ -19,17 +19,17 @@ let
     };
     propagatedBuildInputs = [ 
         flite
-        python39Packages.unicodecsv
-        python39Packages.pyyaml
-        python39Packages.regex
-        python39Packages.editdistance
-        python39Packages.numpy
-        python39Packages.munkres
-        python39Packages.setuptools
+        python310Packages.unicodecsv
+        python310Packages.pyyaml
+        python310Packages.regex
+        python310Packages.editdistance
+        python310Packages.numpy
+        python310Packages.munkres
+        python310Packages.setuptools
     ];
   };
 
-  epitran = pkgs.python39Packages.buildPythonPackage rec {
+  epitran = pkgs.python310Packages.buildPythonPackage rec {
     name = "epitran";
     src = fetchFromGitHub {
       owner = "dmort27";
@@ -39,15 +39,15 @@ let
     };
     propagatedBuildInputs = [ 
         flite
-        python39Packages.setuptools
-        python39Packages.regex
-        python39Packages.marisa-trie
-        python39Packages.requests
+        python310Packages.setuptools
+        python310Packages.regex
+        python310Packages.marisa-trie
+        python310Packages.requests
         panphon
     ];
   };
 
-  gradient-free-optimizers = pkgs.python39Packages.buildPythonPackage rec {
+  gradient-free-optimizers = pkgs.python310Packages.buildPythonPackage rec {
     name = "gradient-free-optimizers";
     src = fetchFromGitHub {
       owner = "SimonBlanke";
@@ -57,11 +57,11 @@ let
     };
     doCheck = false;
     propagatedBuildInputs = [ 
-        python39Packages.tqdm
-        python39Packages.scipy
-        python39Packages.numpy
-        python39Packages.pandas
-        python39Packages.scikit-learn
+        python310Packages.tqdm
+        python310Packages.scipy
+        python310Packages.numpy
+        python310Packages.pandas
+        python310Packages.scikit-learn
     ];
   };
 
@@ -72,17 +72,25 @@ in
     src = fetchFromGitHub {
       owner = "mutwo-org";
       repo = name;
-      rev = "b517933d17815f88f4c76deb7baa351d3470cee3";
-      sha256 = "sha256-s6F/XbK1P4uWu4yrpfMECkhM3/7d0Rvbwzoy1M/Pa50=";
+      rev = "da20fa31796ed9698dbdcf0d4e1e4fa9d807973c";
+      sha256 = "sha256-c8jgo0rX7AEK315/W3ElPkEv85xW22ypFDmzertI9/Y=";
     };
+    checkInputs = [
+      python310Packages.pytest
+    ];
     propagatedBuildInputs = [ 
-      python39Packages.numpy
-      python39Packages.scipy
-      python39Packages.sympy
+      python310Packages.numpy
+      python310Packages.scipy
+      python310Packages.sympy
       gradient-free-optimizers
       mutwo-core
       mutwo-common
       epitran
     ];
+    checkPhase = ''
+      runHook preCheck
+      pytest
+      runHook postCheck
+    '';
     doCheck = true;
   }
