@@ -10,6 +10,7 @@ from .pitches import *
 from .volumes import *
 from .notation_indicators import *
 from .playing_indicators import *
+from .scales import *
 
 from . import (
     ambituses,
@@ -20,6 +21,7 @@ from . import (
     volumes,
     notation_indicators,
     playing_indicators,
+    scales,
 )
 
 from mutwo import core_utilities
@@ -34,6 +36,7 @@ __all__ = core_utilities.get_all(
     volumes,
     notation_indicators,
     playing_indicators,
+    scales,
 )
 
 # Force flat structure
@@ -47,4 +50,5 @@ del (
     volumes,
     notation_indicators,
     playing_indicators,
+    scales,
 )

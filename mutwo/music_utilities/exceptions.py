@@ -1,4 +1,7 @@
-__all__ = ("DuplicatePlayingIndicatorConverterMappingWarning",)
+__all__ = (
+    "DuplicatePlayingIndicatorConverterMappingWarning",
+    "UnsortedIntervalTupleError",
+)
 
 
 class DuplicatePlayingIndicatorConverterMappingWarning(RuntimeWarning):
@@ -8,4 +11,15 @@ class DuplicatePlayingIndicatorConverterMappingWarning(RuntimeWarning):
             f"articulation name '{articulation_name}'! "
             "Mutwo will use the playing indicator converter "
             f"'{playing_indicator_converter}'."
+        )
+
+
+class UnsortedIntervalTupleError(Exception):
+    def __init__(self, interval_tuple):
+        super().__init__(
+            f"Interval sequence '{interval_tuple}' is neither"
+            "falling nor rising. Please either call "
+            "'sorted(interval_sequence)' or 'sorted(interval_sequence, "
+            "reverse=True)' before passing your interval sequence to "
+            "'ScaleFamily'."
         )
