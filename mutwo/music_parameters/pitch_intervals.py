@@ -37,6 +37,19 @@ class DirectPitchInterval(music_parameters.abc.PitchInterval):
     def interval(self, interval: float):
         self._interval = interval
 
+    @core_utilities.add_copy_option
+    def inverse(self, mutate: bool = False) -> DirectPitchInterval:
+        """Makes falling interval to rising and vice versa.
+
+        **Example:**
+
+        >>> from mutwo import music_parameters
+        >>> music_parameters.DirectPitchInterval(700).inverse()
+        DirectPitchInterval(interval = -700)
+        """
+        self.interval = -self.interval
+        return self
+
 
 class WesternPitchInterval(music_parameters.abc.PitchInterval):
     """Model intervals by using European music theory based representations
@@ -564,7 +577,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         **Example:**
 
         >>> from mutwo import music_parameters
-        >>> music_parameters.WesternPitchInterval('m3').inverse_direction()
+        >>> music_parameters.WesternPitchInterval('m3').inverse()
         WesternPitchInterval('m-3')
         """
         self.is_interval_falling = not self.is_interval_falling

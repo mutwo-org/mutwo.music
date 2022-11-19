@@ -3,6 +3,26 @@ import unittest
 from mutwo import music_parameters
 
 
+class DirectPitchIntervalTest(unittest.TestCase):
+    def setUp(self):
+        self.pitch_interval_0 = music_parameters.DirectPitchInterval(800)
+        self.pitch_interval_1 = music_parameters.DirectPitchInterval(500)
+
+    def test_interval(self):
+        self.assertEqual(self.pitch_interval_0.interval, 800)
+        self.assertEqual(self.pitch_interval_1.interval, 500)
+
+    def test_set_interval(self):
+        self.pitch_interval_0.interval = 100
+        self.assertEqual(self.pitch_interval_0.interval, 100)
+
+    def test_inverse(self):
+        self.assertEqual(
+            self.pitch_interval_1.inverse(), music_parameters.DirectPitchInterval(-500)
+        )
+        self.assertEqual(self.pitch_interval_0.inverse().interval, -800)
+
+
 class WesternPitchIntervalTest(unittest.TestCase):
     def setUp(self):
         self.western_pitch_interval = music_parameters.WesternPitchInterval()

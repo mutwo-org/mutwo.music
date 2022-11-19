@@ -48,13 +48,22 @@ class PitchInterval(
     """Abstract base class for any pitch interval class
 
     If the user wants to define a new pitch interval class, the abstract
-    property :attr:`interval` has to be overridden.
+    property :attr:`interval` and the abstract method `inverse`
+    have to be overridden.
 
     :attr:`interval` is stored in unit `cents`.
 
     See `wikipedia entry <https://en.wikipedia.org/wiki/Cent_(music)>`_
     for definition of 'cents'.
     """
+
+    @abc.abstractmethod
+    def inverse(self, mutate: bool = False) -> PitchInterval:
+        """Makes falling interval to rising and vice versa.
+
+        In `music21` the method for equal semantics is called
+        `reverse <https://web.mit.edu/music21/doc/moduleReference/moduleInterval.html#music21.interval.Interval.reverse >`_.
+        """
 
 
 class Pitch(
