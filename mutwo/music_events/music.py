@@ -23,7 +23,7 @@ GraceNotes = core_events.SequentialEvent[core_events.SimpleEvent]
 
 
 class NoteLike(core_events.SimpleEvent):
-    """NoteLike represents traditional discreet musical objects.
+    """:class:`NoteLike` represents traditional discreet musical objects.
 
     :param pitch_list: The pitch or pitches of the event. This can
         be a pitch object (any class that inherits from ``mutwo.music_parameters.abc.Pitch``)
