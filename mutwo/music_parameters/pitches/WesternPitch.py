@@ -19,8 +19,8 @@ from .EqualDividedOctavePitch import EqualDividedOctavePitch
 
 __all__ = ("WesternPitch",)
 
-ConcertPitch = typing.Union[core_constants.Real, music_parameters.abc.Pitch]
-PitchClassOrPitchClassName = typing.Union[core_constants.Real, str]
+ConcertPitch = core_constants.Real | music_parameters.abc.Pitch
+PitchClassOrPitchClassName = core_constants.Real | str
 
 
 class WesternPitch(EqualDividedOctavePitch):
@@ -266,14 +266,8 @@ class WesternPitch(EqualDividedOctavePitch):
 
     def _parse_pitch_interval(
         self,
-        pitch_interval: typing.Union[
-            str, music_parameters.abc.PitchInterval, core_constants.Real
-        ],
-    ) -> typing.Union[
-        music_parameters.abc.PitchInterval,
-        core_constants.Real,
-        music_parameters.abc.PitchInterval,
-    ]:
+        pitch_interval: str | music_parameters.abc.PitchInterval | core_constants.Real,
+    ) -> music_parameters.abc.PitchInterval | core_constants.Real | music_parameters.abc.PitchInterval:
         if isinstance(pitch_interval, str):
             pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
         elif isinstance(pitch_interval, core_constants.Real.__args__ + (int,)):
@@ -470,9 +464,7 @@ class WesternPitch(EqualDividedOctavePitch):
     @core_utilities.add_copy_option
     def add(  # type: ignore
         self,
-        pitch_interval: typing.Union[
-            str, music_parameters.abc.PitchInterval, core_constants.Real
-        ],
+        pitch_interval: str | music_parameters.abc.PitchInterval | core_constants.Real,
     ) -> WesternPitch:  # type: ignore
         pitch_interval = self._parse_pitch_interval(pitch_interval)
         if isinstance(pitch_interval, music_parameters.WesternPitchInterval):
@@ -483,9 +475,7 @@ class WesternPitch(EqualDividedOctavePitch):
     @core_utilities.add_copy_option
     def subtract(  # type: ignore
         self,
-        pitch_interval: typing.Union[
-            str, music_parameters.abc.PitchInterval, core_constants.Real
-        ],
+        pitch_interval: str | music_parameters.abc.PitchInterval | core_constants.Real,
     ) -> WesternPitch:  # type: ignore
         pitch_interval = self._parse_pitch_interval(pitch_interval)
         if isinstance(pitch_interval, music_parameters.WesternPitchInterval):

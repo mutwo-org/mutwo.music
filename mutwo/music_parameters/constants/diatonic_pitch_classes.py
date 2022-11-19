@@ -196,8 +196,8 @@ class DiatonicPitchClassContainer(object):
         return DIATONIC_PITCH_CLASS_COUNT
 
     def __getitem__(
-        self, key_or_index_or_slice: typing.Union[str, int, slice]
-    ) -> typing.Union[DiatonicPitchClass, tuple[DiatonicPitchClass, ...]]:
+        self, key_or_index_or_slice: str | int | slice
+    ) -> DiatonicPitchClass | tuple[DiatonicPitchClass, ...]:
         if isinstance(key_or_index_or_slice, str):
             return getattr(self, key_or_index_or_slice)
         return self.as_tuple()[key_or_index_or_slice]

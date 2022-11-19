@@ -118,7 +118,7 @@ class Pitch(
             cls,
             frequency: core_constants.Real,
             envelope: typing.Optional[
-                typing.Union[Pitch.PitchIntervalEnvelope, typing.Sequence]
+                Pitch.PitchIntervalEnvelope | typing.Sequence
             ] = None,
         ) -> Pitch:
             return music_parameters.DirectPitch(frequency, envelope=envelope)
@@ -275,9 +275,7 @@ class Pitch(
 
     def __init__(
         self,
-        envelope: typing.Optional[
-            typing.Union[Pitch.PitchIntervalEnvelope, typing.Sequence]
-        ] = None,
+        envelope: typing.Optional[Pitch.PitchIntervalEnvelope | typing.Sequence] = None,
     ):
         self.envelope = envelope
 
@@ -378,7 +376,7 @@ class Pitch(
     def envelope(
         self,
         envelope_or_envelope_argument: typing.Optional[
-            typing.Union[Pitch.PitchIntervalEnvelope, typing.Sequence]
+            Pitch.PitchIntervalEnvelope | typing.Sequence
         ],
     ):
         if not envelope_or_envelope_argument:

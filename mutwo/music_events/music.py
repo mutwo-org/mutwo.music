@@ -14,11 +14,11 @@ from mutwo import music_parameters
 
 __all__ = ("NoteLike",)
 
-PitchOrPitchSequence = typing.Union[
-    music_parameters.abc.Pitch, typing.Sequence, core_constants.Real, None
-]
+PitchOrPitchSequence = (
+    music_parameters.abc.Pitch | typing.Sequence | core_constants.Real | None
+)
 
-Volume = typing.Union[music_parameters.abc.Volume, core_constants.Real, str]
+Volume = music_parameters.abc.Volume | core_constants.Real | str
 GraceNotes = core_events.SequentialEvent[core_events.SimpleEvent]
 
 
@@ -187,7 +187,7 @@ class NoteLike(core_events.SimpleEvent):
 
     @staticmethod
     def _convert_unknown_object_to_grace_note_sequential_event(
-        unknown_object: typing.Union[GraceNotes, core_events.SimpleEvent]
+        unknown_object: GraceNotes | core_events.SimpleEvent,
     ) -> GraceNotes:
         match unknown_object:
             case core_events.SimpleEvent():
@@ -276,7 +276,7 @@ class NoteLike(core_events.SimpleEvent):
     @grace_note_sequential_event.setter
     def grace_note_sequential_event(
         self,
-        grace_note_sequential_event: typing.Union[GraceNotes, core_events.SimpleEvent],
+        grace_note_sequential_event: GraceNotes | core_events.SimpleEvent,
     ):
         self._grace_note_sequential_event = (
             NoteLike._convert_unknown_object_to_grace_note_sequential_event(
@@ -292,10 +292,7 @@ class NoteLike(core_events.SimpleEvent):
 
     @after_grace_note_sequential_event.setter
     def after_grace_note_sequential_event(
-        self,
-        after_grace_note_sequential_event: typing.Union[
-            GraceNotes, core_events.SimpleEvent
-        ],
+        self, after_grace_note_sequential_event: GraceNotes | core_events.SimpleEvent
     ):
         self._after_grace_note_sequential_event = (
             NoteLike._convert_unknown_object_to_grace_note_sequential_event(

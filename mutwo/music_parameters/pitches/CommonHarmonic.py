@@ -20,7 +20,7 @@ __all__ = (
 )
 
 
-ConcertPitch = typing.Union[core_constants.Real, music_parameters.abc.Pitch]
+ConcertPitch = core_constants.Real | music_parameters.abc.Pitch
 
 
 @dataclasses.dataclass(frozen=True)
@@ -55,17 +55,17 @@ class CommonHarmonic(JustIntonationPitch):
     :param partials: Tuple which contains partial numbers.
     :type partials: tuple[Partial, ...]
     :param ratio_or_exponent_tuple: see the documentation of :class:`JustIntonationPitch`
-    :type ratio_or_exponent_tuple: typing.Union[str, fractions.Fraction, typing.Iterable[int]]
+    :type ratio_or_exponent_tuple: str | fractions.Fraction | typing.Iterable[int]
     :param concert_pitch: see the documentation of :class:`JustIntonationPitch`
-    :type concert_pitch: typing.Union[core_constants.Real, music_parameters.abc.Pitch]
+    :type concert_pitch: core_constants.Real | music_parameters.abc.Pitch
     """
 
     def __init__(
         self,
         partial_tuple: tuple[Partial, ...],
-        ratio_or_exponent_tuple: typing.Union[
-            str, fractions.Fraction, typing.Iterable[int]
-        ] = "1/1",
+        ratio_or_exponent_tuple: str
+        | fractions.Fraction
+        | typing.Iterable[int] = "1/1",
         concert_pitch: ConcertPitch = None,
         *args,
         **kwargs,

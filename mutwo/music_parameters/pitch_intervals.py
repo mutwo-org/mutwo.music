@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import typing
 import re
 import warnings
 
@@ -54,7 +53,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         and the specification of the `is-interval-falling` indicator
         :const:`mutwo.music_parameters.configurations.FALLING_WESTERN_PITCH_INTERVAL_INDICATOR`.
         Both can be changed by the user. Default to 'p1'.
-    :type interval_name_or_semitone_count: typing.Union[str, core_constants.Real]
+    :type interval_name_or_semitone_count: str | core_constants.Real
 
     This class is particularly useful in combination with
     :class:`mutwo.music_parameters.WesternPitch`.
@@ -77,7 +76,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
 
     def __init__(
         self,
-        interval_name_or_semitone_count: typing.Union[str, core_constants.Real] = "p1",
+        interval_name_or_semitone_count: str | core_constants.Real = "p1",
     ):
         # Define mapping on the fly, so that it is only necessary to adjust
         # music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT

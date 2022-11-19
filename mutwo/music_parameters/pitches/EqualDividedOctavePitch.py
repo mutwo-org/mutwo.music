@@ -11,7 +11,7 @@ from mutwo import music_parameters
 
 __all__ = ("EqualDividedOctavePitch",)
 
-ConcertPitch = typing.Union[core_constants.Real, music_parameters.abc.Pitch]
+ConcertPitch = core_constants.Real | music_parameters.abc.Pitch
 
 
 class EqualDividedOctavePitch(music_parameters.abc.Pitch):
@@ -101,9 +101,7 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
 
     def _fetch_n_pitch_classes_difference(
         self,
-        pitch_interval: typing.Union[
-            music_parameters.abc.PitchInterval, core_constants.Real
-        ],
+        pitch_interval: music_parameters.abc.PitchInterval | core_constants.Real,
     ) -> core_constants.Real:
         if isinstance(
             pitch_interval,
@@ -199,10 +197,7 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
 
     @core_utilities.add_copy_option
     def add(  # type: ignore
-        self,
-        pitch_interval: typing.Union[
-            music_parameters.abc.PitchInterval, core_constants.Real
-        ],
+        self, pitch_interval: music_parameters.abc.PitchInterval | core_constants.Real
     ) -> EqualDividedOctavePitch:  # type: ignore
         """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""
 
@@ -213,10 +208,7 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
 
     @core_utilities.add_copy_option
     def subtract(  # type: ignore
-        self,
-        pitch_interval: typing.Union[
-            music_parameters.abc.PitchInterval, core_constants.Real
-        ],
+        self, pitch_interval: music_parameters.abc.PitchInterval | core_constants.Real
     ) -> EqualDividedOctavePitch:  # type: ignore
         """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""
         if isinstance(
