@@ -56,8 +56,6 @@ class PitchInterval(
     for definition of 'cents'.
     """
 
-    pass
-
 
 class Pitch(
     core_parameters.abc.SingleNumberParameter,
@@ -99,14 +97,12 @@ class Pitch(
             ] = None,
             **kwargs,
         ):
-            if not event_to_parameter:
-                event_to_parameter = self._event_to_parameter
-            if not value_to_parameter:
-                value_to_parameter = self._value_to_parameter
-            if not apply_parameter_on_event:
-                apply_parameter_on_event = self._apply_parameter_on_event
-            if not parameter_to_value:
-                parameter_to_value = self._parameter_to_value
+            event_to_parameter = event_to_parameter or self._event_to_parameter
+            value_to_parameter = value_to_parameter or self._value_to_parameter
+            apply_parameter_on_event = (
+                apply_parameter_on_event or self._apply_parameter_on_event
+            )
+            parameter_to_value = parameter_to_value or self._parameter_to_value
 
             super().__init__(
                 *args,
@@ -402,7 +398,7 @@ class Pitch(
 
     @abc.abstractmethod
     def add(self, pitch_interval: PitchInterval, mutate: bool = True) -> Pitch:
-        raise NotImplementedError
+        ...
 
     @core_utilities.add_copy_option
     def subtract(self, pitch_interval: music_parameters.abc.PitchInterval) -> Pitch:
@@ -606,15 +602,14 @@ class Volume(
         0
         """
 
-        if minimum_decibel is None:
-            minimum_decibel = (
-                music_parameters.configurations.DEFAULT_MINIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
-            )
-
-        if maximum_decibel is None:
-            maximum_decibel = (
-                music_parameters.configurations.DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
-            )
+        minimum_decibel = (
+            minimum_decibel
+            or music_parameters.configurations.DEFAULT_MINIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
+        )
+        maximum_decibel = (
+            maximum_decibel
+            or music_parameters.configurations.DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
+        )
 
         if decibel_to_convert > maximum_decibel:
             decibel_to_convert = maximum_decibel
@@ -674,7 +669,7 @@ class PitchAmbitus(abc.ABC):
 
     @abc.abstractmethod
     def pitch_to_period(self, pitch: Pitch) -> PitchInterval:
-        raise NotImplementedError
+        ...
 
     # ######################################################## #
     #                     magic methods                        #
@@ -721,9 +716,7 @@ class PitchAmbitus(abc.ABC):
         :type period: typing.Optional[PitchInterval]
         """
 
-        if period is None:
-            period = self.pitch_to_period(pitch)
-
+        period = period or self.pitch_to_period(pitch)
         pitch_variant_list = []
 
         is_first = True
@@ -791,7 +784,7 @@ class Indicator(abc.ABC):
     @property
     @abc.abstractmethod
     def is_active(self) -> bool:
-        raise NotImplementedError()
+        ...
 
     def get_arguments_dict(self) -> dict[str, typing.Any]:
         return {
@@ -802,8 +795,6 @@ class Indicator(abc.ABC):
 
 class PlayingIndicator(Indicator):
     """Abstract base class for any playing indicator."""
-
-    pass
 
 
 class ExplicitPlayingIndicator(PlayingIndicator):
@@ -886,7 +877,6 @@ class Lyric(
     @property
     def written_representation(self) -> str:
         """Get text as it would be written in natural language"""
-        raise NotImplementedError
 
 
 class Syllable(Lyric):

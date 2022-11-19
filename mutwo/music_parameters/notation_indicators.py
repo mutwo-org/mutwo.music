@@ -79,13 +79,10 @@ class NotationIndicatorCollection(
     rehearsal_mark: RehearsalMark = dataclasses.field(default_factory=RehearsalMark)
 
     def __setattr__(self, parameter_name: str, value: bool):
-        try:
-            notation_indicator = getattr(self, parameter_name)
-        except AttributeError:
-            notation_indicator = None
-        if notation_indicator is not None:
-            message = f"Can't override frozen property (notation indicator) '{notation_indicator}'!"
-            raise dataclasses.FrozenInstanceError(message)
+        if (notation_indicator := getattr(self, parameter_name, None)) is not None:
+            raise dataclasses.FrozenInstanceError(
+                f"Can't override frozen property (notation indicator) '{notation_indicator}'!"
+            )
         else:
             super().__setattr__(parameter_name, value)
 

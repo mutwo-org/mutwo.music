@@ -1,12 +1,10 @@
 """Event classes which are designated for musical usage."""
 
-try:
-    import quicktions as fractions  # type: ignore
-except ImportError:
-    import fractions  # type: ignore
-
+import fractions
 import numbers
 import typing
+
+import quicktions
 
 from mutwo import core_events
 from mutwo import core_constants
@@ -150,7 +148,7 @@ class NoteLike(core_events.SimpleEvent):
 
     @staticmethod
     def _convert_fraction_to_pitch(
-        pitch_indication: fractions.Fraction,
+        pitch_indication: fractions.Fraction | quicktions.Fraction,
     ) -> music_parameters.abc.Pitch:
         return music_parameters.JustIntonationPitch(pitch_indication)
 
@@ -164,29 +162,26 @@ class NoteLike(core_events.SimpleEvent):
     def _convert_unknown_object_to_pitch(
         unknown_object: typing.Any,
     ) -> list[music_parameters.abc.Pitch]:
-        if unknown_object is None:
-            pitch_list = []
-
-        elif isinstance(unknown_object, music_parameters.abc.Pitch):
-            pitch_list = [unknown_object]
-
-        elif isinstance(unknown_object, str):
-            pitch_list = [
-                NoteLike._convert_string_to_pitch(pitch_indication)
-                for pitch_indication in unknown_object.split(" ")
-            ]
-
-        elif isinstance(unknown_object, fractions.Fraction):
-            pitch_list = [NoteLike._convert_fraction_to_pitch(unknown_object)]
-
-        elif isinstance(unknown_object, float) or isinstance(unknown_object, int):
-            pitch_list = [NoteLike._convert_float_or_integer_to_pitch(unknown_object)]
-
-        else:
-            message = "Can't build pitch object from object '{}' of type '{}'.".format(
-                unknown_object, type(unknown_object)
-            )
-            raise NotImplementedError(message)
+        match unknown_object:
+            case None:
+                pitch_list = []
+            case music_parameters.abc.Pitch():
+                pitch_list = [unknown_object]
+            case str():
+                pitch_list = [
+                    NoteLike._convert_string_to_pitch(pitch_indication)
+                    for pitch_indication in unknown_object.split(" ")
+                ]
+            case fractions.Fraction() | quicktions.Fraction():
+                pitch_list = [NoteLike._convert_fraction_to_pitch(unknown_object)]
+            case float() | int():
+                pitch_list = [NoteLike._convert_float_or_integer_to_pitch(unknown_object)]
+            case _:
+                raise NotImplementedError(
+                        "Can't build pitch object from object '{}' of type '{}'.".format(
+                            unknown_object, type(unknown_object)
+                        )
+                )
 
         return pitch_list
 
@@ -194,12 +189,13 @@ class NoteLike(core_events.SimpleEvent):
     def _convert_unknown_object_to_grace_note_sequential_event(
         unknown_object: typing.Union[GraceNotes, core_events.SimpleEvent]
     ) -> GraceNotes:
-        if isinstance(unknown_object, core_events.SimpleEvent):
-            return core_events.SequentialEvent([unknown_object])
-        elif isinstance(unknown_object, core_events.SequentialEvent):
-            return unknown_object
-        else:
-            raise TypeError(f"Can't set grace notes to {unknown_object}")
+        match unknown_object:
+            case core_events.SimpleEvent():
+                return core_events.SequentialEvent([unknown_object])
+            case core_events.SequentialEvent():
+                return unknown_object
+            case _:
+                raise TypeError(f"Can't set grace notes to {unknown_object}")
 
     # ###################################################################### #
     #                            properties                                  #
@@ -252,23 +248,23 @@ class NoteLike(core_events.SimpleEvent):
 
     @volume.setter
     def volume(self, volume: typing.Any):
-        if isinstance(volume, numbers.Real):
-            if volume >= 0:  # type: ignore
-                volume = music_parameters.DirectVolume(volume)  # type: ignore
-            else:
-                volume = music_parameters.DecibelVolume(volume)  # type: ignore
-
-        elif isinstance(volume, str):
-            volume = music_parameters.WesternVolume(volume)
-
-        elif not isinstance(volume, music_parameters.abc.Volume):
-            message = (
-                "Can't initialise '{}' with value '{}' of type '{}' for argument"
-                " 'volume'. The type for 'volume' should be '{}'.".format(
-                    type(self).__name__, volume, type(volume), Volume
+        match volume:
+            case music_parameters.abc.Volume():
+                volume = volume
+            case numbers.Real():
+                if volume >= 0:  # type: ignore
+                    volume = music_parameters.DirectVolume(volume)  # type: ignore
+                else:
+                    volume = music_parameters.DecibelVolume(volume)  # type: ignore
+            case str():
+                volume = music_parameters.WesternVolume(volume)
+            case _:
+                raise TypeError(
+                    "Can't initialise '{}' with value '{}' of type '{}' for argument"
+                    " 'volume'. The type for 'volume' should be '{}'.".format(
+                        type(self).__name__, volume, type(volume), Volume
+                    )
                 )
-            )
-            raise TypeError(message)
         self._volume = volume
 
     @property

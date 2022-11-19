@@ -48,8 +48,9 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
             *args,
             **kwargs,
         )
-        if concert_pitch is None:
-            concert_pitch = music_parameters.configurations.DEFAULT_CONCERT_PITCH
+        concert_pitch = (
+            concert_pitch or music_parameters.configurations.DEFAULT_CONCERT_PITCH
+        )
 
         self._n_pitch_classes_per_octave = n_pitch_classes_per_octave
         self.pitch_class = pitch_class

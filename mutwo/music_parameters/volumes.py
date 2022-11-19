@@ -86,15 +86,15 @@ class WesternVolume(music_parameters.abc.Volume):
         minimum_decibel: typing.Optional[core_constants.Real] = None,
         maximum_decibel: typing.Optional[core_constants.Real] = None,
     ):
-        if minimum_decibel is None:
-            minimum_decibel = (
-                music_parameters.configurations.DEFAULT_MINIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
-            )
+        minimum_decibel = (
+            minimum_decibel
+            or music_parameters.configurations.DEFAULT_MINIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
+        )
 
-        if maximum_decibel is None:
-            maximum_decibel = (
-                music_parameters.configurations.DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
-            )
+        maximum_decibel = (
+            maximum_decibel
+            or music_parameters.configurations.DEFAULT_MAXIMUM_DECIBEL_FOR_MIDI_VELOCITY_AND_STANDARD_DYNAMIC_INDICATOR
+        )
 
         self.name = name
         self._standard_dynamic_indicator_to_decibel_mapping = (
@@ -217,13 +217,10 @@ class WesternVolume(music_parameters.abc.Volume):
         try:
             assert name in music_parameters.constants.DYNAMIC_INDICATOR_TUPLE
         except AssertionError:
-            message = (
-                "unknown dynamic name '{}'. Supported dynamic names are '{}'.".format(
-                    name,
-                    music_parameters.constants.DYNAMIC_INDICATOR_TUPLE,
-                )
+            raise ValueError(
+                f"unknown dynamic name '{name}'. Supported dynamic names "
+                f"are '{music_parameters.constants.DYNAMIC_INDICATOR_TUPLE}'."
             )
-            raise ValueError(message)
         self._name = name
 
     @property

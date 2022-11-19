@@ -213,11 +213,7 @@ class PlayingIndicatorCollection(
         can actually be overridden.
         """
 
-        try:
-            playing_indicator = getattr(self, parameter_name)
-        except AttributeError:
-            playing_indicator = None
-        if playing_indicator is not None:
+        if (playing_indicator := getattr(self, parameter_name, None)) is not None:
             if isinstance(
                 playing_indicator, music_parameters.abc.ExplicitPlayingIndicator
             ):
