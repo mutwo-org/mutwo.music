@@ -413,13 +413,13 @@ class WesternPitchIntervalTest(unittest.TestCase):
                 can_be_simplified,
             )
 
-    def test_inverse_direction(self):
+    def test_inverse(self):
         self.assertEqual(
-            music_parameters.WesternPitchInterval("m3").inverse_direction(),
+            music_parameters.WesternPitchInterval("m3").inverse(),
             music_parameters.WesternPitchInterval("m-3"),
         )
         self.assertEqual(
-            music_parameters.WesternPitchInterval("p-11").inverse_direction(),
+            music_parameters.WesternPitchInterval("p-11").inverse(),
             music_parameters.WesternPitchInterval("p11"),
         )
 

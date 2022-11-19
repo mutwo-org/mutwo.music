@@ -479,7 +479,7 @@ class WesternPitch(EqualDividedOctavePitch):
     ) -> WesternPitch:  # type: ignore
         pitch_interval = self._parse_pitch_interval(pitch_interval)
         if isinstance(pitch_interval, music_parameters.WesternPitchInterval):
-            return self.add(pitch_interval.inverse_direction(mutate=False))
+            return self.add(pitch_interval.inverse(mutate=False))
         else:
             return super().subtract(pitch_interval)  # type: ignore
 
@@ -559,7 +559,7 @@ class WesternPitch(EqualDividedOctavePitch):
         ):
             if pitch_to_compare < self:
                 pitch_interval = pitch_to_compare._get_western_pitch_interval(self)
-                pitch_interval.inverse_direction()
+                pitch_interval.inverse()
             else:
                 pitch_interval = self._get_western_pitch_interval(pitch_to_compare)
             return pitch_interval

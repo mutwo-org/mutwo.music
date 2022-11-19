@@ -558,7 +558,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
     # ###################################################################### #
 
     @core_utilities.add_copy_option
-    def inverse_direction(self, mutate: bool = False) -> WesternPitchInterval:
+    def inverse(self, mutate: bool = False) -> WesternPitchInterval:
         """Makes falling interval to rising and vice versa.
 
         **Example:**
@@ -569,8 +569,3 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         """
         self.is_interval_falling = not self.is_interval_falling
         return self
-
-    @core_utilities.add_copy_option
-    def inverse(self) -> WesternPitchInterval:
-        # TODO()
-        raise NotImplementedError
