@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- `mutwo.music_parameters.WesternPitch.inverse_direction` to `mutwo.music_parameters.WesternPitch.inverse`
+
+### Added
+- new abstract method `mutwo.music_parameters.abc.PitchInterval.inverse`
+    - added new concrete method: `mutwo.music_parameters.DirectPitchInterval.inverse`
+- implementations of musical scale representations:
+    - `mutwo.music_parameters.Scale`
+    - `mutwo.music_parameters.ScaleFamily`
+    - `mutwo.music_parameters.RepeatingScaleFamily`
+
 
 ## [0.19.0] - 2022-11-04
 
