@@ -96,26 +96,23 @@ class NoteLike(core_events.SimpleEvent):
         ] = None,
         lyric: music_parameters.abc.Lyric = music_parameters.DirectLyric(""),
     ):
-        if playing_indicator_collection is None:
-            playing_indicator_collection = (
-                music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
-            )
-        if notation_indicator_collection is None:
-            notation_indicator_collection = (
-                music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
-            )
-        if grace_note_sequential_event is None:
-            grace_note_sequential_event = core_events.SequentialEvent([])
-        if after_grace_note_sequential_event is None:
-            after_grace_note_sequential_event = core_events.SequentialEvent([])
-
         self.pitch_list = pitch_list
         self.volume = volume
         super().__init__(duration)
-        self.grace_note_sequential_event = grace_note_sequential_event
-        self.after_grace_note_sequential_event = after_grace_note_sequential_event
-        self.playing_indicator_collection = playing_indicator_collection
-        self.notation_indicator_collection = notation_indicator_collection
+        self.grace_note_sequential_event = (
+            grace_note_sequential_event or core_events.SequentialEvent([])
+        )
+        self.after_grace_note_sequential_event = (
+            after_grace_note_sequential_event or core_events.SequentialEvent([])
+        )
+        self.playing_indicator_collection = (
+            playing_indicator_collection
+            or music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
+        )
+        self.notation_indicator_collection = (
+            notation_indicator_collection
+            or music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
+        )
         self.lyric = lyric
 
     # ###################################################################### #
