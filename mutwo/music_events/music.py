@@ -1,16 +1,11 @@
 """Event classes which are designated for musical usage."""
 
-import fractions
-import numbers
 import typing
-
-import quicktions
 
 from mutwo import core_events
 from mutwo import core_constants
 from mutwo import music_events
 from mutwo import music_parameters
-
 
 __all__ = ("NoteLike",)
 
@@ -116,91 +111,6 @@ class NoteLike(core_events.SimpleEvent):
         self.lyric = lyric
 
     # ###################################################################### #
-    #                          static methods                                #
-    # ###################################################################### #
-
-    @staticmethod
-    def _convert_string_to_pitch(pitch_indication: str) -> music_parameters.abc.Pitch:
-        # assumes it is a ratio
-        if "/" in pitch_indication:
-            return music_parameters.JustIntonationPitch(pitch_indication)
-
-        # assumes it is a WesternPitch name
-        elif (
-            pitch_indication[0]
-            in music_parameters.constants.DIATONIC_PITCH_CLASS_CONTAINER
-        ):
-            if pitch_indication[-1].isdigit():
-                pitch_name, octave = pitch_indication[:-1], int(pitch_indication[-1])
-                pitch = music_parameters.WesternPitch(pitch_name, octave)
-            else:
-                pitch = music_parameters.WesternPitch(pitch_indication)
-
-            return pitch
-
-        else:
-            raise NotImplementedError(
-                f"Can't build pitch from pitch_indication '{pitch_indication}'."
-                " Supported string formats are (1) ratios divided by a forward "
-                "slash (for instance '3/2' or '4/3') and (2) names of western "
-                "pitch classes with an optional number to indicate the octave "
-                "(for instance 'c4', 'as' or 'fqs2')."
-            )
-
-    @staticmethod
-    def _convert_fraction_to_pitch(
-        pitch_indication: fractions.Fraction | quicktions.Fraction,
-    ) -> music_parameters.abc.Pitch:
-        return music_parameters.JustIntonationPitch(pitch_indication)
-
-    @staticmethod
-    def _convert_float_or_integer_to_pitch(
-        pitch_indication: float,
-    ) -> music_parameters.abc.Pitch:
-        return music_parameters.WesternPitch(pitch_indication)
-
-    @staticmethod
-    def _convert_unknown_object_to_pitch(
-        unknown_object: typing.Any,
-    ) -> list[music_parameters.abc.Pitch]:
-        match unknown_object:
-            case None:
-                pitch_list = []
-            case music_parameters.abc.Pitch():
-                pitch_list = [unknown_object]
-            case str():
-                pitch_list = [
-                    NoteLike._convert_string_to_pitch(pitch_indication)
-                    for pitch_indication in unknown_object.split(" ")
-                ]
-            case fractions.Fraction() | quicktions.Fraction():
-                pitch_list = [NoteLike._convert_fraction_to_pitch(unknown_object)]
-            case float() | int():
-                pitch_list = [
-                    NoteLike._convert_float_or_integer_to_pitch(unknown_object)
-                ]
-            case _:
-                raise NotImplementedError(
-                    "Can't build pitch object from object '{}' of type '{}'.".format(
-                        unknown_object, type(unknown_object)
-                    )
-                )
-
-        return pitch_list
-
-    @staticmethod
-    def _convert_unknown_object_to_grace_note_sequential_event(
-        unknown_object: GraceNotes | core_events.SimpleEvent,
-    ) -> GraceNotes:
-        match unknown_object:
-            case core_events.SimpleEvent():
-                return core_events.SequentialEvent([unknown_object])
-            case core_events.SequentialEvent():
-                return unknown_object
-            case _:
-                raise TypeError(f"Can't set grace notes to {unknown_object}")
-
-    # ###################################################################### #
     #                            properties                                  #
     # ###################################################################### #
 
@@ -233,47 +143,29 @@ class NoteLike(core_events.SimpleEvent):
         if not isinstance(pitch_list, str) and isinstance(pitch_list, typing.Iterable):
             # several pitches
             pitches_per_element = (
-                NoteLike._convert_unknown_object_to_pitch(pitch) for pitch in pitch_list
+                music_events.configurations.UNKNOWN_OBJECT_TO_PITCH_LIST(pitch)
+                for pitch in pitch_list
             )
             pitch_list = []
             for pitches in pitches_per_element:
                 pitch_list.extend(pitches)
         else:
-            pitch_list = NoteLike._convert_unknown_object_to_pitch(pitch_list)
+            pitch_list = music_events.configurations.UNKNOWN_OBJECT_TO_PITCH_LIST(pitch_list)
 
         self._pitch_list = pitch_list
 
     @property
     def volume(self) -> typing.Any:
         """The volume of the event."""
-
         return self._volume
 
     @volume.setter
     def volume(self, volume: typing.Any):
-        match volume:
-            case music_parameters.abc.Volume():
-                volume = volume
-            case numbers.Real():
-                if volume >= 0:  # type: ignore
-                    volume = music_parameters.DirectVolume(volume)  # type: ignore
-                else:
-                    volume = music_parameters.DecibelVolume(volume)  # type: ignore
-            case str():
-                volume = music_parameters.WesternVolume(volume)
-            case _:
-                raise TypeError(
-                    "Can't initialise '{}' with value '{}' of type '{}' for argument"
-                    " 'volume'. The type for 'volume' should be '{}'.".format(
-                        type(self).__name__, volume, type(volume), Volume
-                    )
-                )
-        self._volume = volume
+        self._volume = music_events.configurations.UNKNOWN_OBJECT_TO_VOLUME(volume)
 
     @property
     def grace_note_sequential_event(self) -> GraceNotes:
         """:class:`core_events.SequentialEvent` before :class:`NoteLike`"""
-
         return self._grace_note_sequential_event
 
     @grace_note_sequential_event.setter
@@ -282,7 +174,7 @@ class NoteLike(core_events.SimpleEvent):
         grace_note_sequential_event: GraceNotes | core_events.SimpleEvent,
     ):
         self._grace_note_sequential_event = (
-            NoteLike._convert_unknown_object_to_grace_note_sequential_event(
+            music_events.configurations.UNKNOWN_OBJECT_TO_GRACE_NOTE_SEQUENTIAL_EVENT(
                 grace_note_sequential_event
             )
         )
@@ -290,7 +182,6 @@ class NoteLike(core_events.SimpleEvent):
     @property
     def after_grace_note_sequential_event(self) -> GraceNotes:
         """:class:`core_events.SequentialEvent` after :class:`NoteLike`"""
-
         return self._after_grace_note_sequential_event
 
     @after_grace_note_sequential_event.setter
@@ -298,7 +189,7 @@ class NoteLike(core_events.SimpleEvent):
         self, after_grace_note_sequential_event: GraceNotes | core_events.SimpleEvent
     ):
         self._after_grace_note_sequential_event = (
-            NoteLike._convert_unknown_object_to_grace_note_sequential_event(
+            music_events.configurations.UNKNOWN_OBJECT_TO_GRACE_NOTE_SEQUENTIAL_EVENT(
                 after_grace_note_sequential_event
             )
         )
