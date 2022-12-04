@@ -141,16 +141,16 @@ class NoteLike(core_events.SimpleEvent):
         # make sure pitch_list always become assigned to a list of pitches,
         # to be certain of the returned type
         if not isinstance(pitch_list, str) and isinstance(pitch_list, typing.Iterable):
-            # several pitches
-            pitches_per_element = (
-                music_events.configurations.UNKNOWN_OBJECT_TO_PITCH_LIST(pitch)
-                for pitch in pitch_list
-            )
-            pitch_list = []
-            for pitches in pitches_per_element:
-                pitch_list.extend(pitches)
+            parsed_pitch_list = []
+            for pitch in pitch_list:
+                parsed_pitch_list.extend(
+                    music_events.configurations.UNKNOWN_OBJECT_TO_PITCH_LIST(pitch)
+                )
+            pitch_list = parsed_pitch_list
         else:
-            pitch_list = music_events.configurations.UNKNOWN_OBJECT_TO_PITCH_LIST(pitch_list)
+            pitch_list = music_events.configurations.UNKNOWN_OBJECT_TO_PITCH_LIST(
+                pitch_list
+            )
 
         self._pitch_list = pitch_list
 
