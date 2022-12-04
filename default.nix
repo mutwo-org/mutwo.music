@@ -3,7 +3,7 @@ with pkgs.python310Packages;
 
 let
 
-  mutwo-common-archive = builtins.fetchTarball "https://github.com/mutwo-org/mutwo.common/archive/4cb19568be02ab7ef3b0d28d2c5464e8fbf20960.tar.gz";
+  mutwo-common-archive = builtins.fetchTarball "https://github.com/mutwo-org/mutwo.common/archive/937e193ec031ee1679b716a9306e2a6800e1c7ef.tar.gz";
   mutwo-common = import (mutwo-common-archive + "/default.nix");
 
   panphon = pkgs.python310Packages.buildPythonPackage rec {
@@ -69,8 +69,8 @@ in
     src = fetchFromGitHub {
       owner = "mutwo-org";
       repo = name;
-      rev = "f0364d5267e2bfe2fbaa67cf364117e57540eaa1";
-      sha256 = "sha256-FBRDAB4CdtkiVnTRnr1XnjoqmOu7nTXXKjoNWSTsOCY=";
+      rev = "37a6c3658231463078904ec50205b254a222c9f8";
+      sha256 = "sha256-xs0NxtCKPW36GPE0jJ2BkiTfzx2N54SqQOITsnf+7Pw=";
     };
     checkInputs = [
       python310Packages.pytest
