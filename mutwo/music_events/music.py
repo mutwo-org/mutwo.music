@@ -88,8 +88,8 @@ class NoteLike(core_events.SimpleEvent):
         volume: Volume = "mf",
         grace_note_sequential_event: typing.Optional[GraceNotes] = None,
         after_grace_note_sequential_event: typing.Optional[GraceNotes] = None,
-        playing_indicator_collection: music_parameters.PlayingIndicatorCollection = None,
-        notation_indicator_collection: music_parameters.NotationIndicatorCollection = None,
+        playing_indicator_collection: typing.Optional[music_parameters.PlayingIndicatorCollection] = None,
+        notation_indicator_collection: typing.Optional[music_parameters.NotationIndicatorCollection] = None,
         lyric: music_parameters.abc.Lyric = music_parameters.DirectLyric(""),
     ):
         if playing_indicator_collection is None:
