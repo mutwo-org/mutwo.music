@@ -58,7 +58,7 @@ class NoteLike(core_events.SimpleEvent):
     :param lyric:
     :type lyric: core_parameters.abc.Lyric
 
-    By default mutwo doesn't differentiate between Tones, Chords and
+    ``mutwo.music`` doesn't differentiate between Tones, Chords and
     Rests, but rather simply implements one general class which can
     represent any of the mentioned definitions (e.g. a NoteLike object
     with several pitches may be called a 'Chord' and a NoteLike object
