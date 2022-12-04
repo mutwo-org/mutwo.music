@@ -88,8 +88,12 @@ class NoteLike(core_events.SimpleEvent):
         volume: Volume = "mf",
         grace_note_sequential_event: typing.Optional[GraceNotes] = None,
         after_grace_note_sequential_event: typing.Optional[GraceNotes] = None,
-        playing_indicator_collection: typing.Optional[music_parameters.PlayingIndicatorCollection] = None,
-        notation_indicator_collection: typing.Optional[music_parameters.NotationIndicatorCollection] = None,
+        playing_indicator_collection: typing.Optional[
+            music_parameters.PlayingIndicatorCollection
+        ] = None,
+        notation_indicator_collection: typing.Optional[
+            music_parameters.NotationIndicatorCollection
+        ] = None,
         lyric: music_parameters.abc.Lyric = music_parameters.DirectLyric(""),
     ):
         if playing_indicator_collection is None:
@@ -175,12 +179,14 @@ class NoteLike(core_events.SimpleEvent):
             case fractions.Fraction() | quicktions.Fraction():
                 pitch_list = [NoteLike._convert_fraction_to_pitch(unknown_object)]
             case float() | int():
-                pitch_list = [NoteLike._convert_float_or_integer_to_pitch(unknown_object)]
+                pitch_list = [
+                    NoteLike._convert_float_or_integer_to_pitch(unknown_object)
+                ]
             case _:
                 raise NotImplementedError(
-                        "Can't build pitch object from object '{}' of type '{}'.".format(
-                            unknown_object, type(unknown_object)
-                        )
+                    "Can't build pitch object from object '{}' of type '{}'.".format(
+                        unknown_object, type(unknown_object)
+                    )
                 )
 
         return pitch_list
