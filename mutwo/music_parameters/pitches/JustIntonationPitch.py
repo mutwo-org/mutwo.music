@@ -144,32 +144,6 @@ class JustIntonationPitch(
         return ratio
 
     @staticmethod
-    def _adjust_float(float_: float, border: int) -> float:
-        r"""Multiply float with border, until it is <= 1 and > than border.
-
-        Arguments:
-            * float_: The float, which shall be adjusted
-            * border
-        >>> float0 = 0.5
-        >>> float1 = 2
-        >>> border = 2
-        >>> JustIntonationPitch._adjust_float(float0, border)
-        1.0
-        >>> JustIntonationPitch._adjust_float(float1, border)
-        1.0
-        """
-
-        if border > 1:
-            while float_ >= border:
-                try:
-                    float_ /= border
-                except OverflowError:
-                    float_ //= border
-            while float_ < 1:
-                float_ *= border
-        return float_
-
-    @staticmethod
     def _adjust_exponent_tuple(
         exponent_tuple: tuple, primes: tuple, border: int
     ) -> tuple:
