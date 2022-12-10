@@ -71,21 +71,11 @@ def make_common_product_set_scale(
 
     **Example:**
 
-    >>> from mutwo.generators import wilson
-    >>> wilson.make_common_product_set_scale((3, 5, 7, 9), 2, True)
-    (JustIntonationPitch(15),
-     JustIntonationPitch(21),
-     JustIntonationPitch(27),
-     JustIntonationPitch(35),
-     JustIntonationPitch(45),
-     JustIntonationPitch(63))
-    >>> wilson.make_common_product_set_scale((3, 5, 7, 9), 2, False)
-    (JustIntonationPitch(1/15),
-     JustIntonationPitch(1/21),
-     JustIntonationPitch(1/27),
-     JustIntonationPitch(1/35),
-     JustIntonationPitch(1/45),
-     JustIntonationPitch(1/63))
+    >>> from mutwo import music_generators
+    >>> music_generators.make_common_product_set_scale((3, 5, 7, 9), 2, True)
+    (JustIntonationPitch('15'), JustIntonationPitch('21'), JustIntonationPitch('27'), JustIntonationPitch('35'), JustIntonationPitch('45'), JustIntonationPitch('63'))
+    >>> music_generators.make_common_product_set_scale((3, 5, 7, 9), 2, False)
+    (JustIntonationPitch('1/15'), JustIntonationPitch('1/21'), JustIntonationPitch('1/27'), JustIntonationPitch('1/35'), JustIntonationPitch('1/45'), JustIntonationPitch('1/63'))
     """
 
     common_product_set_scale = []
@@ -131,23 +121,23 @@ def make_wilsons_brun_euclidean_algorithm_generator(
 
     **Example:**
 
-    >>> from mutwo.ext.parameters import pitches
-    >>> from mutwo.ext.generators import wilson
+    >>> from mutwo import music_parameters
+    >>> from mutwo import music_generators
     >>> wilsons_brun_euclidean_algorithm_generator = (
-    >>>     wilson.make_wilsons_brun_euclidean_algorithm_generator(
-    >>>         (
-    >>>             music_parameters.JustIntonationPitch("2/1"),
-    >>>             music_parameters.JustIntonationPitch("3/2"),
-    >>>             music_parameters.JustIntonationPitch("5/4"),
-    >>>         )
-    >>>     )
-    >>> )
+    ...     music_generators.make_wilsons_brun_euclidean_algorithm_generator(
+    ...         (
+    ...             music_parameters.JustIntonationPitch("2/1"),
+    ...             music_parameters.JustIntonationPitch("3/2"),
+    ...             music_parameters.JustIntonationPitch("5/4"),
+    ...         )
+    ...     )
+    ... )
     >>> next(wilsons_brun_euclidean_algorithm_generator)
-    ((JustIntonationPitch(2),),)
+    ((JustIntonationPitch('2/1'),),)
     >>> next(wilsons_brun_euclidean_algorithm_generator)
-    ((JustIntonationPitch(3/2), JustIntonationPitch(4/3)),)
+    ((JustIntonationPitch('3/2'), JustIntonationPitch('4/3')),)
     >>> next(wilsons_brun_euclidean_algorithm_generator)
-    ((JustIntonationPitch(4/3), JustIntonationPitch(9/8), JustIntonationPitch(4/3)),)
+    ((JustIntonationPitch('4/3'), JustIntonationPitch('9/8'), JustIntonationPitch('4/3')),)
     """
 
     if not BRUN_FOUND:

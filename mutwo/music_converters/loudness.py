@@ -83,11 +83,11 @@ class LoudnessToAmplitude(core_converters.abc.Converter):
 
         **Example:**
 
-        >>> from mutwo.converters import symmetrical
-        >>> loudness_converter = symmetrical.loudness.LoudnessToAmplitudeConverter(1)
-        >>> loudness_converter.convert(200)
+        >>> from mutwo import music_converters
+        >>> loudness_converter = music_converters.LoudnessToAmplitude()
+        >>> loudness_converter.convert(1, 200)
         0.009364120303317933
-        >>> loudness_converter.convert(50)
+        >>> loudness_converter.convert(1, 50)
         0.15497924558613232
         """
 

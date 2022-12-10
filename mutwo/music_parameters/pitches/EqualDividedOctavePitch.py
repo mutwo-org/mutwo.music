@@ -28,9 +28,9 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
     :param concert_pitch_octave: The octave of the reference pitch.
     :param concert_pitch: The frequency of the reference pitch (for instance 440 for a).
 
-    >>> from mutwo.music_parameters import pitches
+    >>> from mutwo import music_parameters
     >>> # making a middle `a`
-    >>> pitches.EqualDividedOctavePitch(12, 9, 4, 9, 4, 440)
+    >>> pitch = music_parameters.EqualDividedOctavePitch(12, 9, 4, 9, 4, 440)
     """
 
     def __init__(

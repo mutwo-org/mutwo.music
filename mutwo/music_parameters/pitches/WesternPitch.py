@@ -42,9 +42,11 @@ class WesternPitch(EqualDividedOctavePitch):
 
     **Example:**
 
-    >>> from mutwo.music_parameters import pitches
-    >>> pitches.WesternPitch('cs', 4)  # c-sharp 4
-    >>> pitches.WesternPitch('aqs', 2)  # a-quarter-sharp 2
+    >>> from mutwo import music_parameters
+    >>> music_parameters.WesternPitch('cs', 4)  # c-sharp 4
+    WesternPitch('cs', 4)
+    >>> music_parameters.WesternPitch('aqs', 2)  # a-quarter-sharp 2
+    WesternPitch('aqs', 2)
     """
 
     def __init__(

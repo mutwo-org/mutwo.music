@@ -390,6 +390,11 @@ class Scale(object):
     ) -> music_parameters.abc.Pitch:
         return self.pitch_tuple[self.scale_position_tuple.index(scale_position)]
 
+    def pitch_to_scale_position(
+        self, pitch: music_parameters.abc.Pitch
+    ) -> music_parameters.abc.Pitch:
+        return self.scale_position_tuple[self.pitch_tuple.index(pitch)]
+
     def pitch_to_scale_index(self, pitch: music_parameters.abc.Pitch) -> ScaleIndex:
         return self.pitch_tuple.index(pitch)
 

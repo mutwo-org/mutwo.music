@@ -71,8 +71,8 @@ class NoteLike(core_events.SimpleEvent):
     >>> tone = music_events.NoteLike(music_parameters.WesternPitch('a'), 1, 1)
     >>> other_tone = music_events.NoteLike('3/2', 1, 0.5)
     >>> chord = music_events.NoteLike(
-        [music_parameters.WesternPitch('a'), music_parameters.JustIntonationPitch('3/2')], 1, 1
-    )
+    ...     [music_parameters.WesternPitch('a'), music_parameters.JustIntonationPitch('3/2')], 1, 1
+    ... )
     >>> other_chord = music_events.NoteLike('c4 dqs3 10/7', 1, 3)
     """
 

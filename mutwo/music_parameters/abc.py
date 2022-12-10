@@ -305,8 +305,8 @@ class Pitch(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Pitch.hertz_to_cents(200, 400)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Pitch.hertz_to_cents(200, 400)
         1200.0
         """
         return float(1200 * math.log(frequency1 / frequency0, 2))
@@ -320,8 +320,8 @@ class Pitch(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Pitch.ratio_to_cents(fractions.Fraction(3, 2))
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Pitch.ratio_to_cents(fractions.Fraction(3, 2))
         701.9550008653874
         """
         return music_parameters.constants.CENT_CALCULATION_CONSTANT * math.log10(ratio)
@@ -334,8 +334,8 @@ class Pitch(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Pitch.cents_to_ratio(1200)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Pitch.cents_to_ratio(1200)
         Fraction(2, 1)
         """
         return fractions.Fraction(
@@ -354,10 +354,10 @@ class Pitch(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Pitch.hertz_to_midi_pitch_number(440)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Pitch.hertz_to_midi_pitch_number(440)
         69.0
-        >>> abc.Pitch.hertz_to_midi_pitch_number(440 * 3 / 2)
+        >>> music_parameters.abc.Pitch.hertz_to_midi_pitch_number(440 * 3 / 2)
         75.98044999134612
         """
         closest_frequency_index = core_utilities.find_closest_index(
@@ -439,8 +439,7 @@ class Pitch(
         >>> from mutwo import music_parameters
         >>> a4 = music_parameters.DirectPitch(frequency=440)
         >>> a5 = music_parameters.DirectPitch(frequency=880)
-        >>> a4.get_pitch_interval(a5)
-        DirectPitchInterval(cents = 1200)
+        >>> pitch_interval = a4.get_pitch_interval(a5)
         """
 
         cent_difference = self.ratio_to_cents(
@@ -472,12 +471,12 @@ class Volume(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Volume.decibel_to_amplitude_ratio(0)
-        1
-        >>> abc.Volume.decibel_to_amplitude_ratio(-6)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Volume.decibel_to_amplitude_ratio(0)
+        1.0
+        >>> music_parameters.abc.Volume.decibel_to_amplitude_ratio(-6)
         0.5011872336272722
-        >>> abc.Volume.decibel_to_amplitude_ratio(0, reference_amplitude=0.25)
+        >>> music_parameters.abc.Volume.decibel_to_amplitude_ratio(0, reference_amplitude=0.25)
         0.25
         """
         return float(reference_amplitude * (10 ** (decibel / 20)))
@@ -493,12 +492,12 @@ class Volume(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Volume.decibel_to_power_ratio(0)
-        1
-        >>> abc.Volume.decibel_to_power_ratio(-6)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Volume.decibel_to_power_ratio(0)
+        1.0
+        >>> music_parameters.abc.Volume.decibel_to_power_ratio(-6)
         0.251188643150958
-        >>> abc.Volume.decibel_to_power_ratio(0, reference_amplitude=0.25)
+        >>> music_parameters.abc.Volume.decibel_to_power_ratio(0, reference_amplitude=0.25)
         0.25
         """
         return float(reference_amplitude * (10 ** (decibel / 10)))
@@ -514,12 +513,12 @@ class Volume(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Volume.amplitude_ratio_to_decibel(1)
-        0
-        >>> abc.Volume.amplitude_ratio_to_decibel(0)
-        inf
-        >>> abc.Volume.amplitude_ratio_to_decibel(0.5)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Volume.amplitude_ratio_to_decibel(1)
+        0.0
+        >>> music_parameters.abc.Volume.amplitude_ratio_to_decibel(0)
+        -inf
+        >>> music_parameters.abc.Volume.amplitude_ratio_to_decibel(0.5)
         -6.020599913279624
         """
         if amplitude == 0:
@@ -538,12 +537,12 @@ class Volume(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Volume.power_ratio_to_decibel(1)
-        0
-        >>> abc.Volume.power_ratio_to_decibel(0)
-        inf
-        >>> abc.Volume.power_ratio_to_decibel(0.5)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Volume.power_ratio_to_decibel(1)
+        0.0
+        >>> music_parameters.abc.Volume.power_ratio_to_decibel(0)
+        -inf
+        >>> music_parameters.abc.Volume.power_ratio_to_decibel(0.5)
         -3.010299956639812
         """
         if amplitude == 0:
@@ -566,10 +565,10 @@ class Volume(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Volume.amplitude_ratio_to_midi_velocity(1)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Volume.amplitude_ratio_to_midi_velocity(1)
         127
-        >>> abc.Volume.amplitude_ratio_to_midi_velocity(0)
+        >>> music_parameters.abc.Volume.amplitude_ratio_to_midi_velocity(0)
         0
         """
 
@@ -602,10 +601,10 @@ class Volume(
 
         **Example:**
 
-        >>> from mutwo.parameters import abc
-        >>> abc.Volume.decibel_to_midi_velocity(0)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.abc.Volume.decibel_to_midi_velocity(0)
         127
-        >>> abc.Volume.decibel_to_midi_velocity(-40)
+        >>> music_parameters.abc.Volume.decibel_to_midi_velocity(-40)
         0
         """
 
@@ -764,17 +763,17 @@ class PitchAmbitus(abc.ABC):
 
         >>> from mutwo import music_parameters
         >>> ambitus0 = music_parameters.OctaveAmbitus(
-                music_parameters.JustIntonationPitch('1/2'),
-                music_parameters.JustIntonationPitch('2/1'),
-            )
+        ...     music_parameters.JustIntonationPitch('1/2'),
+        ...     music_parameters.JustIntonationPitch('2/1'),
+        ... )
         >>> ambitus0.filter_pitch_sequence(
-                [
-                    music_parameters.JustIntonationPitch("3/8"),
-                    music_parameters.JustIntonationPitch("3/4"),
-                    music_parameters.JustIntonationPitch("3/2"),
-                    music_parameters.JustIntonationPitch("3/1"),
-                ]
-            )
+        ...     [
+        ...         music_parameters.JustIntonationPitch("3/8"),
+        ...         music_parameters.JustIntonationPitch("3/4"),
+        ...         music_parameters.JustIntonationPitch("3/2"),
+        ...         music_parameters.JustIntonationPitch("3/1"),
+        ...     ]
+        ... )
         (JustIntonationPitch('3/4'), JustIntonationPitch('3/2'))
         """
 

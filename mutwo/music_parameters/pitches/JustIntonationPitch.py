@@ -53,14 +53,18 @@ class JustIntonationPitch(
 
     **Example:**
 
-    >>> from mutwo.music_parameters import pitches
+    >>> from mutwo import music_parameters
     >>> # 3 different variations of initialising the same pitch
-    >>> pitches.JustIntonationPitch('3/2')
+    >>> music_parameters.JustIntonationPitch('3/2')
+    JustIntonationPitch('3/2')
     >>> import fractions
-    >>> pitches.JustIntonationPitch(fractions.Fraction(3, 2))
-    >>> pitches.JustIntonationPitch((-1, 1))
+    >>> music_parameters.JustIntonationPitch(fractions.Fraction(3, 2))
+    JustIntonationPitch('3/2')
+    >>> music_parameters.JustIntonationPitch((-1, 1))
+    JustIntonationPitch('3/2')
     >>> # using a different concert pitch
-    >>> pitches.JustIntonationPitch('7/5', concert_pitch=432)
+    >>> music_parameters.JustIntonationPitch('7/5', concert_pitch=432)
+    JustIntonationPitch('7/5')
     """
 
     def __init__(
@@ -126,9 +130,9 @@ class JustIntonationPitch(
         >>> ratio1 = fractions.Fraction(8, 3)
         >>> border = 2
         >>> JustIntonationPitch._adjust_ratio(ratio0, border)
-        fractions.Fraction(4, 3)
+        Fraction(4, 3)
         >>> JustIntonationPitch._adjust_ratio(ratio1, border)
-        fractions.Fraction(4, 3)
+        Fraction(4, 3)
 
         """
 
@@ -150,13 +154,13 @@ class JustIntonationPitch(
         >>> float1 = 2
         >>> border = 2
         >>> JustIntonationPitch._adjust_float(float0, border)
-        1
+        1.0
         >>> JustIntonationPitch._adjust_float(float1, border)
-        1
+        1.0
         """
 
         if border > 1:
-            while float_ > border:
+            while float_ >= border:
                 try:
                     float_ /= border
                 except OverflowError:
@@ -265,10 +269,10 @@ class JustIntonationPitch(
             * JustIntonationPitch -> The exponent_tuple of prime numbers
             * primes -> the referring prime numbers for the underlying
                       ._exponent_tuple - Argument (see JustIntonationPitch._exponent_tuple).
-        >>> myJustIntonationPitch0 = (1, 0, -1)
-        >>> myPrimes= (2, 3, 5)
-        >>> JustIntonationPitch._exponent_tuple_to_ratio(myJustIntonationPitch0, myPrimes)
-        2/5
+        >>> exponent_tuple = (1, 0, -1)
+        >>> prime_tuple = (2, 3, 5)
+        >>> JustIntonationPitch._exponent_tuple_to_ratio(exponent_tuple, prime_tuple)
+        Fraction(2, 5)
         """
 
         numerator, denominator = JustIntonationPitch._exponent_tuple_to_pair(
@@ -313,11 +317,11 @@ class JustIntonationPitch(
         **Example:**
 
         >>> try:
-        >>>     from quicktions import fractions.Fraction
-        >>> except ImportError:
-        >>>     from fractions import fractions.Fraction
-        >>> myRatio0 = fractions.Fraction(3, 2)
-        >>> JustIntonationPitch._ratio_to_exponent_tuple(myRatio0)
+        ...     import quicktions as fractions
+        ... except ImportError:
+        ...     import fractions
+        >>> my_ratio = fractions.Fraction(3, 2)
+        >>> JustIntonationPitch._ratio_to_exponent_tuple(my_ratio)
         (-1, 1)
         """
 
@@ -355,7 +359,7 @@ class JustIntonationPitch(
         >>> JustIntonationPitch._indigestibility(1)
         0
         >>> JustIntonationPitch._indigestibility(2)
-        1
+        1.0
         >>> JustIntonationPitch._indigestibility(3)
         2.6666666666666665
         """
@@ -498,10 +502,10 @@ class JustIntonationPitch(
         **Example:**
 
         >>> just_intonation_pitch0 = JustIntonationPitch((0, 1, 2))
-        >>> just_intonation_pitch0.exponent_tuple
+        >>> just_intonation_pitch0.prime_tuple
         (2, 3, 5)
         >>> just_intonation_pitch1 = JustIntonationPitch((0, -1, 0, 0, 1), 1)
-        >>> just_intonation_pitch1.exponent_tuple
+        >>> just_intonation_pitch1.prime_tuple
         (2, 3, 5, 7, 11)
         """
 
@@ -538,12 +542,12 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> just_intonation_pitch0 = JustIntonationPitch((0, 0, 1,))
-        >>> just_intonation_pitch0.ratio
-        fractions.Fraction(5, 4)
-        >>> just_intonation_pitch0 = JustIntonationPitch("3/2")
-        >>> just_intonation_pitch0.ratio
-        fractions.Fraction(3, 2)
+        >>> just_intonation_pitch = JustIntonationPitch((0, 0, 1,))
+        >>> just_intonation_pitch.ratio
+        Fraction(5, 1)
+        >>> just_intonation_pitch = JustIntonationPitch("3/2")
+        >>> just_intonation_pitch.ratio
+        Fraction(3, 2)
         """
 
         return JustIntonationPitch._exponent_tuple_to_ratio(
@@ -594,7 +598,7 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> just_intonation_pitch0 = JustIntonationPitch((0, 0, 1,))
+        >>> just_intonation_pitch0 = JustIntonationPitch((-2, 0, 1))
         >>> just_intonation_pitch0.factorised
         (2, 2, 5)
         >>> just_intonation_pitch1 = JustIntonationPitch("7/6")
@@ -711,13 +715,14 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> just_intonation_pitch0 = JustIntonationPitch((-2. 1))
+        >>> from mutwo import music_parameters
+        >>> just_intonation_pitch0 = music_parameters.JustIntonationPitch((-2, 1))
         >>> just_intonation_pitch0.tonality
         True
-        >>> just_intonation_pitch1 = JustIntonationPitch((-2, -1))
+        >>> just_intonation_pitch1 = music_parameters.JustIntonationPitch((-2, -1))
         >>> just_intonation_pitch1.tonality
         False
-        >>> just_intonation_pitch2 = JustIntonationPitch([])
+        >>> just_intonation_pitch2 = music_parameters.JustIntonationPitch([])
         >>> just_intonation_pitch2.tonality
         True
         """
@@ -749,12 +754,12 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1))
+        >>> just_intonation_pitch0 = JustIntonationPitch((-1, 1))
         >>> just_intonation_pitch0.ratio
-        fractions.Fraction(3, 2)
+        Fraction(3, 2)
         >>> just_intonation_pitch0.harmonic
         3
-        >>> just_intonation_pitch1 = JustIntonationPitch((-1,), 2)
+        >>> just_intonation_pitch1 = JustIntonationPitch((1, -1))
         >>> just_intonation_pitch1.harmonic
         -3
         """
@@ -799,10 +804,10 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1,))
+        >>> just_intonation_pitch0 = JustIntonationPitch((-1, 1))
         >>> just_intonation_pitch1 = JustIntonationPitch()
-        >>> just_intonation_pitch2 = JustIntonationPitch((0, 0, 1,))
-        >>> just_intonation_pitch3 = JustIntonationPitch((0, 0, -1,))
+        >>> just_intonation_pitch2 = JustIntonationPitch((-2, 0, 1))
+        >>> just_intonation_pitch3 = JustIntonationPitch((-3, 0, -1))
         >>> just_intonation_pitch0.harmonicity_euler
         4
         >>> just_intonation_pitch1.harmonicity_euler
@@ -830,10 +835,10 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1,))
+        >>> just_intonation_pitch0 = JustIntonationPitch((-1, 1))
         >>> just_intonation_pitch1 = JustIntonationPitch()
-        >>> just_intonation_pitch2 = JustIntonationPitch((0, 0, 1,))
-        >>> just_intonation_pitch3 = JustIntonationPitch((0, 0, -1,))
+        >>> just_intonation_pitch2 = JustIntonationPitch((-2, 0, 1))
+        >>> just_intonation_pitch3 = JustIntonationPitch((-3, 0, -1))
         >>> just_intonation_pitch0.harmonicity_barlow
         0.27272727272727276
         >>> just_intonation_pitch1.harmonicity_barlow # 1/1 is infinite harmonic
@@ -871,10 +876,10 @@ class JustIntonationPitch(
         only positive numbers are returned and that (1/1) is
         defined as 1 instead of infinite.
 
-        >>> just_intonation_pitch0 = JustIntonationPitch((0, 1,))
+        >>> just_intonation_pitch0 = JustIntonationPitch((-1, 1))
         >>> just_intonation_pitch1 = JustIntonationPitch()
-        >>> just_intonation_pitch2 = JustIntonationPitch((0, 0, 1,))
-        >>> just_intonation_pitch3 = JustIntonationPitch((0, 0, -1,))
+        >>> just_intonation_pitch2 = JustIntonationPitch((-2, 0, 1))
+        >>> just_intonation_pitch3 = JustIntonationPitch((-3, 0, -1))
         >>> just_intonation_pitch0.harmonicity_simplified_barlow
         0.27272727272727276
         >>> just_intonation_pitch1.harmonicity_simplified_barlow # 1/1 is not infinite but 1
@@ -905,13 +910,13 @@ class JustIntonationPitch(
         >>> just_intonation_pitch2 = JustIntonationPitch((0, 0, 1,))
         >>> just_intonation_pitch3 = JustIntonationPitch((0, 0, -1,))
         >>> just_intonation_pitch0.harmonicity_tenney
-        2.584962500721156
+        1.5849625007211563
         >>> just_intonation_pitch1.harmonicity_tenney
         0.0
         >>> just_intonation_pitch2.harmonicity_tenney
-        4.321928094887363
+        2.321928094887362
         >>> just_intonation_pitch3.harmonicity_tenney
-        -0.10638297872340426
+        2.321928094887362
         """
 
         ratio = self.ratio
@@ -988,14 +993,17 @@ class JustIntonationPitch(
         >>> from mutwo.music_parameters import pitches
         >>> p = pitches.JustIntonationPitch('3/2')
         >>> p.register(1)
+        JustIntonationPitch('3/1')
         >>> p
-        JustIntonationPitch(6/2)
+        JustIntonationPitch('3/1')
         >>> p.register(-1)
+        JustIntonationPitch('3/4')
         >>> p
-        JustIntonationPitch(3/4)
+        JustIntonationPitch('3/4')
         >>> p.register(0)
+        JustIntonationPitch('3/2')
         >>> p
-        JustIntonationPitch(3/2)
+        JustIntonationPitch('3/2')
         """
 
         normalized_just_intonation_pitch = self.normalize(mutate=False)  # type: ignore
@@ -1043,8 +1051,9 @@ class JustIntonationPitch(
         >>> from mutwo.music_parameters import pitches
         >>> p = pitches.JustIntonationPitch('12/2')
         >>> p.normalize()
+        JustIntonationPitch('3/2')
         >>> p
-        JustIntonationPitch(3/2)
+        JustIntonationPitch('3/2')
         """
         ratio = self.ratio
         adjusted = type(self)._adjust_ratio(ratio, prime)
@@ -1067,8 +1076,9 @@ class JustIntonationPitch(
         >>> from mutwo.music_parameters import pitches
         >>> p = pitches.JustIntonationPitch('3/2')
         >>> p.inverse()
+        JustIntonationPitch('2/3')
         >>> p
-        JustIntonationPitch(2/3)
+        JustIntonationPitch('2/3')
         """
 
         if axis is None:
@@ -1092,8 +1102,9 @@ class JustIntonationPitch(
         >>> from mutwo.music_parameters import pitches
         >>> p = pitches.JustIntonationPitch('3/2')
         >>> p.add(pitches.JustIntonationPitch('3/2'))
+        JustIntonationPitch('9/4')
         >>> p
-        JustIntonationPitch(9/4)
+        JustIntonationPitch('9/4')
         """
         if isinstance(pitch_interval, JustIntonationPitch):
             self._math(pitch_interval, operator.add)
@@ -1114,11 +1125,12 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> from mutwo.music_parameters import pitches
-        >>> p = pitches.JustIntonationPitch('9/4')
-        >>> p.subtract(pitches.JustIntonationPitch('3/2'))
+        >>> from mutwo import music_parameters
+        >>> p = music_parameters.JustIntonationPitch('9/4')
+        >>> p.subtract(music_parameters.JustIntonationPitch('3/2'))
+        JustIntonationPitch('3/2')
         >>> p
-        JustIntonationPitch(3/2)
+        JustIntonationPitch('3/2')
         """
 
         if isinstance(pitch_interval, JustIntonationPitch):
@@ -1146,19 +1158,22 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> from mutwo.music_parameters import pitches
-        >>> p0 = pitches.JustIntonationPitch('5/3')
-        >>> p0.intersection(pitches.JustIntonationPitch('7/6'))
+        >>> from mutwo import music_parameters
+        >>> p0 = music_parameters.JustIntonationPitch('5/3')
+        >>> p0.intersection(music_parameters.JustIntonationPitch('7/6'))
+        JustIntonationPitch('1/3')
         >>> p0
-        JustIntonationPitch(1/3)
-        >>> p1 = pitches.JustIntonationPitch('9/7')
-        >>> p1.intersection(pitches.JustIntonationPitch('3/2'))
+        JustIntonationPitch('1/3')
+        >>> p1 = music_parameters.JustIntonationPitch('9/7')
+        >>> p1.intersection(music_parameters.JustIntonationPitch('3/2'))
+        JustIntonationPitch('3/1')
         >>> p1
-        JustIntonationPitch(3/1)
-        >>> p2 = pitches.JustIntonationPitch('9/7')
-        >>> p2.intersection(pitches.JustIntonationPitch('3/2'), strict=True)
+        JustIntonationPitch('3/1')
+        >>> p2 = music_parameters.JustIntonationPitch('9/7')
+        >>> p2.intersection(music_parameters.JustIntonationPitch('3/2'), strict=True)
+        JustIntonationPitch('1/1')
         >>> p2
-        JustIntonationPitch(1/1)
+        JustIntonationPitch('1/1')
         """
 
         def is_negative(number: int):

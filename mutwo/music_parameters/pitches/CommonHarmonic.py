@@ -36,13 +36,13 @@ class Partial(object):
 
     **Example:**
 
-    >>> from mutwo.music_parameters import pitches
-    >>> strong_clarinet_partials = (
-        pitches.Partial(1),
-        pitches.Partial(3),
-        pitches.Partial(5),
-        pitches.Partial(7),
-    )
+    >>> from mutwo import music_parameters
+    >>> strong_clarinet_partial_tuple = (
+    ...     music_parameters.Partial(1, True),
+    ...     music_parameters.Partial(3, True),
+    ...     music_parameters.Partial(5, True),
+    ...     music_parameters.Partial(7, True),
+    ... )
     """
 
     nth_partial: int

@@ -96,8 +96,8 @@ class RhythmicalStrataToIndispensability(core_converters.abc.Converter):
 
         **Example:**
 
-        >>> from mutwo.converters import symmetrical
-        >>> metricity_converter = symmetrical.metricities.RhythmicalStrataToIndispensability()
+        >>> from mutwo import music_converters
+        >>> metricity_converter = music_converters.RhythmicalStrataToIndispensability()
         >>> metricity_converter.convert((2, 3))  # time signature 3/4
         (5, 0, 3, 1, 4, 2)
         >>> metricity_converter.convert((3, 2))  # time signature 6/8

@@ -44,8 +44,8 @@ class DirectPitchInterval(music_parameters.abc.PitchInterval):
         **Example:**
 
         >>> from mutwo import music_parameters
-        >>> music_parameters.DirectPitchInterval(700).inverse()
-        DirectPitchInterval(interval = -700)
+        >>> music_parameters.DirectPitchInterval(700).inverse().interval
+        -700
         """
         self.interval = -self.interval
         return self

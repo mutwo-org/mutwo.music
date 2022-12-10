@@ -21,7 +21,7 @@ necessary attributes is set to :obj:`None` (then not active).
 
 Set notation indicators of :class:`NoteLike`:
 
->>> from mutwo.events import music_events
+>>> from mutwo import music_events
 >>> my_note = music_events.NoteLike('c', 1 / 4, 'mf')
 >>> my_note.notation_indicator_collection.margin_markup.content = "Violin"
 """

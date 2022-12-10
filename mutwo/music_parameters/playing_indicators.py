@@ -34,7 +34,7 @@ Set playing indicators of :class:`NoteLike`:
 >>> from mutwo import music_events
 >>> my_note = music_events.NoteLike('c', 1 / 4, 'mf')
 >>> my_note.playing_indicator_collection.articulation.name = "."  # add staccato
->>> my_chord = music.NoteLike('c e g', 1 / 2, 'f')
+>>> my_chord = music_events.NoteLike('c e g', 1 / 2, 'f')
 >>> my_chord.playing_indicator_collection.arpeggio.direction= "up"  # add arpeggio
 >>> my_chord.playing_indicator_collection.laissez_vibrer = True  # and laissez_vibrer
 
@@ -42,7 +42,7 @@ Attach :class:`PlayingIndicatorCollection` to :class:`SimpleEvent`:
 
 >>> from mutwo import core_events
 >>> from mutwo import music_parameters
->>> my_simple_event = core_events.SimpleEvent()
+>>> my_simple_event = core_events.SimpleEvent(1)
 >>> my_simple_event.playing_indicator_collection = music_parameters.PlayingIndicatorCollection()
 """
 

@@ -83,12 +83,12 @@ class LanguageBasedSyllable(music_parameters.abc.Syllable, LanguageBasedLyric):
     For instance:
 
     >>> LanguageBasedLyric('hallo').phonetic_representation
-    "halo:"
+    'halo:'
     >>> # And now splitted to syllables:
-    >>> LanguageBasedSyllable('hal').phonetic_representation
-    "hA:l"
-    >>> LanguageBasedSyllable('lo').phonetic_representation
-    "lo:"
+    >>> LanguageBasedSyllable(False, 'hal').phonetic_representation
+    'hA:l'
+    >>> LanguageBasedSyllable(True, 'lo').phonetic_representation
+    'lo:'
     """
 
     def __init__(self, is_last_syllable: bool, *args, **kwargs):

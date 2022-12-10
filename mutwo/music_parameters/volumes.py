@@ -172,7 +172,7 @@ class WesternVolume(music_parameters.abc.Volume):
 
         >>> from mutwo.music_parameters import volumes
         >>> volumes.WesternVolume.from_amplitude(0.05)
-        WesternVolume(mp)
+        WesternVolume(p)
         """
         decibel = cls.amplitude_ratio_to_decibel(amplitude)
         return cls.from_decibel(decibel)
@@ -186,7 +186,7 @@ class WesternVolume(music_parameters.abc.Volume):
 
         >>> from mutwo.music_parameters import volumes
         >>> volumes.WesternVolume.from_decibel(-24)
-        WesternVolume(mf)
+        WesternVolume(p)
         """
         volume_object = cls("mf")
         closest_decibel: float = core_utilities.find_closest_item(
