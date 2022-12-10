@@ -22,6 +22,8 @@ try:
 except ImportError:
     import fractions  # type: ignore
 
+import ranges
+
 from mutwo import core_constants
 from mutwo import core_events
 from mutwo import core_parameters
@@ -37,6 +39,8 @@ __all__ = (
     "NotationIndicator",
     "Lyric",
     "Syllable",
+    "Instrument",
+    "PitchedInstrument",
 )
 
 
@@ -895,3 +899,96 @@ class Syllable(Lyric):
 
     def __init__(self, is_last_syllable: bool):
         self.is_last_syllable = is_last_syllable
+
+
+@dataclasses.dataclass(frozen=True)
+class Instrument(abc.ABC):
+    """Modal a musical instrument.
+
+    :param name: The name of the instrument.
+    :type name: str
+    :param short_name: The abbreviation of the instrument.
+        If set to ``None`` it will be the same like `name`.
+        Default to ``None``.
+    :type short_name: typing.Optional[str]
+
+    This is an abstract class. To create a new concrete class
+    you need to override the abstract `is_pitched` property.
+    Alternatively you can use the ready-to-go classes
+    :class:`mutwo.music_parameters.UnpitchedInstrument` or
+    :class:`mutwo.music_parameters.ContinuousPitchedInstrument` or
+    :class:`mutwo.music_parameters.DiscreetPitchedInstrument`.
+    """
+
+    name: str
+    short_name: typing.Optional[str] = None
+
+    def __post_init__(self):
+        # Auto set short_name to name if not declared
+        object.__setattr__(self, "short_name", self.short_name or self.name)
+
+    @property
+    @abc.abstractmethod
+    def is_pitched(self) -> bool:
+        """Return ``True`` if instrument is pitched, ``False`` otherwise."""
+        ...
+
+
+@dataclasses.dataclass(frozen=True)
+class PitchedInstrument(Instrument):
+    """Modal a pitched musical instrument.
+
+    :param name: The name of the instrument.
+    :type name: str
+    :param short_name: The abbreviation of the instrument.
+        If set to ``None`` it will be the same like `name`.
+        Default to ``None``.
+    :type short_name: typing.Optional[str]
+    :param pitch_count_range: Set how many simultaneous
+        pitches the instrument can play. Default to
+        `ranges.Range(1, 2)`, which means that the instrument
+        is monophonic.
+    :type pitch_count_range: ranges.Range
+    :param transposition_pitch_interval: Some instruments are
+        written with a transposition (so sounding pitch and
+        written pitch differs). This parameter can be used
+        to set the transposition interval in case sounding
+        and written differs. The `transposition_pitch_interval`
+        is added to the sounding pitches in order to reach the
+        written pitches. If set to ``None`` this will be
+        set to `DirectPitchInterval(0)` which is no transposition.
+        Default to ``None``.
+    :type transposition_pitch_interval: typing.Optional[PitchInterval]
+
+    You can use pythons `in` syntax to find out if a pitch
+    is playable by the given instrument.
+
+    This is an abstract class. You need to override abstract
+    method `__contains__` and abstract property `pitch_ambitus`.
+    """
+
+    pitch_count_range: ranges.Range = ranges.Range(1, 2)
+    transposition_pitch_interval: typing.Optional[
+        music_parameters.abc.DirectPitchInterval
+    ] = None
+
+    def __post_init__(self):
+        super().__post_init__()
+        object.__setattr__(
+            self,
+            "transposition_pitch_interval",
+            music_parameters.DirectPitchInterval(0),
+        )
+
+    @abc.abstractmethod
+    def __contains__(self, pitch: typing.Any) -> bool:
+        ...
+
+    @property
+    @abc.abstractmethod
+    def pitch_ambitus(self) -> music_parameters.abc.PitchAmbitus:
+        ...
+
+    @property
+    def is_pitched(self) -> bool:
+        return True
