@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [0.20.0] - 2022-12-10
+
 ### Changed
 - `mutwo.music_parameters.WesternPitch.inverse_direction` to `mutwo.music_parameters.WesternPitch.inverse`
+- make the syntactic sugar of `mutwo.music_events.NoteLike` initialization explicit and configurable, see [here for more information](https://github.com/mutwo-org/mutwo.music/commit/bf47a452d8553ef001c5192393d697d0c9536dd2)
 
 ### Added
 - new abstract method `mutwo.music_parameters.abc.PitchInterval.inverse`
@@ -17,6 +21,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     - `mutwo.music_parameters.Scale`
     - `mutwo.music_parameters.ScaleFamily`
     - `mutwo.music_parameters.RepeatingScaleFamily`
+- basic instrument representations:
+    - `mutwo.music_parameters.abc.Instrument`
+    - `mutwo.music_parameters.abc.PitchedInstrument`
+    - `mutwo.music_parameters.UnpitchedInstrument`
+    - `mutwo.music_parameters.ContinuousPitchedInstrument`
+    - `mutwo.music_parameters.DiscreetPitchedInstrument`
+    - few constants (very incomplete list of instruments):
+        - `mutwo.music_parameters.constants.BF_CLARINET`
+        - `mutwo.music_parameters.constants.OBOE`
+        - ...
+
+### Fixed
+- comparison of `JustIntonationPitch` with other `PitchInterval` (==, <, <=, ... operator), see [here](https://github.com/mutwo-org/mutwo.music/commit/795e2d59fa54eda3cb886bbe5417cbc2903c3ebe)
 
 
 ## [0.19.0] - 2022-11-04
