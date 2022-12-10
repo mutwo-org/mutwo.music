@@ -20,6 +20,7 @@ jobs:
             cp -r tests mutwo_test/
             cd mutwo_test
             pytest
+            pytest --doctest-modules mutwo
             deactivate
   pypi_publish:
     docker:
