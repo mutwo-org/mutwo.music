@@ -444,5 +444,35 @@ class WesternPitchIntervalTest(unittest.TestCase):
         )
 
 
+# We need extra JustIntonationPitch tests here,
+# which comprehend the tests from 'pitches_test'.
+# Here we add tests which ensure the compatibility of
+# a JustIntonationPitch as a PitchInterval.
+class JustIntonationPitchTest(unittest.TestCase):
+    def setUp(self):
+        self.just_intonation_pitch = music_parameters.JustIntonationPitch("2/1")
+
+    def test_interval(self):
+        self.assertEqual(self.just_intonation_pitch.interval, 1200)
+
+    def test_inverse(self):
+        self.assertEqual(self.just_intonation_pitch.inverse().interval, -1200)
+
+    def test_equal(self):
+        self.assertEqual(
+            self.just_intonation_pitch, music_parameters.DirectPitchInterval(1200)
+        )
+
+    def test_greater(self):
+        self.assertGreater(
+            self.just_intonation_pitch, music_parameters.DirectPitchInterval(1100)
+        )
+
+    def test_less(self):
+        self.assertLess(
+            self.just_intonation_pitch, music_parameters.DirectPitchInterval(1300)
+        )
+
+
 if __name__ == "__name__":
     unittest.main()
