@@ -17,8 +17,6 @@ jobs:
             virtualenv $TEST_VIRTUALENV_DIR/mutwo_test
             source $TEST_VIRTUALENV_DIR/mutwo_test/bin/activate
             pip3 install .[testing]
-            cp -r tests mutwo_test/
-            cd mutwo_test
             pytest
             pytest --doctest-modules mutwo
             deactivate
