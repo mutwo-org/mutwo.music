@@ -29,6 +29,7 @@ ConcertPitch = typing.Union[core_constants.Real, music_parameters.abc.Pitch]
 PitchClassOrPitchClassName = typing.Union[core_constants.Real, str]
 
 
+@functools.total_ordering
 class JustIntonationPitch(
     music_parameters.abc.Pitch, music_parameters.abc.PitchInterval
 ):
@@ -164,7 +165,7 @@ class JustIntonationPitch(
         if exponent_tuple:
             if border > 1:
                 multiplied = functools.reduce(
-                    operator.mul, (p ** e for p, e in zip(primes, exponent_tuple))
+                    operator.mul, (p**e for p, e in zip(primes, exponent_tuple))
                 )
                 res = math.log(border / multiplied, border)
                 if res < 0:
@@ -303,7 +304,10 @@ class JustIntonationPitch(
         factorised_denominator = factorint(ratio.denominator)
 
         try:
-            biggest_prime = max(tuple(factorised_numerator.keys()) + tuple(factorised_denominator.keys()))
+            biggest_prime = max(
+                tuple(factorised_numerator.keys())
+                + tuple(factorised_denominator.keys())
+            )
         except ValueError:
             biggest_prime = 2
 
@@ -409,7 +413,8 @@ class JustIntonationPitch(
             self.exponent_tuple, other.exponent_tuple
         )
         self.exponent_tuple = tuple(
-            operation(exponent0, exponent1) for exponent0, exponent1 in zip(exponent_tuple0, exponent_tuple1)
+            operation(exponent0, exponent1)
+            for exponent0, exponent1 in zip(exponent_tuple0, exponent_tuple1)
         )
 
     # ###################################################################### #
@@ -417,10 +422,20 @@ class JustIntonationPitch(
     # ###################################################################### #
 
     def __eq__(self, other: typing.Any) -> bool:
-        try:
-            return self.exponent_tuple == other.exponent_tuple
-        except AttributeError:
-            return super().__eq__(other)
+        match other:
+            case JustIntonationPitch():
+                return self.exponent_tuple == other.exponent_tuple
+            case music_parameters.abc.PitchInterval():
+                return self.interval == other.interval
+            case _:  # pitch test
+                return super().__eq__(other)
+
+    def __lt__(self, other: typing.Any) -> bool:
+        match other:
+            case music_parameters.abc.PitchInterval():
+                return self.interval < other.interval
+            case _:  # pitch test
+                return super().__lt__(self, other)
 
     def __float__(self) -> float:
         """Return the float of a JustIntonationPitch - object.
