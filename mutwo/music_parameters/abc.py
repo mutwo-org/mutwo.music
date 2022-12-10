@@ -697,6 +697,9 @@ class PitchAmbitus(abc.ABC):
     def __getitem__(self, index: int) -> Pitch:
         return self.border_tuple[index]
 
+    def __contains__(self, pitch: typing.Any) -> bool:
+        return bool(self.filter_pitch_sequence((pitch,)))
+
     # ######################################################## #
     #                       properties                         #
     # ######################################################## #

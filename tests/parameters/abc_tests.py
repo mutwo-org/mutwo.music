@@ -346,6 +346,14 @@ class PitchAmbitusTest(unittest.TestCase):
             ),
         )
 
+    def test_contains(self):
+        ambitus = music_parameters.OctaveAmbitus(
+            music_parameters.JustIntonationPitch("1/2"),
+            music_parameters.JustIntonationPitch("2/1"),
+        )
+        self.assertTrue(music_parameters.JustIntonationPitch("3/2") in ambitus)
+        self.assertFalse(music_parameters.JustIntonationPitch("3/1") in ambitus)
+
 
 if __name__ == "__main__":
     unittest.main()
