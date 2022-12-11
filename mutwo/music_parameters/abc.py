@@ -61,6 +61,9 @@ class PitchInterval(
     for definition of 'cents'.
     """
 
+    def __repr__(self) -> str:
+        return str(self)
+
     @abc.abstractmethod
     def inverse(self, mutate: bool = False) -> PitchInterval:
         """Makes falling interval to rising and vice versa.
