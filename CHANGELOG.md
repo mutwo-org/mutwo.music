@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- orchestration namespace tool with `mutwo.music_parameters.Orchestration`
+
 
 ## [0.20.0] - 2022-12-10
 

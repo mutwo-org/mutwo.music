@@ -1,5 +1,6 @@
 """Representations for musical instruments"""
 
+import collections
 import typing
 
 import ranges
@@ -12,6 +13,8 @@ __all__ = (
     "UnpitchedInstrument",
     "ContinuousPitchedInstrument",
     "DiscreetPitchedInstrument",
+    "Orchestration",
+    "OrchestrationMixin",
 )
 
 
@@ -156,6 +159,74 @@ class DiscreetPitchedInstrument(music_parameters.abc.PitchedInstrument):
     @property
     def pitch_tuple(self) -> tuple[music_parameters.abc.Pitch, ...]:
         return self._pitch_tuple
+
+
+class OrchestrationMixin(object):
+    """Helper base class from which adhoc created `Orchestration` object inherits.
+
+    This class has some methods which extend the functionality of
+    Pythons builtin `collections.namedtuple`.
+    """
+
+    def get_subset(self, *instrument_name: str):
+        r"""Return a sub-Orchestration of `Orchestration`.
+
+        :param \*instrument_name: Name of the instrument which should be
+            included in the subset.
+        :type \*instrument_name: str
+
+        This method doesn't change the original `Orchestration`
+        but creates a new object.
+
+        **Example:**
+
+        >>> from mutwo import music_parameters
+        >>> orch = music_parameters.Orchestration(
+        ...   oboe0=music_parameters.constants.OBOE,
+        ...   oboe1=music_parameters.constants.OBOE,
+        ...   oboe2=music_parameters.constants.OBOE,
+        ... )
+        >>> orch.get_subset('oboe0', 'oboe2')
+        Orchestration(oboe0=ContinuousPitchedInstrument(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)), oboe2=ContinuousPitchedInstrument(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)))
+        """
+        return Orchestration(**{name: getattr(self, name) for name in instrument_name})
+
+
+def Orchestration(**instrument_name_to_instrument: music_parameters.abc.Instrument):
+    r"""Create a name space for the instrumentation of a composition.
+
+    :param \**instrument_name_to_instrument: Pick any instrument name
+        and map it to a specific instrument.
+    :type \**instrument_name_to_instrument: music_parameters.abc.Instrument
+
+    This returns an adapted `namedtuple instance <https://docs.python.org/3/library/collections.html#collections.namedtuple>`_
+    where the keys are the instrument names and the values are the
+    :class:`mutwo.music_parameters.abc.Instrument` objects.
+    The returned `Orchestration` object has some additional methods.
+    They are documented in the :class`OrchestrationMixin`.
+
+    **Example:**
+
+    >>> from mutwo import music_parameters
+    >>> music_parameters.Orchestration(
+    ...   oboe0=music_parameters.constants.OBOE,
+    ...   oboe1=music_parameters.constants.OBOE,
+    ... )
+    Orchestration(oboe0=ContinuousPitchedInstrument(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)), oboe1=ContinuousPitchedInstrument(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)))
+    """
+
+    instrument_name_tuple, instrument_tuple = zip(
+        *instrument_name_to_instrument.items()
+    )
+
+    return type(
+        "Orchestration",
+        (
+            collections.namedtuple("Orchestration", instrument_name_tuple),
+            OrchestrationMixin,
+        ),
+        {},
+    )(*instrument_tuple)
 
 
 # We add instruments to `music_parameters.constants`.

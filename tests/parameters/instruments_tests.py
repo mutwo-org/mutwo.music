@@ -100,3 +100,29 @@ class DiscreetPitchedInstrumentTest(unittest.TestCase):
             self.discreet_pitched_instrument.pitch_ambitus.maxima_pitch,
             music_parameters.JustIntonationPitch("7/4"),
         )
+
+
+class OrchestrationTest(unittest.TestCase):
+    def setUp(self):
+        self.orchestration = music_parameters.Orchestration(
+            oboe0=music_parameters.constants.OBOE,
+            oboe1=music_parameters.constants.OBOE,
+            oboe2=music_parameters.constants.OBOE,
+            clarinet=music_parameters.constants.BF_CLARINET,
+        )
+
+    def test_fetch_instrument(self):
+        self.assertEqual(self.orchestration.oboe0, music_parameters.constants.OBOE)
+        self.assertEqual(
+            self.orchestration.clarinet, music_parameters.constants.BF_CLARINET
+        )
+        self.assertEqual(self.orchestration[-1], music_parameters.constants.BF_CLARINET)
+
+    def test_get_subset(self):
+        subset = self.orchestration.get_subset("oboe0", "clarinet")
+        self.assertEqual(len(subset), 2)
+        self.assertTrue(hasattr(subset, "oboe0"))
+        self.assertTrue(hasattr(subset, "clarinet"))
+        self.assertFalse(hasattr(subset, "oboe1"))
+        self.assertEqual(subset.oboe0, music_parameters.constants.OBOE)
+        self.assertEqual(subset.clarinet, music_parameters.constants.BF_CLARINET)
