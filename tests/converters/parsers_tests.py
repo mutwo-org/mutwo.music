@@ -7,8 +7,8 @@ from mutwo import music_parameters
 
 
 class SimpleEventToPitchListTest(unittest.TestCase):
-    def setUp(cls):
-        cls.converter = music_converters.SimpleEventToPitchList()
+    def setUp(self):
+        self.converter = music_converters.SimpleEventToPitchList()
 
     def test_convert_with_attribute(self):
         self.assertEqual(
@@ -24,8 +24,8 @@ class SimpleEventToPitchListTest(unittest.TestCase):
 
 
 class SimpleEventToVolumeTest(unittest.TestCase):
-    def setUp(cls):
-        cls.converter = music_converters.SimpleEventToVolume()
+    def setUp(self):
+        self.converter = music_converters.SimpleEventToVolume()
 
     def test_convert_with_attribute(self):
         self.assertEqual(
@@ -41,8 +41,8 @@ class SimpleEventToVolumeTest(unittest.TestCase):
 
 
 class SimpleEventToPlayingIndicatorCollectionTest(unittest.TestCase):
-    def setUp(cls):
-        cls.converter = music_converters.SimpleEventToPlayingIndicatorCollection()
+    def setUp(self):
+        self.converter = music_converters.SimpleEventToPlayingIndicatorCollection()
 
     def test_convert_with_attribute(self):
         self.assertEqual(
@@ -58,8 +58,8 @@ class SimpleEventToPlayingIndicatorCollectionTest(unittest.TestCase):
 
 
 class SimpleEventToNotationIndicatorCollectionTest(unittest.TestCase):
-    def setUp(cls):
-        cls.converter = music_converters.SimpleEventToNotationIndicatorCollection()
+    def setUp(self):
+        self.converter = music_converters.SimpleEventToNotationIndicatorCollection()
 
     def test_convert_with_attribute(self):
         self.assertEqual(
@@ -100,8 +100,8 @@ class SimpleEventToGraceOrAfterGraceNoteSequentialEventTestMixin(object):
 class SimpleEventToGraceNoteSequentialEventTest(
     unittest.TestCase, SimpleEventToGraceOrAfterGraceNoteSequentialEventTestMixin
 ):
-    def setUp(cls):
-        cls.converter = music_converters.SimpleEventToGraceNoteSequentialEvent()
+    def setUp(self):
+        self.converter = music_converters.SimpleEventToGraceNoteSequentialEvent()
 
     def test_convert_with_attribute(self):
         grace_note_sequential_event = core_events.SequentialEvent(
@@ -126,8 +126,8 @@ class SimpleEventToGraceNoteSequentialEventTest(
 class SimpleEventToAfterGraceNoteSequentialEventTest(
     unittest.TestCase, SimpleEventToGraceOrAfterGraceNoteSequentialEventTestMixin
 ):
-    def setUp(cls):
-        cls.converter = music_converters.SimpleEventToAfterGraceNoteSequentialEvent()
+    def setUp(self):
+        self.converter = music_converters.SimpleEventToAfterGraceNoteSequentialEvent()
 
     def test_convert_with_attribute(self):
         after_grace_note_sequential_event = core_events.SequentialEvent(
