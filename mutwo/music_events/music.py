@@ -60,8 +60,8 @@ class NoteLike(core_events.SimpleEvent):
 
     ``mutwo.music`` doesn't differentiate between Tones, Chords and
     Rests, but rather simply implements one general class which can
-    represent any of the mentioned definitions (e.g. a NoteLike object
-    with several pitches may be called a 'Chord' and a NoteLike object
+    represent any of the mentioned definitions (e.g. a `NoteLike` object
+    with several pitches may be called a 'Chord' and a `NoteLike` object
     with only one pitch may be called a 'Tone').
 
     **Example:**
