@@ -40,11 +40,11 @@ class SimpleEventToPitchList(core_converters.SimpleEventToAttribute):
         attribute_name: typing.Optional[str] = None,
         exception_value: list[music_parameters.abc.Pitch] = [],
     ):
-        if attribute_name is None:
-            attribute_name = (
-                music_converters.configurations.DEFAULT_PITCH_LIST_TO_SEARCH_NAME
-            )
-        super().__init__(attribute_name, exception_value)
+        super().__init__(
+            attribute_name
+            or music_converters.configurations.DEFAULT_PITCH_LIST_TO_SEARCH_NAME,
+            exception_value,
+        )
 
 
 class SimpleEventToVolume(core_converters.SimpleEventToAttribute):
@@ -53,12 +53,11 @@ class SimpleEventToVolume(core_converters.SimpleEventToAttribute):
         attribute_name: typing.Optional[str] = None,
         exception_value: music_parameters.abc.Volume = music_parameters.DirectVolume(0),
     ):
-        if attribute_name is None:
-            attribute_name = (
-                music_converters.configurations.DEFAULT_VOLUME_TO_SEARCH_NAME
-            )
-
-        super().__init__(attribute_name, exception_value)
+        super().__init__(
+            attribute_name
+            or (music_converters.configurations.DEFAULT_VOLUME_TO_SEARCH_NAME),
+            exception_value,
+        )
 
 
 class SimpleEventToLyric(core_converters.SimpleEventToAttribute):
@@ -67,12 +66,11 @@ class SimpleEventToLyric(core_converters.SimpleEventToAttribute):
         attribute_name: typing.Optional[str] = None,
         exception_value: music_parameters.abc.Volume = music_parameters.DirectLyric(""),
     ):
-        if attribute_name is None:
-            attribute_name = (
-                music_converters.configurations.DEFAULT_LYRIC_TO_SEARCH_NAME
-            )
-
-        super().__init__(attribute_name, exception_value)
+        super().__init__(
+            attribute_name
+            or music_converters.configurations.DEFAULT_LYRIC_TO_SEARCH_NAME,
+            exception_value,
+        )
 
 
 class SimpleEventToAttributeWithDefaultValue(core_converters.SimpleEventToAttribute):
@@ -107,11 +105,11 @@ class SimpleEventToPlayingIndicatorCollection(SimpleEventToAttributeWithDefaultV
             music_parameters.NotationIndicatorCollection
         ] = None,
     ):
-        if attribute_name is None:
-            attribute_name = (
-                music_converters.configurations.DEFAULT_PLAYING_INDICATOR_COLLECTION_TO_SEARCH_NAME
-            )
-        super().__init__(attribute_name, exception_value)
+        super().__init__(
+            attribute_name
+            or music_converters.configurations.DEFAULT_PLAYING_INDICATOR_COLLECTION_TO_SEARCH_NAME,
+            exception_value,
+        )
 
     def _get_default_exception_value(self) -> typing.Any:
         return music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
@@ -125,11 +123,11 @@ class SimpleEventToNotationIndicatorCollection(SimpleEventToAttributeWithDefault
             music_parameters.NotationIndicatorCollection
         ] = None,
     ):
-        if attribute_name is None:
-            attribute_name = (
-                music_converters.configurations.DEFAULT_NOTATION_INDICATOR_COLLECTION_TO_SEARCH_NAME
-            )
-        super().__init__(attribute_name, exception_value)
+        super().__init__(
+            attribute_name
+            or music_converters.configurations.DEFAULT_NOTATION_INDICATOR_COLLECTION_TO_SEARCH_NAME,
+            exception_value,
+        )
 
     def _get_default_exception_value(self) -> typing.Any:
         return (
@@ -143,11 +141,11 @@ class SimpleEventToGraceNoteSequentialEvent(core_converters.SimpleEventToAttribu
         attribute_name: typing.Optional[str] = None,
         exception_value: core_events.SequentialEvent = core_events.SequentialEvent([]),
     ):
-        if attribute_name is None:
-            attribute_name = (
-                music_converters.configurations.DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME
-            )
-        super().__init__(attribute_name, exception_value)
+        super().__init__(
+            attribute_name
+            or music_converters.configurations.DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME,
+            exception_value,
+        )
 
 
 class SimpleEventToAfterGraceNoteSequentialEvent(
@@ -158,11 +156,11 @@ class SimpleEventToAfterGraceNoteSequentialEvent(
         attribute_name: typing.Optional[str] = None,
         exception_value: core_events.SequentialEvent = core_events.SequentialEvent([]),
     ):
-        if attribute_name is None:
-            attribute_name = (
-                music_converters.configurations.DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME
-            )
-        super().__init__(attribute_name, exception_value)
+        super().__init__(
+            attribute_name
+            or music_converters.configurations.DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME,
+            exception_value,
+        )
 
 
 class MutwoParameterDictToPitchList(
@@ -173,17 +171,12 @@ class MutwoParameterDictToPitchList(
         pitch_list_to_search_name: typing.Optional[str] = None,
         pitch_list_keyword_name: typing.Optional[str] = None,
     ):
-        if pitch_list_to_search_name is None:
-            pitch_list_to_search_name = (
-                music_converters.configurations.DEFAULT_PITCH_LIST_TO_SEARCH_NAME
-            )
-        if pitch_list_keyword_name is None:
-            pitch_list_keyword_name = (
-                music_converters.configurations.DEFAULT_PITCH_LIST_KEYWORD_NAME
-            )
-        assert isinstance(pitch_list_keyword_name, str)
-        assert isinstance(pitch_list_to_search_name, str)
-        super().__init__(pitch_list_to_search_name, pitch_list_keyword_name)
+        super().__init__(
+            pitch_list_to_search_name
+            or music_converters.configurations.DEFAULT_PITCH_LIST_TO_SEARCH_NAME,
+            pitch_list_keyword_name
+            or music_converters.configurations.DEFAULT_PITCH_LIST_KEYWORD_NAME,
+        )
 
 
 class MutwoParameterDictToVolume(core_converters.MutwoParameterDictToKeywordArgument):
@@ -192,17 +185,12 @@ class MutwoParameterDictToVolume(core_converters.MutwoParameterDictToKeywordArgu
         volume_to_search_name: typing.Optional[str] = None,
         volume_keyword_name: typing.Optional[str] = None,
     ):
-        if volume_to_search_name is None:
-            volume_to_search_name = (
-                music_converters.configurations.DEFAULT_VOLUME_TO_SEARCH_NAME
-            )
-        if volume_keyword_name is None:
-            volume_keyword_name = (
-                music_converters.configurations.DEFAULT_VOLUME_KEYWORD_NAME
-            )
-        assert isinstance(volume_keyword_name, str)
-        assert isinstance(volume_to_search_name, str)
-        super().__init__(volume_to_search_name, volume_keyword_name)
+        super().__init__(
+            volume_to_search_name
+            or music_converters.configurations.DEFAULT_VOLUME_TO_SEARCH_NAME,
+            volume_keyword_name
+            or music_converters.configurations.DEFAULT_VOLUME_KEYWORD_NAME,
+        )
 
 
 class MutwoParameterDictToPlayingIndicatorCollection(
@@ -213,19 +201,11 @@ class MutwoParameterDictToPlayingIndicatorCollection(
         playing_indicator_collection_to_search_name: typing.Optional[str] = None,
         playing_indicator_collection_keyword_name: typing.Optional[str] = None,
     ):
-        if playing_indicator_collection_to_search_name is None:
-            playing_indicator_collection_to_search_name = (
-                music_converters.configurations.DEFAULT_PLAYING_INDICATOR_COLLECTION_TO_SEARCH_NAME
-            )
-        if playing_indicator_collection_keyword_name is None:
-            playing_indicator_collection_keyword_name = (
-                music_converters.configurations.DEFAULT_PLAYING_INDICATOR_COLLECTION_KEYWORD_NAME
-            )
-        assert isinstance(playing_indicator_collection_keyword_name, str)
-        assert isinstance(playing_indicator_collection_to_search_name, str)
         super().__init__(
-            playing_indicator_collection_to_search_name,
-            playing_indicator_collection_keyword_name,
+            playing_indicator_collection_to_search_name
+            or music_converters.configurations.DEFAULT_PLAYING_INDICATOR_COLLECTION_TO_SEARCH_NAME,
+            playing_indicator_collection_keyword_name
+            or music_converters.configurations.DEFAULT_PLAYING_INDICATOR_COLLECTION_KEYWORD_NAME,
         )
 
 
@@ -237,19 +217,11 @@ class MutwoParameterDictToNotationIndicatorCollection(
         notation_indicator_collection_to_search_name: typing.Optional[str] = None,
         notation_indicator_collection_keyword_name: typing.Optional[str] = None,
     ):
-        if notation_indicator_collection_to_search_name is None:
-            notation_indicator_collection_to_search_name = (
-                music_converters.configurations.DEFAULT_NOTATION_INDICATOR_COLLECTION_TO_SEARCH_NAME
-            )
-        if notation_indicator_collection_keyword_name is None:
-            notation_indicator_collection_keyword_name = (
-                music_converters.configurations.DEFAULT_NOTATION_INDICATOR_COLLECTION_KEYWORD_NAME
-            )
-        assert isinstance(notation_indicator_collection_keyword_name, str)
-        assert isinstance(notation_indicator_collection_to_search_name, str)
         super().__init__(
-            notation_indicator_collection_to_search_name,
-            notation_indicator_collection_keyword_name,
+            notation_indicator_collection_to_search_name
+            or music_converters.configurations.DEFAULT_NOTATION_INDICATOR_COLLECTION_TO_SEARCH_NAME,
+            notation_indicator_collection_keyword_name
+            or music_converters.configurations.DEFAULT_NOTATION_INDICATOR_COLLECTION_KEYWORD_NAME,
         )
 
 
@@ -261,19 +233,11 @@ class MutwoParameterDictToGraceNoteSequentialEvent(
         grace_note_sequential_event_to_search_name: typing.Optional[str] = None,
         grace_note_sequential_event_keyword_name: typing.Optional[str] = None,
     ):
-        if grace_note_sequential_event_to_search_name is None:
-            grace_note_sequential_event_to_search_name = (
-                music_converters.configurations.DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME
-            )
-        if grace_note_sequential_event_keyword_name is None:
-            grace_note_sequential_event_keyword_name = (
-                music_converters.configurations.DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME
-            )
-        assert isinstance(grace_note_sequential_event_keyword_name, str)
-        assert isinstance(grace_note_sequential_event_to_search_name, str)
         super().__init__(
-            grace_note_sequential_event_to_search_name,
-            grace_note_sequential_event_keyword_name,
+            grace_note_sequential_event_to_search_name
+            or music_converters.configurations.DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME,
+            grace_note_sequential_event_keyword_name
+            or music_converters.configurations.DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME,
         )
 
 
@@ -285,19 +249,11 @@ class MutwoParameterDictToAfterGraceNoteSequentialEvent(
         after_grace_note_sequential_event_to_search_name: typing.Optional[str] = None,
         after_grace_note_sequential_event_keyword_name: typing.Optional[str] = None,
     ):
-        if after_grace_note_sequential_event_to_search_name is None:
-            after_grace_note_sequential_event_to_search_name = (
-                music_converters.configurations.DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME
-            )
-        if after_grace_note_sequential_event_keyword_name is None:
-            after_grace_note_sequential_event_keyword_name = (
-                music_converters.configurations.DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME
-            )
-        assert isinstance(after_grace_note_sequential_event_keyword_name, str)
-        assert isinstance(after_grace_note_sequential_event_to_search_name, str)
         super().__init__(
-            after_grace_note_sequential_event_to_search_name,
-            after_grace_note_sequential_event_keyword_name,
+            after_grace_note_sequential_event_to_search_name
+            or music_converters.configurations.DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME,
+            after_grace_note_sequential_event_keyword_name
+            or music_converters.configurations.DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME,
         )
 
 
