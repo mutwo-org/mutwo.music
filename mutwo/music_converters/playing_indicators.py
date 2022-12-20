@@ -13,6 +13,8 @@ try:
 except ImportError:
     import fractions  # type: ignore
 
+import numpy as np
+
 from mutwo import core_constants
 from mutwo import core_converters
 from mutwo import core_events
@@ -28,6 +30,7 @@ __all__ = (
     "StacattoConverter",
     "ArticulationConverter",
     "TrillConverter",
+    "OptionalConverter",
     "PlayingIndicatorsConverter",
 )
 
@@ -454,6 +457,73 @@ class TrillConverter(PlayingIndicatorConverter):
     @property
     def default_playing_indicator(self) -> music_parameters.abc.PlayingIndicator:
         return music_parameters.Trill()
+
+
+class OptionalConverter(PlayingIndicatorConverter):
+    """Apply optional on :class:`~mutwo.core_events.SimpleEvent`.
+
+    :param likelihood: A number between 0 - 1. 1 means that each optional
+        note is played, 0 means no optional note is played. Default to 0.5.
+    :type likelihood: float
+    :param random_seed: Set inner random process. Default to 100.
+    :type random_seed: int
+    :param make_rest: A function which takes the original :class:`~mutwo.core_events.SimpleEvent`
+        and returns a new `SimpleEvent` with the same duration which represents a rest.
+        By default, `mutwo` simply creates a `SimpleEvent` with the same duration.
+    :type make_rest: typing.Callable[[core_events.SimpleEvent], core_events.SimpleEvent]
+    :param simple_event_to_playing_indicator_collection: Function to extract from a
+        :class:`mutwo.core_events.SimpleEvent` a
+        :class:`mutwo.music_parameters.PlayingIndicatorCollection`
+        object. By default it asks the Event for its
+        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
+        objects are expected).
+        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
+        with a different name for their playing_indicator_collection property, this argument
+        should be overridden. If the
+        function call raises an :obj:`AttributeError` (e.g. if no playing indicator
+        collection can be extracted), mutwo will build a playing indicator collection
+        from :const:`~mutwo.music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS`.
+    :type simple_event_to_playing_indicator_collection: typing.Callable[[core_events.SimpleEvent], music_parameters.PlayingIndicatorCollection,], optional
+    """
+
+    def __init__(
+        self,
+        likelihood: float = 0.5,
+        random_seed: int = 100,
+        make_rest: typing.Callable[
+            [core_events.SimpleEvent], core_events.SimpleEvent
+        ] = lambda simple_event: core_events.SimpleEvent(simple_event.duration),
+        simple_event_to_playing_indicator_collection: typing.Callable[
+            [core_events.SimpleEvent],
+            music_parameters.PlayingIndicatorCollection,
+        ] = music_converters.SimpleEventToPlayingIndicatorCollection(),
+    ):
+        self._make_rest = make_rest
+        self._likelihood = likelihood
+        self._random = np.random.default_rng(random_seed)
+        super().__init__(simple_event_to_playing_indicator_collection)
+
+    def _apply_playing_indicator(
+        self,
+        simple_event_to_convert: core_events.SimpleEvent,
+        playing_indicator: music_parameters.abc.ExplicitPlayingIndicator,
+    ) -> core_events.SequentialEvent[core_events.SimpleEvent]:
+        sequential_event = core_events.SequentialEvent([])
+        if playing_indicator.is_active and self._random.random() > self._likelihood:
+            rest = self._make_rest(simple_event_to_convert)
+            sequential_event.append(rest)
+        else:
+            sequential_event.append(simple_event_to_convert.copy())
+        return sequential_event
+
+    @property
+    def playing_indicator_name(self) -> str:
+        return "optional"
+
+    @property
+    def default_playing_indicator(self) -> music_parameters.abc.PlayingIndicator:
+        return music_parameters.abc.ExplicitPlayingIndicator()
 
 
 class PlayingIndicatorsConverter(core_converters.abc.SymmetricalEventConverter):

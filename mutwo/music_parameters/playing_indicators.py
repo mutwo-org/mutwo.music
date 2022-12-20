@@ -178,6 +178,9 @@ class PlayingIndicatorCollection(
     laissez_vibrer: music_parameters.abc.PlayingIndicator = dataclasses.field(
         default_factory=music_parameters.abc.ExplicitPlayingIndicator
     )
+    optional: music_parameters.abc.PlayingIndicator = dataclasses.field(
+        default_factory=music_parameters.abc.ExplicitPlayingIndicator
+    )
     ornamentation: Ornamentation = dataclasses.field(default_factory=Ornamentation)
     pedal: Pedal = dataclasses.field(default_factory=Pedal)
     prall: music_parameters.abc.PlayingIndicator = dataclasses.field(

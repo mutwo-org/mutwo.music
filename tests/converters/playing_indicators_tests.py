@@ -91,5 +91,19 @@ class PlayingIndicatorsConverterTest(unittest.TestCase):
         )
 
 
+class OptionalConverterTest(unittest.TestCase):
+    def test_convert(self):
+        o = music_converters.OptionalConverter
+        seq = core_events.SequentialEvent
+        duration = 5
+        note_like = music_events.NoteLike("c", duration=duration)
+        note_like.playing_indicator_collection.optional = True
+        self.assertEqual(
+            o(likelihood=0).convert(note_like),
+            seq([core_events.SimpleEvent(duration=duration)]),
+        )
+        self.assertEqual(o(likelihood=1).convert(note_like), seq([note_like]))
+
+
 if __name__ == "__main__":
     unittest.main()
