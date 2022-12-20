@@ -20,12 +20,14 @@ __all__ = (
     "SimpleEventToPitchList",
     "SimpleEventToVolume",
     "SimpleEventToLyric",
+    "SimpleEventToInstrument",
     "SimpleEventToPlayingIndicatorCollection",
     "SimpleEventToNotationIndicatorCollection",
     "SimpleEventToGraceNoteSequentialEvent",
     "SimpleEventToAfterGraceNoteSequentialEvent",
     "MutwoParameterDictToPitchList",
     "MutwoParameterDictToVolume",
+    "MutwoParameterDictToInstrument",
     "MutwoParameterDictToPlayingIndicatorCollection",
     "MutwoParameterDictToNotationIndicatorCollection",
     "MutwoParameterDictToGraceNoteSequentialEvent",
@@ -69,6 +71,19 @@ class SimpleEventToLyric(core_converters.SimpleEventToAttribute):
         super().__init__(
             attribute_name
             or music_converters.configurations.DEFAULT_LYRIC_TO_SEARCH_NAME,
+            exception_value,
+        )
+
+
+class SimpleEventToInstrument(core_converters.SimpleEventToAttribute):
+    def __init__(
+        self,
+        attribute_name: typing.Optional[str] = None,
+        exception_value: typing.Optional[music_parameters.abc.Instrument] = None,
+    ):
+        super().__init__(
+            attribute_name
+            or music_converters.configurations.DEFAULT_INSTRUMENT_TO_SEARCH_NAME,
             exception_value,
         )
 
@@ -193,6 +208,22 @@ class MutwoParameterDictToVolume(core_converters.MutwoParameterDictToKeywordArgu
         )
 
 
+class MutwoParameterDictToInstrument(
+    core_converters.MutwoParameterDictToKeywordArgument
+):
+    def __init__(
+        self,
+        instrument_to_search_name: typing.Optional[str] = None,
+        instrument_keyword_name: typing.Optional[str] = None,
+    ):
+        super().__init__(
+            instrument_to_search_name
+            or music_converters.configurations.DEFAULT_INSTRUMENT_TO_SEARCH_NAME,
+            instrument_keyword_name
+            or music_converters.configurations.DEFAULT_INSTRUMENT_KEYWORD_NAME,
+        )
+
+
 class MutwoParameterDictToPlayingIndicatorCollection(
     core_converters.MutwoParameterDictToKeywordArgument
 ):
@@ -286,6 +317,7 @@ class MutwoParameterDictToNoteLike(core_converters.MutwoParameterDictToSimpleEve
                 MutwoParameterDictToNotationIndicatorCollection(),
                 MutwoParameterDictToGraceNoteSequentialEvent(),
                 MutwoParameterDictToAfterGraceNoteSequentialEvent(),
+                MutwoParameterDictToInstrument(),
             )
         super().__init__(
             mutwo_parameter_dict_to_keyword_argument_sequence, simple_event_class

@@ -57,6 +57,9 @@ class NoteLike(core_events.SimpleEvent):
     :type notation_indicator_collection: music_parameters.notation_indicator_collection.NotationIndicatorCollection
     :param lyric:
     :type lyric: core_parameters.abc.Lyric
+    :param instrument: If an event is played by a specifc :class:`mutwo.music_parameters.abc.Instrument`,
+        this instrument can be assigned here. Default to ``None``.
+    :type instrument: typing.Optional[music_parameters.abc.Instrument]
 
     ``mutwo.music`` doesn't differentiate between Tones, Chords and
     Rests, but rather simply implements one general class which can
@@ -90,6 +93,7 @@ class NoteLike(core_events.SimpleEvent):
             music_parameters.NotationIndicatorCollection
         ] = None,
         lyric: music_parameters.abc.Lyric = music_parameters.DirectLyric(""),
+        instrument: typing.Optional[music_parameters.abc.Instrument] = None,
     ):
         self.pitch_list = pitch_list
         self.volume = volume
@@ -109,6 +113,7 @@ class NoteLike(core_events.SimpleEvent):
             or music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
         )
         self.lyric = lyric
+        self.instrument = instrument
 
     # ###################################################################### #
     #                            properties                                  #
