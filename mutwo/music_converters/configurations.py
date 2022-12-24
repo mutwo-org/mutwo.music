@@ -20,15 +20,15 @@ DEFAULT_VOLUME_KEYWORD_NAME = "volume"
 """Default value for :param:`volume_keyword_name` parameter in
 :class:`mutwo.core_converters.MutwoParameterDictToVolume`"""
 
-DEFAULT_INSTRUMENT_TO_SEARCH_NAME = "instrument"
-"""Default value for :param:`instrument_to_search_name` parameter in
-:class:`mutwo.music_converters.MutwoParameterDictToInstrument` and
+DEFAULT_INSTRUMENT_LIST_TO_SEARCH_NAME = "instrument_list"
+"""Default value for :param:`instrument_list_to_search_name` parameter in
+:class:`mutwo.music_converters.MutwoParameterDictToInstrumentList` and
 default value for :param:`attribute_name` in
-:class:`mutwo.music_converters.SimpleEventToInstrument`."""
+:class:`mutwo.music_converters.SimpleEventToInstrumentList`."""
 
-DEFAULT_INSTRUMENT_KEYWORD_NAME = "instrument"
-"""Default value for :param:`instrument_keyword_name` parameter in
-:class:`mutwo.core_converters.MutwoParameterDictToInstrument`"""
+DEFAULT_INSTRUMENT_LIST_KEYWORD_NAME = "instrument_list"
+"""Default value for :param:`instrument_list_keyword_name` parameter in
+:class:`mutwo.core_converters.MutwoParameterDictToInstrumentList`"""
 
 DEFAULT_PLAYING_INDICATOR_COLLECTION_TO_SEARCH_NAME = "playing_indicator_collection"
 """Default value for :param:`playing_indicator_collection_to_search_name` parameter in

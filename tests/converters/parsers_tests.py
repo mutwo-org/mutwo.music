@@ -40,22 +40,22 @@ class SimpleEventToVolumeTest(unittest.TestCase):
         )
 
 
-class SimpleEventToInstrumentTest(unittest.TestCase):
+class SimpleEventToInstrumentListTest(unittest.TestCase):
     def setUp(self):
-        self.converter = music_converters.SimpleEventToInstrument()
+        self.converter = music_converters.SimpleEventToInstrumentList()
 
     def test_convert_with_attribute(self):
         self.assertEqual(
             self.converter(
-                music_events.NoteLike(instrument=music_parameters.constants.OBOE)
+                music_events.NoteLike(instrument_list=[music_parameters.constants.OBOE])
             ),
-            music_parameters.constants.OBOE,
+            [music_parameters.constants.OBOE],
         )
 
     def test_convert_without_attribute(self):
         self.assertEqual(
             self.converter(core_events.SimpleEvent(10)),
-            None,
+            [],
         )
 
 

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - orchestration namespace tool with `mutwo.music_parameters.Orchestration`
-- `instrument` attribute to `mutwo.music_events.NoteLike`
+- `instrument_list` attribute to `mutwo.music_events.NoteLike`
 - `optional` playing indicator in `mutwo.music_parameters.PlayingIndicatorCollection` to denote optional events
 - `OptionalConverter` in `mutwo.music_converters` to apply `optional` playing indicator
 
