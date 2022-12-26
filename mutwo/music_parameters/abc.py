@@ -1337,7 +1337,6 @@ class Instrument(abc.ABC):
     @abc.abstractmethod
     def is_pitched(self) -> bool:
         """Return ``True`` if instrument is pitched, ``False`` otherwise."""
-        ...
 
 
 @dataclasses.dataclass(frozen=True)
