@@ -1309,7 +1309,7 @@ class Fingering(_frozenset, metaclass=abc.ABCMeta):
 
 @dataclasses.dataclass(frozen=True)
 class Instrument(abc.ABC):
-    """Modal a musical instrument.
+    """Model a musical instrument.
 
     :param name: The name of the instrument.
     :type name: str
@@ -1342,7 +1342,7 @@ class Instrument(abc.ABC):
 
 @dataclasses.dataclass(frozen=True)
 class PitchedInstrument(Instrument):
-    """Modal a pitched musical instrument.
+    """Model a pitched musical instrument.
 
     :param name: The name of the instrument.
     :type name: str

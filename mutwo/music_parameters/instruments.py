@@ -23,7 +23,7 @@ __all__ = (
 
 
 class UnpitchedInstrument(music_parameters.abc.Instrument):
-    """Modal a musical instruments without any clear pitches.
+    """Model a musical instruments without any clear pitches.
 
     **Example:**
 
@@ -37,7 +37,7 @@ class UnpitchedInstrument(music_parameters.abc.Instrument):
 
 
 class ContinuousPitchedInstrument(music_parameters.abc.PitchedInstrument):
-    """Modal a musical instrument with continuous pitches (e.g. not fretted).
+    """Model a musical instrument with continuous pitches (e.g. not fretted).
 
     :param pitch_ambitus: The pitch ambitus of the instrument.
     :type pitch_ambitus: music_parameters.abc.PitchAmbitus
@@ -102,7 +102,7 @@ class ContinuousPitchedInstrument(music_parameters.abc.PitchedInstrument):
 
 
 class DiscreetPitchedInstrument(music_parameters.abc.PitchedInstrument):
-    """Modal a musical instrument with discreet pitches (e.g. fretted).
+    """Model a musical instrument with discreet pitches (e.g. fretted).
 
     :param pitch_tuple: A tuple of all playable pitches of the instrument.
     :type pitch_tuple: tuple[music_parameters.abc.Pitch, ...]
