@@ -7,6 +7,7 @@ from .commas import *
 from .lyrics import *
 from .pitch_intervals import *
 from .pitches import *
+from .scales import *
 
 # instruments need configurations. We can't load configurations
 # in mutwo.music_parameters.configurations.__init__.py, because
@@ -20,7 +21,6 @@ from .instruments import *  # needs pitches
 from .volumes import *
 from .notation_indicators import *
 from .playing_indicators import *
-from .scales import *
 
 from . import (
     ambituses,
