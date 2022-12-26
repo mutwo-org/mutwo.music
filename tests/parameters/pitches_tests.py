@@ -6,6 +6,7 @@ try:
 except ImportError:
     import fractions  # type: ignore
 
+from mutwo import core_utilities
 from mutwo import music_parameters
 
 
@@ -56,19 +57,19 @@ class EqualDividedOctavePitch_Test(unittest.TestCase):
         pitch2 = music_parameters.EqualDividedOctavePitch(12, 6, 0, 0, 0)
         self.assertAlmostEqual(pitch0.frequency, pitch0.concert_pitch.frequency * 2)
         self.assertAlmostEqual(pitch1.frequency, pitch1.concert_pitch.frequency * 0.5)
-        self.assertAlmostEqual(pitch2.frequency, 622.253967444162)
+        self.assertAlmostEqual(pitch2.frequency, 622.254)
 
     def test_property_step_factor(self):
         pitch0 = music_parameters.EqualDividedOctavePitch(12, 0, 1, 0, 0)
         pitch1 = music_parameters.EqualDividedOctavePitch(6, 0, -1, 0, 0)
         self.assertAlmostEqual(
-            (pitch0.step_factor ** pitch0.n_pitch_classes_per_octave)
+            (pitch0.step_factor**pitch0.n_pitch_classes_per_octave)
             * pitch0.concert_pitch.frequency,
             pitch0.frequency,
         )
         self.assertAlmostEqual(
             pitch1.concert_pitch.frequency
-            / (pitch1.step_factor ** pitch1.n_pitch_classes_per_octave),
+            / (pitch1.step_factor**pitch1.n_pitch_classes_per_octave),
             pitch1.frequency,
         )
 
@@ -160,12 +161,19 @@ class WesternPitchTest(unittest.TestCase):
         )
         self.assertAlmostEqual(
             pitch3.frequency,
-            music_parameters.configurations.DEFAULT_CONCERT_PITCH * pitch3.step_factor,
+            core_utilities.round_floats(
+                music_parameters.configurations.DEFAULT_CONCERT_PITCH
+                * pitch3.step_factor,
+                music_parameters.configurations.EQUAL_DIVIDED_OCTAVE_PITCH_ROUND_FREQUENCY_DIGIT_COUNT,
+            ),
         )
         self.assertAlmostEqual(
             pitch4.frequency,
-            music_parameters.configurations.DEFAULT_CONCERT_PITCH
-            * (pitch4.step_factor ** 2.5),
+            core_utilities.round_floats(
+                music_parameters.configurations.DEFAULT_CONCERT_PITCH
+                * (pitch4.step_factor**2.5),
+                music_parameters.configurations.EQUAL_DIVIDED_OCTAVE_PITCH_ROUND_FREQUENCY_DIGIT_COUNT,
+            ),
         )
 
     def test_property_diatonic_pitch_class_name(self):

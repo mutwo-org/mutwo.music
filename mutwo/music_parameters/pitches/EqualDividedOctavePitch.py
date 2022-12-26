@@ -189,7 +189,10 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
         distance_to_concert_pitch_as_factor = self.cents_to_ratio(
             distance_to_concert_pitch_in_cents
         )
-        return float(self.concert_pitch.frequency * distance_to_concert_pitch_as_factor)
+        return core_utilities.round_floats(
+            self.concert_pitch.frequency * distance_to_concert_pitch_as_factor,
+            music_parameters.configurations.EQUAL_DIVIDED_OCTAVE_PITCH_ROUND_FREQUENCY_DIGIT_COUNT,
+        )
 
     # ###################################################################### #
     #                          public methods                                #
