@@ -79,6 +79,7 @@ in
       python310Packages.numpy
       python310Packages.scipy
       python310Packages.sympy
+      python310Packages.ortools
       gradient-free-optimizers
       mutwo-common
       epitran

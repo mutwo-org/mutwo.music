@@ -63,4 +63,21 @@ DEFAULT_BASSOON_DICT = dict(
 """Default arguments for :class:`mutwo.music_parameters.Bassoon`."""
 
 
+DEFAULT_CELTIC_HARP_DICT = dict(
+    name="harp",
+    short_name="hp.",
+    pitch_count_range=ranges.Range(1, 8),
+    transposition_pitch_interval=wi("p1"),
+    pitch_tuple=music_parameters.Scale(
+        w("c", 4),
+        music_parameters.RepeatingScaleFamily(
+            [wi(i) for i in "p1 M2 M3 p4 p5 M6 M7".split(" ")],
+            min_pitch_interval=music_parameters.DirectPitchInterval(-1200 * 2),
+            max_pitch_interval=music_parameters.DirectPitchInterval(1200 * 3),
+        ),
+    ).pitch_tuple,
+)
+"""Default arguments for :class:`mutwo.music_parameters.CelticHarp`."""
+
+
 del a, w, wi, music_parameters, ranges

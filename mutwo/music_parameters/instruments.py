@@ -1,7 +1,13 @@
 """Representations for musical instruments"""
 
+from __future__ import annotations
+
 import collections
+import functools
+import itertools
 import typing
+
+from ortools.sat.python import cp_model
 
 from mutwo import core_utilities
 from mutwo import music_parameters
@@ -13,6 +19,7 @@ __all__ = (
     "DiscreetPitchedInstrument",
     "Orchestration",
     "OrchestrationMixin",
+    "CelticHarp",
     "Piccolo",
     "Flute",
     "Oboe",
@@ -231,6 +238,154 @@ def Orchestration(**instrument_name_to_instrument: music_parameters.abc.Instrume
         ),
         {},
     )(*instrument_tuple)
+
+
+class CelticHarp(DiscreetPitchedInstrument):
+    """A typical beginners harp without any pedals."""
+
+    def __init__(self, **kwargs):
+        super().__init__(
+            **_setdefault(
+                kwargs, music_parameters.configurations.DEFAULT_CELTIC_HARP_DICT
+            )
+        )
+
+    class Fingering(music_parameters.abc.Fingering):
+        class Vector(collections.namedtuple("Vector", ("string_index",))):
+            def __sub__(
+                self, other: CelticHarp.Fingering.Vector
+            ) -> CelticHarp.Fingering.Vector:
+                return type(self)(self.string_index - other.string_index)
+
+        class Part(music_parameters.abc.Fingering.Part):
+            class Delta(music_parameters.abc.Fingering.Part.Delta):
+                @functools.cached_property
+                def score(self) -> float:
+                    return 1
+
+    STRING_DISTANCE_TO_FINGER_INDEX_PAIR_TUPLE_DICT = {
+        1: ((3, 2), (2, 1)),
+        2: ((3, 2), (3, 1), (2, 1), (1, 0)),
+    }
+
+    STRING_DISTANCE_TO_FINGER_INDEX_PAIR_TUPLE_DICT = {
+        string_distance: tuple((-a, -b) for a, b in finger_index_pair_tuple)
+        + finger_index_pair_tuple
+        for string_distance, finger_index_pair_tuple in STRING_DISTANCE_TO_FINGER_INDEX_PAIR_TUPLE_DICT.items()
+    }
+
+    _joker = tuple(itertools.product(range(-4, 0), range(0, 4)))
+
+    _left_hand = music_parameters.constants.BODY.Left.Arm.Hand.Finger
+    _right_hand = music_parameters.constants.BODY.Right.Arm.Hand.Finger
+
+    FINGER_INDEX_TO_FINGER = {
+        -1: _left_hand.One,
+        -2: _left_hand.Two,
+        -3: _left_hand.Three,
+        -4: _left_hand.Four,
+        0: _right_hand.One,
+        1: _right_hand.Two,
+        2: _right_hand.Three,
+        3: _right_hand.Four,
+    }
+
+    def string_distance_to_finger_index_pair_tuple(
+        self, string_distance: int
+    ) -> tuple[tuple[int, int], ...]:
+        # We can't touch anything too far.
+        # This doesn't matter if we use two different hands; they
+        # can be as far as possible.
+        try:
+            finger_index_pair_tuple = (
+                self.STRING_DISTANCE_TO_FINGER_INDEX_PAIR_TUPLE_DICT[string_distance]
+            )
+        except KeyError:
+            finger_index_pair_tuple = tuple([])
+        return finger_index_pair_tuple + self._joker
+
+    def pitch_sequence_to_fingering_tuple(
+        self, pitch_sequence: typing.Sequence[music_parameters.abc.Pitch]
+    ) -> tuple[CelticHarp.Fingering, ...]:
+        pitch_count = len(pitch_sequence)
+        assert pitch_count <= 8, "Harp players only use 8 fingers!"
+
+        # Very important!
+        pitch_sequence = sorted(pitch_sequence)
+
+        # We already know which strings need to be plucked.
+        vector_list = []
+        for pitch in pitch_sequence:
+            try:
+                vector_list.append(self.Fingering.Vector(self.pitch_tuple.index(pitch)))
+            except ValueError:
+                raise ValueError(f"tuple.index(x): '{pitch}' not in '{self}'")
+
+        model = cp_model.CpModel()
+
+        # Model which fingers we use.
+        finger_index_list = []
+        for finger_index in range(pitch_count):
+            # We use negative domain for left hand and positive
+            # domain for right hand.
+            finger_index_list.append(
+                model.NewIntVarFromDomain(
+                    cp_model.Domain.FromIntervals([[-4, -1], [1, 4]]),
+                    f"FingerIndex{finger_index}",
+                )
+            )
+        model.AddAllDifferent(finger_index_list)
+
+        # Add hand constraints: We can't touch anything too far.
+        for finger_index0, finger_index1 in itertools.combinations(
+            range(pitch_count), 2
+        ):
+            string_distance = (
+                vector_list[finger_index1] - vector_list[finger_index0]
+            ).string_index
+            assert string_distance != 0, "Found two equal pitches!"
+            model.AddAllowedAssignments(
+                (finger_index_list[finger_index0], finger_index_list[finger_index1]),
+                self.string_distance_to_finger_index_pair_tuple(string_distance),
+            )
+
+        solver = cp_model.CpSolver()
+        solution_collector = _VarArraySolutionCollector(finger_index_list)
+        solver.parameters.enumerate_all_solutions = True
+        solver.Solve(model, solution_collector)
+
+        fingering_list = []
+        for solution in solution_collector.solution_tuple:
+            finger_part_list = []
+            for pitch, finger_index, vector in zip(
+                pitch_sequence, finger_index_list, vector_list
+            ):
+                finger = self.FINGER_INDEX_TO_FINGER[solution[finger_index.Name()]]
+                finger_part_list.append(
+                    self.Fingering.Part(finger, frozenset((vector,)), sound=(pitch,))
+                )
+            fingering_list.append(self.Fingering(finger_part_list))
+
+        return tuple(fingering_list)
+
+
+class _VarArraySolutionCollector(cp_model.CpSolverSolutionCallback):
+    def __init__(self, variables):
+        cp_model.CpSolverSolutionCallback.__init__(self)
+        self.__variables = variables
+        self.__solution_count = 0
+        self.__solution_list = []
+
+    def on_solution_callback(self):
+        self.__solution_count += 1
+        solution_dict = {}
+        for v in self.__variables:
+            solution_dict[v.Name()] = self.Value(v)
+        self.__solution_list.append(solution_dict)
+
+    @property
+    def solution_tuple(self) -> tuple[dict, ...]:
+        return self.__solution_list
 
 
 class Piccolo(ContinuousPitchedInstrument):
