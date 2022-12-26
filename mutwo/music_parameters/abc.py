@@ -79,6 +79,12 @@ class PitchInterval(
         `reverse <https://web.mit.edu/music21/doc/moduleReference/moduleInterval.html#music21.interval.Interval.reverse >`_.
         """
 
+    def __add__(self, other: PitchInterval) -> PitchInterval:
+        return music_parameters.DirectPitchInterval(self.interval + other.interval)
+
+    def __sub__(self, other: PitchInterval) -> PitchInterval:
+        return music_parameters.DirectPitchInterval(self.interval - other.interval)
+
 
 class Pitch(
     core_parameters.abc.SingleNumberParameter,

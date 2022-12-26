@@ -22,6 +22,18 @@ class DirectPitchIntervalTest(unittest.TestCase):
         )
         self.assertEqual(self.pitch_interval_0.inverse().interval, -800)
 
+    def test_add(self):
+        self.assertEqual(
+            self.pitch_interval_0 + self.pitch_interval_1,
+            music_parameters.DirectPitchInterval(1300),
+        )
+
+    def test_subtract(self):
+        self.assertEqual(
+            self.pitch_interval_0 - self.pitch_interval_1,
+            music_parameters.DirectPitchInterval(300),
+        )
+
 
 class WesternPitchIntervalTest(unittest.TestCase):
     def setUp(self):
