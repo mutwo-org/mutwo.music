@@ -1181,10 +1181,15 @@ class Fingering(_frozenset, metaclass=abc.ABCMeta):
         :param vector_set: Tells which position in a physical space
             is touched by parts of a human body.
         :type vector_set: frozenset[Fingering.Vector]
+        :param sound: Assigns which sound is produced by the given
+            :class:`Fingering.Part`. This could be a ``tuple`` of
+            :class:`Pitch`es, for instance. Default to ``None``.
+        :type sound: typing.Any
         """
 
         body_part: BodyPart
         vector_set: frozenset[Fingering.Vector]
+        sound: typing.Any = None
 
         @dataclasses.dataclass(frozen=True, unsafe_hash=True)
         class Delta(abc.ABC):
@@ -1213,6 +1218,9 @@ class Fingering(_frozenset, metaclass=abc.ABCMeta):
 
                 The ``score`` depends on both body parts and the Δ vector.
                 """
+
+        def __hash__(self) -> int:
+            return hash((self.body_part, self.vector_set))
 
         def delta(self, other: Fingering.Part) -> Fingering.Part.Delta:
             """Calculate Δ between two :class:`Fingering.Part`s.
@@ -1403,3 +1411,22 @@ class PitchedInstrument(Instrument):
     @property
     def is_pitched(self) -> bool:
         return True
+
+    # We need to parse a `pitch_sequence` and not only a single
+    # pitch, because a certain combination of pitches needs a different
+    # fingering then only one single pitch (we can't combine fingering
+    # parts afterwards).
+    # We need to return a tuple of fingerings and not only one fingering,
+    # because we want to fetch all possible fingerings and not only one
+    # option. If we don't have any options at all, we can therefore also
+    # simply return an empty tuple.
+    def pitch_sequence_to_fingering_tuple(
+        self, pitch_sequence: typing.Sequence[Pitch]
+    ) -> tuple[Fingering, ...]:
+        """Find all possible :class:`Fingering`s to play harmony on instrument.
+
+        :param pitch_sequence: The chord to be played by the
+            instrument.
+        :type pitch_sequence: typing.Sequence[Pitch]
+        """
+        return tuple([])
