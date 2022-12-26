@@ -7,7 +7,16 @@ from .commas import *
 from .lyrics import *
 from .pitch_intervals import *
 from .pitches import *
+
+# instruments need configurations. We can't load configurations
+# in mutwo.music_parameters.configurations.__init__.py, because
+# we use objects there which aren't available yet.
+from mutwo.music_parameters.configurations import instruments
+configurations.__dict__.update(instruments.__dict__)
+del instruments
+
 from .instruments import *  # needs pitches
+
 from .volumes import *
 from .notation_indicators import *
 from .playing_indicators import *

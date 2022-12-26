@@ -104,19 +104,18 @@ class DiscreetPitchedInstrumentTest(unittest.TestCase):
 
 class OrchestrationTest(unittest.TestCase):
     def setUp(self):
+        self.oboe = oboe = music_parameters.Oboe()
+        self.clarinet = clarinet = music_parameters.BfClarinet()
         self.orchestration = music_parameters.Orchestration(
-            oboe0=music_parameters.constants.OBOE,
-            oboe1=music_parameters.constants.OBOE,
-            oboe2=music_parameters.constants.OBOE,
-            clarinet=music_parameters.constants.BF_CLARINET,
+            oboe0=oboe, oboe1=oboe, oboe2=oboe, clarinet=clarinet
         )
 
     def test_fetch_instrument(self):
-        self.assertEqual(self.orchestration.oboe0, music_parameters.constants.OBOE)
+        self.assertEqual(self.orchestration.oboe0, self.oboe)
         self.assertEqual(
-            self.orchestration.clarinet, music_parameters.constants.BF_CLARINET
+            self.orchestration.clarinet, self.clarinet
         )
-        self.assertEqual(self.orchestration[-1], music_parameters.constants.BF_CLARINET)
+        self.assertEqual(self.orchestration[-1], self.clarinet)
 
     def test_get_subset(self):
         subset = self.orchestration.get_subset("oboe0", "clarinet")
@@ -124,5 +123,5 @@ class OrchestrationTest(unittest.TestCase):
         self.assertTrue(hasattr(subset, "oboe0"))
         self.assertTrue(hasattr(subset, "clarinet"))
         self.assertFalse(hasattr(subset, "oboe1"))
-        self.assertEqual(subset.oboe0, music_parameters.constants.OBOE)
-        self.assertEqual(subset.clarinet, music_parameters.constants.BF_CLARINET)
+        self.assertEqual(subset.oboe0, self.oboe)
+        self.assertEqual(subset.clarinet, self.clarinet)

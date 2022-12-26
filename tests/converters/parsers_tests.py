@@ -45,11 +45,9 @@ class SimpleEventToInstrumentListTest(unittest.TestCase):
         self.converter = music_converters.SimpleEventToInstrumentList()
 
     def test_convert_with_attribute(self):
+        oboe = music_parameters.Oboe()
         self.assertEqual(
-            self.converter(
-                music_events.NoteLike(instrument_list=[music_parameters.constants.OBOE])
-            ),
-            [music_parameters.constants.OBOE],
+            self.converter(music_events.NoteLike(instrument_list=[oboe])), [oboe]
         )
 
     def test_convert_without_attribute(self):

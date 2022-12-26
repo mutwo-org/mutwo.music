@@ -3,8 +3,6 @@
 import collections
 import typing
 
-import ranges
-
 from mutwo import core_utilities
 from mutwo import music_parameters
 
@@ -15,6 +13,12 @@ __all__ = (
     "DiscreetPitchedInstrument",
     "Orchestration",
     "OrchestrationMixin",
+    "Piccolo",
+    "Flute",
+    "Oboe",
+    "BfClarinet",
+    "EfClarinet",
+    "Bassoon",
 )
 
 
@@ -87,7 +91,7 @@ class ContinuousPitchedInstrument(music_parameters.abc.PitchedInstrument):
         **Example:**
 
         >>> from mutwo import music_parameters
-        >>> music_parameters.WesternPitch('c', 1) in music_parameters.constants.BF_CLARINET
+        >>> music_parameters.WesternPitch('c', 1) in music_parameters.BfClarinet()
         False
         """
         return pitch in self.pitch_ambitus
@@ -182,12 +186,12 @@ class OrchestrationMixin(object):
 
         >>> from mutwo import music_parameters
         >>> orch = music_parameters.Orchestration(
-        ...   oboe0=music_parameters.constants.OBOE,
-        ...   oboe1=music_parameters.constants.OBOE,
-        ...   oboe2=music_parameters.constants.OBOE,
+        ...   oboe0=music_parameters.Oboe(),
+        ...   oboe1=music_parameters.Oboe(),
+        ...   oboe2=music_parameters.Oboe(),
         ... )
         >>> orch.get_subset('oboe0', 'oboe2')
-        Orchestration(oboe0=ContinuousPitchedInstrument(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)), oboe2=ContinuousPitchedInstrument(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)))
+        Orchestration(oboe0=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)), oboe2=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)))
         """
         return Orchestration(**{name: getattr(self, name) for name in instrument_name})
 
@@ -209,10 +213,10 @@ def Orchestration(**instrument_name_to_instrument: music_parameters.abc.Instrume
 
     >>> from mutwo import music_parameters
     >>> music_parameters.Orchestration(
-    ...   oboe0=music_parameters.constants.OBOE,
-    ...   oboe1=music_parameters.constants.OBOE,
+    ...   oboe0=music_parameters.Oboe(),
+    ...   oboe1=music_parameters.Oboe(),
     ... )
-    Orchestration(oboe0=ContinuousPitchedInstrument(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)), oboe1=ContinuousPitchedInstrument(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)))
+    Orchestration(oboe0=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)), oboe1=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)))
     """
 
     instrument_name_tuple, instrument_tuple = zip(
@@ -229,44 +233,54 @@ def Orchestration(**instrument_name_to_instrument: music_parameters.abc.Instrume
     )(*instrument_tuple)
 
 
-# We add instruments to `music_parameters.constants`.
-
-
-def instrument_name_to_variable_name(name: str) -> str:
-    return name.upper().replace("-", "_")
-
-
-def add_continuous_pitched_instruments():
-    a, w, wi = (  # abbreviation for more compact code
-        music_parameters.OctaveAmbitus,
-        music_parameters.WesternPitch,
-        music_parameters.WesternPitchInterval,
-    )
-    for name, short_name, ambitus, pitch_count_range, transposition_pitch_interval in (
-        ("picollo", "pcl.", a(w("d", 5), w("c", 8)), (1, 2), wi("p-8")),
-        ("flute", "flt.", a(w("c", 4), w("d", 7)), (1, 2), wi("p1")),
-        ("oboe", "ob.", a(w("bf", 3), w("a", 6)), (1, 2), wi("p1")),
-        ("bf-clarinet", "cl.", a(w("d", 3), w("bf", 6)), (1, 2), wi("m2")),
-        ("ef-clarinet", "cl.", a(w("g", 3), w("ef", 7)), (1, 2), wi("m-3")),
-        ("bassoon", "bs.", a(w("bf", 1), w("ef", 5)), (1, 2), wi("p1")),
-    ):
-        setattr(
-            music_parameters.constants,
-            instrument_name_to_variable_name(name),
-            ContinuousPitchedInstrument(
-                ambitus,
-                name,
-                short_name,
-                ranges.Range(*pitch_count_range),
-                transposition_pitch_interval,
-            ),
+class Piccolo(ContinuousPitchedInstrument):
+    def __init__(self, **kwargs):
+        super().__init__(
+            **_setdefault(kwargs, music_parameters.configurations.DEFAULT_PICCOLO_DICT)
         )
 
 
-def add_instruments():
-    add_continuous_pitched_instruments()
+class Flute(ContinuousPitchedInstrument):
+    def __init__(self, **kwargs):
+        super().__init__(
+            **_setdefault(kwargs, music_parameters.configurations.DEFAULT_FLUTE_DICT)
+        )
 
 
-add_instruments()
-# Cleanup
-del add_instruments, add_continuous_pitched_instruments
+class Oboe(ContinuousPitchedInstrument):
+    def __init__(self, **kwargs):
+        super().__init__(
+            **_setdefault(kwargs, music_parameters.configurations.DEFAULT_OBOE_DICT)
+        )
+
+
+class BfClarinet(ContinuousPitchedInstrument):
+    def __init__(self, **kwargs):
+        super().__init__(
+            **_setdefault(
+                kwargs, music_parameters.configurations.DEFAULT_BF_CLARINET_DICT
+            )
+        )
+
+
+class EfClarinet(ContinuousPitchedInstrument):
+    def __init__(self, **kwargs):
+        super().__init__(
+            **_setdefault(
+                kwargs, music_parameters.configurations.DEFAULT_EF_CLARINET_DICT
+            )
+        )
+
+
+class Bassoon(ContinuousPitchedInstrument):
+    def __init__(self, **kwargs):
+        super().__init__(
+            **_setdefault(kwargs, music_parameters.configurations.DEFAULT_BASSOON_DICT)
+        )
+
+
+# Helper
+def _setdefault(kwargs: dict, default_dict: dict) -> dict:
+    for key, value in default_dict.items():
+        kwargs.setdefault(key, value)
+    return kwargs
