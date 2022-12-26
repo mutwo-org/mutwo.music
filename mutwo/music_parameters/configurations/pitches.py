@@ -64,4 +64,8 @@ DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME = "pitch_interval"
 """Default property parameter name for events in
 :class:`mutwo.music_parameters.Pitch.PitchIntervalEnvelope`."""
 
+EQUAL_DIVIDED_OCTAVE_PITCH_ROUND_FREQUENCY_DIGIT_COUNT = 4
+"""By how many digits `frequency` of :class:`mutwo.music_parameters.EqualDividedOctavePitch`
+is rounded. This helps fixing floating point errors."""
+
 del commas, fractions
