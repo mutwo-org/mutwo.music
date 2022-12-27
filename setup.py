@@ -10,7 +10,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 extras_require = {
-    "testing": ["pytest>=7.1.1", "mutwo.common>=0.11.0, <1.0.0"]
+    "testing": ["pytest>=7.1.1", "mutwo.common>=0.11.0, <1.0.0"],
+    # For CelticHarp
+    "ortools": ["ortools>=9.4, <10.0"],
 }
 
 setuptools.setup(
@@ -37,7 +39,6 @@ setuptools.setup(
         "epitran>=1.23, <2.0.0",
         "sympy>=1.10.1, <2.0.0",
         "gradient-free-optimizers>=1.0.7, <2.0.0",
-        "ortools>=9.4, <10.0"
     ],
     extras_require=extras_require,
     python_requires=">=3.10, <4",

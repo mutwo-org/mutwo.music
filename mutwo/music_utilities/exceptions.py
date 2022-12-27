@@ -4,6 +4,7 @@ __all__ = (
     "DuplicatePlayingIndicatorConverterMappingWarning",
     "UnsortedIntervalTupleError",
     "IllegalFingeringDistanceError",
+    "NotInstalledError",
 )
 
 
@@ -30,9 +31,17 @@ class UnsortedIntervalTupleError(Exception):
 
 class IllegalFingeringDistanceError(ValueError):
     def __init__(self, distance: typing.Any):
-        super().__(
+        super().__init__(
             f"Illegal value '{distance}' for distance parameter. "
             "Only integers != 0 are allowed! "
             "(You can't calculate Δ between fingerings which happen "
             "at the same time.)"
+        )
+
+
+class NotInstalledError(Exception):
+    def __init__(self, object_: str, package: str):
+        super().__init__(
+            f"Can't use '{object_}', because optional "
+            f"package '{package}' isn't installed!"
         )
