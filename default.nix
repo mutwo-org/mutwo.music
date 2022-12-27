@@ -64,19 +64,13 @@ let
 
 in
 
-  # XXX: Currently nix-build doesn't work due to ortools, see
-  #   https://discourse.nixos.org/t/ortools-module-not-found-under-nix-shell/14190/7
-  # and
-  #   https://stackoverflow.com/questions/68477623/ortools-not-found-in-nix-shell
-  #
-  # Maybe using mkDerivation may work.
   buildPythonPackage rec {
     name = "mutwo.music";
     src = fetchFromGitHub {
       owner = "mutwo-org";
       repo = name;
-      rev = "5d588e9a56f1a8d60c6ad8c0f39dd9065cb15fa0";
-      sha256 = "sha256-mH95FZSvIlBp61yhO/lvNgYhhf4FgTG4e4XbNAETOJY=";
+      rev = "8536d6844696e7d3b9b86753df053198fab9a97e";
+      sha256 = "sha256-gvENXShNxnM6/DS09itxegx6ptAMH+L4XJaLEF4H6Ck=";
     };
     checkInputs = [
       python310Packages.pytest
@@ -85,7 +79,13 @@ in
       python310Packages.numpy
       python310Packages.scipy
       python310Packages.sympy
-      python310Packages.ortools
+      # XXX: Currently nix-build doesn't work with ortools, see
+      #   https://discourse.nixos.org/t/ortools-module-not-found-under-nix-shell/14190/7
+      # and
+      #   https://stackoverflow.com/questions/68477623/ortools-not-found-in-nix-shell
+      #
+      # If you want to use ortools specific functionalities, specify in shell.nix.
+      # python310Packages.ortools
       gradient-free-optimizers
       mutwo-common
       epitran
