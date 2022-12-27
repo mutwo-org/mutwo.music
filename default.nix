@@ -64,13 +64,19 @@ let
 
 in
 
+  # XXX: Currently nix-build doesn't work due to ortools, see
+  #   https://discourse.nixos.org/t/ortools-module-not-found-under-nix-shell/14190/7
+  # and
+  #   https://stackoverflow.com/questions/68477623/ortools-not-found-in-nix-shell
+  #
+  # Maybe using mkDerivation may work.
   buildPythonPackage rec {
     name = "mutwo.music";
     src = fetchFromGitHub {
       owner = "mutwo-org";
       repo = name;
-      rev = "7ea2e8067fe81dcc99771e0eca352aa3ba0fca04";
-      sha256 = "sha256-QbuSV6RAhZiZeFgWc8LzrXRgSspDW2nDlfSvdH9iWoY=";
+      rev = "5d588e9a56f1a8d60c6ad8c0f39dd9065cb15fa0";
+      sha256 = "sha256-mH95FZSvIlBp61yhO/lvNgYhhf4FgTG4e4XbNAETOJY=";
     };
     checkInputs = [
       python310Packages.pytest
