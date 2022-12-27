@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `instrument_list` attribute to `mutwo.music_events.NoteLike`
 - `optional` playing indicator in `mutwo.music_parameters.PlayingIndicatorCollection` to denote optional events
 - `OptionalConverter` in `mutwo.music_converters` to apply `optional` playing indicator
+- classes to model fingerings:
+    - `mutwo.music_parameters.abc.Fingering`
+    - `mutwo.music_parameters.abc.BodyPart`
+- allow + and - operations on two `mutwo.music_parameters.abc.PitchInterval`
+- new instrument `mutwo.music_parameters.CelticHarp`
+
+### Changed
+- set default value of `pitch_list` for `mutwo.music_events.NoteLike` to `[]`: `NoteLike` has no pitches by default.
+- moved builtin instruments from global variables in `mutwo.music_parameters.constants` to ordinary classes in `mutwo.music_parameters`
 
 
 ## [0.20.0] - 2022-12-10
