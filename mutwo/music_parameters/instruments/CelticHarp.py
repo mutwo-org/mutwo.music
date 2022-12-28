@@ -17,6 +17,25 @@ from mutwo import music_utilities
 
 from .general import DiscreetPitchedInstrument, _setdefault
 
+# Can't be set inside constants due to circular import issues.
+left_hand = music_parameters.constants.BODY.Left.Arm.Hand.Finger
+right_hand = music_parameters.constants.BODY.Right.Arm.Hand.Finger
+h = music_parameters.constants.HarpFinger
+music_parameters.constants.HARP_FINGER_INDEX_TO_FINGER = {
+    h.LeftOne: left_hand.One,
+    h.LeftTwo: left_hand.Two,
+    h.LeftThree: left_hand.Three,
+    h.LeftFour: left_hand.Four,
+    h.RightOne: right_hand.One,
+    h.RightTwo: right_hand.Two,
+    h.RightThree: right_hand.Three,
+    h.RightFour: right_hand.Four,
+}
+music_parameters.constants.HARP_FINGER_TO_FINGER_INDEX = {
+    v: k for k, v in music_parameters.constants.HARP_FINGER_INDEX_TO_FINGER.items()
+}
+del h, left_hand, right_hand
+
 
 class CelticHarp(DiscreetPitchedInstrument):
     """A typical beginners harp without any pedals."""
@@ -91,7 +110,7 @@ class CelticHarp(DiscreetPitchedInstrument):
             )
 
         solver = cp_model.CpSolver()
-        solution_collector = self._VarArraySolutionCollector(finger_index_list)
+        solution_collector = _VarArraySolutionCollector(finger_index_list)
         solver.parameters.enumerate_all_solutions = True
         solver.Solve(model, solution_collector)
 
@@ -102,7 +121,7 @@ class CelticHarp(DiscreetPitchedInstrument):
     # Helper method for 'pitch_sequence_to_fingering_tuple'
     def _solution_collector_to_fingering_tuple(
         self,
-        solution_collector: CelticHarp._VarArraySolutionCollector,
+        solution_collector: _VarArraySolutionCollector,
         pitch_sequence: typing.Sequence[music_parameters.abc.Pitch],
         finger_index_list: list,
         vector_list: list[CelticHarp.Fingering.Vector],
@@ -170,6 +189,9 @@ class Fingering(music_parameters.abc.Fingering):
         )
 
 
+CelticHarp.Fingering = Fingering
+
+
 if cp_model:
 
     class _VarArraySolutionCollector(cp_model.CpSolverSolutionCallback):
@@ -190,25 +212,3 @@ if cp_model:
     _FINGER_INDEX_DOMAIN = cp_model.Domain.FromValues(
         list(music_parameters.constants.HARP_FINGER_INDEX_TO_FINGER.keys())
     )
-
-
-CelticHarp.Fingering = Fingering
-
-# Can't be set inside constants due to circular import issues.
-left_hand = music_parameters.constants.BODY.Left.Arm.Hand.Finger
-right_hand = music_parameters.constants.BODY.Right.Arm.Hand.Finger
-h = music_parameters.constants.HarpFinger
-music_parameters.constants.HARP_FINGER_INDEX_TO_FINGER = {
-    h.LeftOne: left_hand.One,
-    h.LeftTwo: left_hand.Two,
-    h.LeftThree: left_hand.Three,
-    h.LeftFour: left_hand.Four,
-    h.RightOne: right_hand.One,
-    h.RightTwo: right_hand.Two,
-    h.RightThree: right_hand.Three,
-    h.RightFour: right_hand.Four,
-}
-music_parameters.constants.HARP_FINGER_TO_FINGER_INDEX = {
-    v: k for k, v in music_parameters.constants.HARP_FINGER_INDEX_TO_FINGER.items()
-}
-del h, left_hand, right_hand
