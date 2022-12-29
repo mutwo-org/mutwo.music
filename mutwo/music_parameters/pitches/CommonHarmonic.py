@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import functools
 import typing
 
 try:
@@ -38,15 +39,20 @@ class Partial(object):
 
     >>> from mutwo import music_parameters
     >>> strong_clarinet_partial_tuple = (
-    ...     music_parameters.Partial(1, True),
-    ...     music_parameters.Partial(3, True),
-    ...     music_parameters.Partial(5, True),
-    ...     music_parameters.Partial(7, True),
+    ...     music_parameters.Partial(1),
+    ...     music_parameters.Partial(3),
+    ...     music_parameters.Partial(5),
+    ...     music_parameters.Partial(7),
     ... )
     """
 
     index: int
     tonality: bool = True
+
+    @functools.cached_property
+    def interval(self) -> music_parameters.JustIntonationPitch:
+        i = f"{self.index}/1" if self.tonality else f"1/{self.index}"
+        return music_parameters.JustIntonationPitch(i)
 
 
 class CommonHarmonic(JustIntonationPitch):
