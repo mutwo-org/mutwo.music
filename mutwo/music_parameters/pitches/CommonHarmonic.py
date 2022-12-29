@@ -27,9 +27,9 @@ ConcertPitch = core_constants.Real | music_parameters.abc.Pitch
 class Partial(object):
     """Abstract representation of a harmonic spectrum partial.
 
-    :param nth_partial: The number of the partial (starting with 1
+    :param index: The number of the partial (starting with 1
         for the root note).
-    :type nth_partial: int
+    :type index: int
     :param tonality: ``True`` for overtone and ``False`` for a (theoretical)
         undertone. Default to ``True``.
     :type tonality: bool
@@ -45,7 +45,7 @@ class Partial(object):
     ... )
     """
 
-    nth_partial: int
+    index: int
     tonality: bool
 
 
