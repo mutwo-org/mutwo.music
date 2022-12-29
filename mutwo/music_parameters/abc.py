@@ -1284,7 +1284,9 @@ class Fingering(_frozenset, metaclass=abc.ABCMeta):
             A high return value indicates that the fingering change
             is easily playable.
             """
-            return float(np.average([d.score for d in self]))
+            if score_list := [d.score for d in self]:
+                return float(np.average(score_list))
+            return 1  # No relevant delta found => can be played
 
     class DeltaSet(_frozenset[Delta, ...]):
         """:class:`Fingering.DeltaSet` collects :class:`Fingering.Delta`.
