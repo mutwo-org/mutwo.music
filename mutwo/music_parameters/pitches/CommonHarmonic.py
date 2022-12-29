@@ -46,7 +46,7 @@ class Partial(object):
     """
 
     index: int
-    tonality: bool
+    tonality: bool = True
 
 
 class CommonHarmonic(JustIntonationPitch):
