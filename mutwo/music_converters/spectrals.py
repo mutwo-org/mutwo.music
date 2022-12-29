@@ -39,8 +39,8 @@ class TwoPitchesToCommonHarmonicTuple(core_converters.abc.Converter):
         lowest_partial: int, highest_partial: int, tonality: bool
     ) -> tuple[tuple[int, music_parameters.JustIntonationPitch], ...]:
         partial_tuple = tuple(
-            (nth_partial, music_parameters.JustIntonationPitch(nth_partial, 1))
-            for nth_partial in range(lowest_partial, highest_partial)
+            (partial_index, music_parameters.JustIntonationPitch(partial_index, 1))
+            for partial_index in range(lowest_partial, highest_partial)
         )
         if not tonality:
             [partial.inverse() for _, partial in partial_tuple]
@@ -55,8 +55,8 @@ class TwoPitchesToCommonHarmonicTuple(core_converters.abc.Converter):
     ) -> tuple[music_parameters.CommonHarmonic, ...]:
         partials0, partials1 = tuple(
             tuple(
-                (nth_partial, partial + pitch)
-                for nth_partial, partial in self._tonality_to_partial_tuple_dict[
+                (partial_index, partial + pitch)
+                for partial_index, partial in self._tonality_to_partial_tuple_dict[
                     tonality
                 ]
             )
@@ -65,19 +65,22 @@ class TwoPitchesToCommonHarmonicTuple(core_converters.abc.Converter):
             )
         )
 
-        nth_partial_for_partials1, partials1 = zip(*partials1)
+        partial_index_for_partials1, partials1 = zip(*partials1)
 
         common_harmonic_list = []
-        for nth_partial_for_first_pitch, partial in partials0:
+        for partial_index_for_first_pitch, partial in partials0:
             if partial in partials1:
-                nth_partial_for_second_pitch = nth_partial_for_partials1[
+                partial_index_for_second_pitch = partial_index_for_partials1[
                     partials1.index(partial)
                 ]
                 common_harmonic = music_parameters.CommonHarmonic(
                     tuple(
-                        music_parameters.Partial(nth_partial, tonality)
-                        for nth_partial, tonality in zip(
-                            (nth_partial_for_first_pitch, nth_partial_for_second_pitch),
+                        music_parameters.Partial(partial_index, tonality)
+                        for partial_index, tonality in zip(
+                            (
+                                partial_index_for_first_pitch,
+                                partial_index_for_second_pitch,
+                            ),
                             self._tonality_per_pitch_tuple,
                         )
                     ),
