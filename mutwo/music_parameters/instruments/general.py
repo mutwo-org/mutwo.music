@@ -18,13 +18,6 @@ __all__ = (
     "DiscreetPitchedInstrument",
     "Orchestration",
     "OrchestrationMixin",
-    "CelticHarp",
-    "Piccolo",
-    "Flute",
-    "Oboe",
-    "BfClarinet",
-    "EfClarinet",
-    "Bassoon",
 )
 
 
