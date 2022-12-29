@@ -52,8 +52,8 @@ class Partial(object):
 class CommonHarmonic(JustIntonationPitch):
     """:class:`JustIntonationPitch` which is the common harmonic between two or more other pitches.
 
-    :param partials: Tuple which contains partial numbers.
-    :type partials: tuple[Partial, ...]
+    :param partial_tuple: Tuple which contains partial numbers.
+    :type partial_tuple: tuple[Partial, ...]
     :param ratio_or_exponent_tuple: see the documentation of :class:`JustIntonationPitch`
     :type ratio_or_exponent_tuple: str | fractions.Fraction | typing.Iterable[int]
     :param concert_pitch: see the documentation of :class:`JustIntonationPitch`
