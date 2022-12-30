@@ -98,7 +98,7 @@ class BendAfter(music_parameters.abc.ImplicitPlayingIndicator):
 
 @dataclasses.dataclass()
 class ArtificalHarmonic(music_parameters.abc.ImplicitPlayingIndicator):
-    n_semitones: typing.Optional[int] = None
+    semitone_count: typing.Optional[int] = None
 
 
 @dataclasses.dataclass()
