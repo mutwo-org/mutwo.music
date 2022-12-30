@@ -10,6 +10,24 @@ from mutwo import core_utilities
 from mutwo import music_parameters
 
 
+class Partial_Test(unittest.TestCase):
+    def setUp(self):
+        self.partial = music_parameters.Partial(3)
+        self.negative_partial = music_parameters.Partial(5, tonality=False)
+
+    def test_index(self):
+        self.assertEqual(self.partial.index, 3)
+        self.assertEqual(self.negative_partial.index, 5)
+
+    def test_interval(self):
+        self.assertEqual(
+            self.partial.interval, music_parameters.JustIntonationPitch("3/1")
+        )
+        self.assertEqual(
+            self.negative_partial.interval, music_parameters.JustIntonationPitch("1/5")
+        )
+
+
 class DirectPitch_Test(unittest.TestCase):
     def test_property_frequency(self):
         frequency0 = 200
