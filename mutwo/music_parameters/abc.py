@@ -1432,3 +1432,26 @@ class PitchedInstrument(Instrument):
         :type pitch_sequence: typing.Sequence[Pitch]
         """
         return tuple([])
+
+    @abc.abstractmethod
+    def get_pitch_variant_tuple(
+        self, pitch: Pitch, period: typing.Optional[PitchInterval] = None
+    ) -> tuple[Pitch, ...]:
+        """Find all pitch variants (in all octaves) of the given pitch
+
+        :param pitch: The pitch which variants shall be found.
+        :type pitch: Pitch
+        :param period: The repeating period (usually an octave). If the
+            period is set to `None` the function will fallback to them
+            objects method :method:`pitch_to_period`. Default to `None`.
+        :type period: typing.Optional[PitchInterval]
+
+        This is not necessarily the same as
+        ``instrument.pitch_ambitus.get_pitch_variant_tuple()``, because
+        a :class:`mutwo.music_parameters.DiscreetPitchedInstrument` may
+        not be capable of playing a pitch even if the given pitch is within
+        the ambitus of an instrument. It's therefore recommended to
+        use ``instrument.get_pitch_variant_tuple`` if one wants to find
+        out in which octaves the given pitch is actually playable on the
+        instrument.
+        """

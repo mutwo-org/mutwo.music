@@ -274,7 +274,9 @@ class StringInstrumentMixin(object):
         return tuple(
             p
             for p in g(pitch, period)
-            if any([abs(p.get_pitch_interval(h_p).interval) < t_interval for h_p in h_t])
+            if any(
+                [abs(p.get_pitch_interval(h_p).interval) < t_interval for h_p in h_t]
+            )
         )
 
     def pitch_to_natural_harmonic_tuple(
@@ -385,6 +387,13 @@ class ContinuousPitchedInstrument(music_parameters.abc.PitchedInstrument):
     def pitch_ambitus(self) -> music_parameters.abc.PitchAmbitus:
         return self._pitch_ambitus
 
+    def get_pitch_variant_tuple(
+        self,
+        pitch: music_parameters.abc.Pitch,
+        period: typing.Optional[music_parameters.abc.PitchInterval] = None,
+    ) -> tuple[music_parameters.abc.Pitch, ...]:
+        return self.pitch_ambitus.get_pitch_variant_tuple(pitch, period)
+
 
 class DiscreetPitchedInstrument(music_parameters.abc.PitchedInstrument):
     """Model a musical instrument with discreet pitches (e.g. fretted).
@@ -448,6 +457,18 @@ class DiscreetPitchedInstrument(music_parameters.abc.PitchedInstrument):
     @property
     def pitch_tuple(self) -> tuple[music_parameters.abc.Pitch, ...]:
         return self._pitch_tuple
+
+    def get_pitch_variant_tuple(
+        self,
+        pitch: music_parameters.abc.Pitch,
+        period: typing.Optional[music_parameters.abc.PitchInterval] = None,
+    ) -> tuple[music_parameters.abc.Pitch, ...]:
+        return tuple(
+            filter(
+                lambda p: p in self.pitch_tuple,
+                self.pitch_ambitus.get_pitch_variant_tuple(pitch, period),
+            )
+        )
 
 
 class ContinuousPitchedStringInstrument(
