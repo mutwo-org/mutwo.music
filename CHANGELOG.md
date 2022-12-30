@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.21.0] - 2022-12-30
+
 ### Added
 - orchestration namespace tool with `mutwo.music_parameters.Orchestration`
 - `instrument_list` attribute to `mutwo.music_events.NoteLike`
@@ -17,10 +19,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     - `mutwo.music_parameters.abc.BodyPart`
 - allow + and - operations on two `mutwo.music_parameters.abc.PitchInterval`
 - new instrument `mutwo.music_parameters.CelticHarp`
+- new attribute `interval` for `music_parameters.Partial`
+- classes to model stringed instruments and natural harmonics:
+    - `mutwo.music_parameters.NaturalHarmonic`
+    - `mutwo.music_parameters.String`
+    - `mutwo.music_parameters.StringInstrument`
 
 ### Changed
 - set default value of `pitch_list` for `mutwo.music_events.NoteLike` to `[]`: `NoteLike` has no pitches by default.
 - moved builtin instruments from global variables in `mutwo.music_parameters.constants` to ordinary classes in `mutwo.music_parameters`
+- `music_parameters.Partial.nth_partial` to `music_parameters.Partial.index`
+- attributes of playing indicators:
+    - `music_parameters.Ornamentation.n_times` -> `music_parameters.Ornamentation.count`
+    - `music_parameters.ArtificalHarmonic.n_semitones` -> `music_parameters.ArtificalHarmonic.semitone_count`
+    - `music_parameters.Tremolo.n_flags` -> `music_parameters.Tremolo.flag_count`
+
+### Removed
+- natural harmonic indicators have been replaced by new `NaturalHarmonicList`. Removed:
+    - `music_parameters.PreciseNaturalHarmonic`
+    - `music_parameters.PlayingIndicatorCollection.precise_natural_harmonic` and `music_parameters.PlayingIndicatorCollection.natural_harmonic`
 
 
 ## [0.20.0] - 2022-12-10
