@@ -84,7 +84,7 @@ class StringContactPoint(music_parameters.abc.ImplicitPlayingIndicator):
 @dataclasses.dataclass()
 class Ornamentation(music_parameters.abc.ImplicitPlayingIndicator):
     direction: typing.Optional[music_parameters.constants.DIRECTION_LITERAL] = None
-    n_times: int = 1
+    count: int = 1
 
 
 @dataclasses.dataclass()
