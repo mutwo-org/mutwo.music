@@ -20,7 +20,7 @@ a :attr:`is_active` attribute which can either be :obj:`True`
 or :obj:`False`.
 
 2. Playing indicators with one or more arguments (for instance
-:class:`Tremolo` with :attr:`n_flags` or :class:`Arpeggio` with
+:class:`Tremolo` with :attr:`flag_count` or :class:`Arpeggio` with
 :attr:`direction`). Their :attr:`is_active` attribute can't be
 set by the user and get automatically initialised depending on
 if all necessary attributes are defined (then active) or
@@ -55,7 +55,7 @@ from mutwo import music_parameters
 
 @dataclasses.dataclass()
 class Tremolo(music_parameters.abc.ImplicitPlayingIndicator):
-    n_flags: typing.Optional[int] = None
+    flag_count: typing.Optional[int] = None
 
 
 @dataclasses.dataclass()
