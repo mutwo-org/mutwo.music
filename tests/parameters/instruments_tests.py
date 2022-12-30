@@ -5,6 +5,111 @@ import ranges
 from mutwo import music_parameters
 
 
+class NaturalHarmonicTest(unittest.TestCase):
+    def setUp(self):
+        self.string = music_parameters.String(music_parameters.WesternPitch("g", 3))
+        self.natural_harmonic = music_parameters.NaturalHarmonic(3, self.string)
+
+    def test_interval(self):
+        self.assertEqual(
+            self.natural_harmonic.interval, music_parameters.JustIntonationPitch("3/1")
+        )
+
+    def test_pitch(self):
+        self.assertAlmostEqual(
+            self.natural_harmonic.pitch.frequency,
+            (
+                # It's a fifth + two octaves higher,
+                music_parameters.WesternPitch("d", 5)
+                # but with a just interval and not a tempered one
+                # (2 ct difference).
+                + music_parameters.DirectPitchInterval(2)
+            ).frequency,
+            1,
+        )
+
+    def test_node_tuple(self):
+        self.assertEqual(
+            self.natural_harmonic.node_tuple,
+            (
+                music_parameters.NaturalHarmonic.Node(
+                    music_parameters.JustIntonationPitch("3/2"), self.string
+                ),
+                music_parameters.NaturalHarmonic.Node(
+                    music_parameters.JustIntonationPitch("3/1"), self.string
+                ),
+            ),
+        )
+
+
+class StringTest(unittest.TestCase):
+    def setUp(self):
+        self.string = music_parameters.String(music_parameters.WesternPitch("g", 3))
+
+    def test_index_to_natural_harmonic(self):
+        h, s = music_parameters.NaturalHarmonic, self.string
+        for index, h_ok in ((1, h(1, s)), (11, h(11, s)), (421, h(421, s))):
+            with self.subTest(index=index):
+                self.assertEqual(self.string.index_to_natural_harmonic(index), h_ok)
+
+    def test_natural_harmonic_tuple(self):
+        def h(i):
+            return music_parameters.NaturalHarmonic(i, self.string)
+
+        self.assertEqual(
+            self.string.natural_harmonic_tuple, (h(2), h(3), h(4), h(5), h(6))
+        )
+
+
+class StringInstrumentMixinTest(unittest.TestCase):
+    def setUp(self):
+        self.string_instrument_mixin = music_parameters.StringInstrumentMixin(
+            (
+                music_parameters.String(
+                    music_parameters.WesternPitch("g", 3), max_natural_harmonic_index=3
+                ),
+            )
+        )
+
+    def test_harmonic_pitch_tuple(self):
+        self.assertEqual(
+            tuple(
+                music_parameters.WesternPitch(p.pitch_class_name, p.octave)
+                for p in self.string_instrument_mixin.harmonic_pitch_tuple
+            ),
+            (
+                music_parameters.WesternPitch("g", 4),
+                music_parameters.WesternPitch("d", 5),
+            ),
+        )
+
+    def test_pitch_to_natural_harmonic_tuple(self):
+        self.assertEqual(
+            self.string_instrument_mixin.pitch_to_natural_harmonic_tuple(
+                music_parameters.WesternPitch("d", 5)
+            ),
+            (
+                music_parameters.NaturalHarmonic(
+                    3, self.string_instrument_mixin.string_tuple[0]
+                ),
+            ),
+        )
+
+    def test_get_harmonic_pitch_variant_tuple(self):
+        g = self.string_instrument_mixin.get_harmonic_pitch_variant_tuple
+        self.assertEqual(
+            g(music_parameters.WesternPitch("d", 2)),
+            (music_parameters.WesternPitch("d", 5),),
+        )
+        self.assertEqual(
+            g(
+                music_parameters.WesternPitch("d", 2),
+                tolerance=music_parameters.DirectPitchInterval(0),
+            ),
+            tuple([]),
+        )
+
+
 class UnpitchedInstrumentTest(unittest.TestCase):
     def setUp(self):
         self.unpitched_instrument = music_parameters.UnpitchedInstrument("test", "t")
@@ -112,9 +217,7 @@ class OrchestrationTest(unittest.TestCase):
 
     def test_fetch_instrument(self):
         self.assertEqual(self.orchestration.oboe0, self.oboe)
-        self.assertEqual(
-            self.orchestration.clarinet, self.clarinet
-        )
+        self.assertEqual(self.orchestration.clarinet, self.clarinet)
         self.assertEqual(self.orchestration[-1], self.clarinet)
 
     def test_get_subset(self):

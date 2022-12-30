@@ -1,9 +1,14 @@
 """Representations for musical instruments"""
 
 __all__ = (
+    "NaturalHarmonic",
+    "String",
+    "StringInstrumentMixin",
     "UnpitchedInstrument",
     "ContinuousPitchedInstrument",
     "DiscreetPitchedInstrument",
+    "ContinuousPitchedStringInstrument",
+    "DiscreetPitchedStringInstrument",
     "Orchestration",
     "OrchestrationMixin",
     "CelticHarp",
@@ -16,9 +21,14 @@ __all__ = (
 )
 
 from .general import (
+    NaturalHarmonic,
+    String,
+    StringInstrumentMixin,
     UnpitchedInstrument,
     ContinuousPitchedInstrument,
     DiscreetPitchedInstrument,
+    ContinuousPitchedStringInstrument,
+    DiscreetPitchedStringInstrument,
     Orchestration,
     OrchestrationMixin,
 )
