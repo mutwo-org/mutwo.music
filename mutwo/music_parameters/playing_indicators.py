@@ -101,38 +101,41 @@ class ArtificalHarmonic(music_parameters.abc.ImplicitPlayingIndicator):
     semitone_count: typing.Optional[int] = None
 
 
-class NaturalHarmonicList(list, music_parameters.abc.PlayingIndicator):
+class NaturalHarmonicNodeList(
+    list[music_parameters.NaturalHarmonic.Node], music_parameters.abc.PlayingIndicator
+):
     """Assign natural harmonics to your note.
 
     **Example:**
 
     >>> from mutwo import music_events, music_parameters
     >>> n = music_events.NoteLike('c', 4)
-    >>> n.playing_indicator_collection.natural_harmonic_list.is_active
+    >>> n.playing_indicator_collection.natural_harmonic_node_list.is_active
     False
-    >>> n.playing_indicator_collection.natural_harmonic_list.append(
+    >>> n.playing_indicator_collection.natural_harmonic_node_list.append(
     ...     music_parameters.NaturalHarmonic(
     ...         2,
     ...         music_parameters.String(music_parameters.WesternPitch('c', 3))
-    ...     )
+    ...     ).node_tuple[0]
     ... )
-    >>> n.playing_indicator_collection.natural_harmonic_list.is_active
+    >>> n.playing_indicator_collection.natural_harmonic_node_list.is_active
     True
     """
+
     def __new__(
         self,
         natural_harmonic_list: typing.Optional[
-            list[music_parameters.NaturalHarmonic]
+            list[music_parameters.NaturalHarmonic.Node]
         ] = None,
         harmonic_note_head_style: bool = True,
         write_string: bool = True,
         parenthesize_lower_note_head: bool = False,
     ):
-        nh_list = super().__new__(self, natural_harmonic_list or [])
-        nh_list.write_string = write_string
-        nh_list.harmonic_note_head_style = harmonic_note_head_style
-        nh_list.parenthesize_lower_note_head = parenthesize_lower_note_head
-        return nh_list
+        nhn_list = super().__new__(self, natural_harmonic_list or [])
+        nhn_list.write_string = write_string
+        nhn_list.harmonic_note_head_style = harmonic_note_head_style
+        nhn_list.parenthesize_lower_note_head = parenthesize_lower_note_head
+        return nhn_list
 
     @property
     def is_active(self) -> bool:
@@ -202,8 +205,8 @@ class PlayingIndicatorCollection(
         default_factory=music_parameters.abc.ExplicitPlayingIndicator
     )
     hairpin: Hairpin = dataclasses.field(default_factory=Hairpin)
-    natural_harmonic_list: NaturalHarmonicList = dataclasses.field(
-        default_factory=NaturalHarmonicList
+    natural_harmonic_node_list: NaturalHarmonicNodeList = dataclasses.field(
+        default_factory=NaturalHarmonicNodeList
     )
     laissez_vibrer: music_parameters.abc.PlayingIndicator = dataclasses.field(
         default_factory=music_parameters.abc.ExplicitPlayingIndicator
