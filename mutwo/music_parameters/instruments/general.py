@@ -45,16 +45,20 @@ class NaturalHarmonic(music_parameters.Partial):
             normally on the given string is the node position where the
             harmonic can be produced.
         :type interval: music_parameters.abc.PitchInterval
+        :param natural_harmonic: The natural harmonic which is produced when
+            pressing at the nodes position.
+        :type natural_harmonic: NaturalHarmonic
         :param string: The string on which to play the node,
         :type string: String
         """
 
         interval: music_parameters.abc.PitchInterval
+        natural_harmonic: NaturalHarmonic
         string: String
 
         @functools.cached_property
         def pitch(self) -> music_parameters.abc.Pitch:
-            """At which position to press the string to produce harmonic."""
+            """At which position to press the string to produce the harmonic."""
             return self.string.tuning_original + self.interval
 
     def __init__(self, index: int, string: String):
@@ -91,14 +95,17 @@ class NaturalHarmonic(music_parameters.Partial):
         ...     2,
         ...     music_parameters.String(music_parameters.WesternPitch('g', 3)),
         ... )
-        (NaturalHarmonic.Node(interval=JustIntonationPitch('3/2'), string=String(WesternPitch('g', 3))), NaturalHarmonic.Node(interval=JustIntonationPitch('3/1'), string=String(WesternPitch('g', 3))))
+        >>> natural_harmonic.node_tuple
+        (NaturalHarmonic.Node(interval=JustIntonationPitch('2/1'), natural_harmonic=NaturalHarmonic(index=2, tonality=True), string=String(WesternPitch('g', 3))),)
         """
         node_list = []
         for node_index in range(1, self.index):
             ratio = fractions.Fraction(self.index, node_index)
             if ratio.numerator == self.index:
                 node_list.append(
-                    self.Node(music_parameters.JustIntonationPitch(ratio), self.string)
+                    self.Node(
+                        music_parameters.JustIntonationPitch(ratio), self, self.string
+                    )
                 )
         return tuple(reversed(node_list))
 

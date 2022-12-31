@@ -33,10 +33,14 @@ class NaturalHarmonicTest(unittest.TestCase):
             self.natural_harmonic.node_tuple,
             (
                 music_parameters.NaturalHarmonic.Node(
-                    music_parameters.JustIntonationPitch("3/2"), self.string
+                    music_parameters.JustIntonationPitch("3/2"),
+                    self.natural_harmonic,
+                    self.string,
                 ),
                 music_parameters.NaturalHarmonic.Node(
-                    music_parameters.JustIntonationPitch("3/1"), self.string
+                    music_parameters.JustIntonationPitch("3/1"),
+                    self.natural_harmonic,
+                    self.string,
                 ),
             ),
         )
