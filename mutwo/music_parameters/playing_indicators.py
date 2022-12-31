@@ -144,7 +144,7 @@ class NaturalHarmonicNodeList(
 
 @dataclasses.dataclass()
 class Fermata(music_parameters.abc.ImplicitPlayingIndicator):
-    fermata_type: typing.Optional[
+    type: typing.Optional[
         music_parameters.constants.FERMATA_TYPE_LITERAL
     ] = None
 
@@ -172,7 +172,7 @@ class WoodwindFingering(music_parameters.abc.ImplicitPlayingIndicator):
 class Cue(music_parameters.abc.ImplicitPlayingIndicator):
     """Cue for electronics etc."""
 
-    cue_count: typing.Optional[int] = None
+    index: typing.Optional[int] = None
 
 
 @dataclasses.dataclass

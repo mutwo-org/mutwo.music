@@ -47,7 +47,7 @@ class Clef(music_parameters.abc.NotationIndicator):
 
 @dataclasses.dataclass()
 class Ottava(music_parameters.abc.NotationIndicator):
-    n_octaves: typing.Optional[int] = 0
+    octave_count: typing.Optional[int] = 0
 
 
 @dataclasses.dataclass()
