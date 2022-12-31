@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.22.0] - 2022-12-31
+
+### Added
+- `natural_harmonic` property to `music_parameters.NaturalHarmonic.Node`
+
+### Changed
+- `music_parameters.PlayingIndicatorCollection.natural_harmonic_list` to `music_parameters.PlayingIndicatorCollection.natural_harmonic_node_list`
+- `music_parameters.Ottava.n_octaves` to `music_parameters.Ottava.octave_count`
+- `music_parameters.Fermata.fermata_type` to `music_parameters.Fermata.type`
+- `music_parameters.Cue.cue_count` to `music_parameters.Cue.index`
+
+
 ## [0.21.0] - 2022-12-30
 
 ### Added
