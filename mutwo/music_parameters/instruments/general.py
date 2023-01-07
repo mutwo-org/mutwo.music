@@ -248,7 +248,7 @@ class StringInstrumentMixin(object):
     def harmonic_pitch_ambitus(self) -> music_parameters.abc.PitchAmbitus:
         """Get flageolet :class:`music_parameters.abc.PitchAmbitus`."""
         hp_tuple = self.harmonic_pitch_tuple
-        return music_parameters.OctaveAmbitus(hp_tuple[0], hp_tuple[1])
+        return music_parameters.OctaveAmbitus(hp_tuple[0], hp_tuple[-1])
 
     def get_harmonic_pitch_variant_tuple(
         self,
