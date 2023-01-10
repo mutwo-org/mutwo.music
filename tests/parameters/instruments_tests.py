@@ -7,7 +7,7 @@ from mutwo import music_parameters
 
 class NaturalHarmonicTest(unittest.TestCase):
     def setUp(self):
-        self.string = music_parameters.String(music_parameters.WesternPitch("g", 3))
+        self.string = music_parameters.String(0, music_parameters.WesternPitch("g", 3))
         self.natural_harmonic = music_parameters.NaturalHarmonic(3, self.string)
 
     def test_interval(self):
@@ -48,7 +48,7 @@ class NaturalHarmonicTest(unittest.TestCase):
 
 class StringTest(unittest.TestCase):
     def setUp(self):
-        self.string = music_parameters.String(music_parameters.WesternPitch("g", 3))
+        self.string = music_parameters.String(0, music_parameters.WesternPitch("g", 3))
 
     def test_index_to_natural_harmonic(self):
         h, s = music_parameters.NaturalHarmonic, self.string
@@ -70,6 +70,7 @@ class StringInstrumentMixinTest(unittest.TestCase):
         self.string_instrument_mixin = music_parameters.StringInstrumentMixin(
             (
                 music_parameters.String(
+                    0,
                     music_parameters.WesternPitch("g", 3), max_natural_harmonic_index=3
                 ),
             )

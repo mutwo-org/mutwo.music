@@ -115,7 +115,7 @@ class NaturalHarmonicNodeList(
     >>> n.playing_indicator_collection.natural_harmonic_node_list.append(
     ...     music_parameters.NaturalHarmonic(
     ...         2,
-    ...         music_parameters.String(music_parameters.WesternPitch('c', 3))
+    ...         music_parameters.String(0, music_parameters.WesternPitch('c', 3))
     ...     ).node_tuple[0]
     ... )
     >>> n.playing_indicator_collection.natural_harmonic_node_list.is_active

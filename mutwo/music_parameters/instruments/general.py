@@ -77,7 +77,7 @@ class NaturalHarmonic(music_parameters.Partial):
         **Example:**
 
         >>> from mutwo import music_parameters
-        >>> string = music_parameters.String(music_parameters.WesternPitch("g", 3))
+        >>> string = music_parameters.String(0, music_parameters.WesternPitch("g", 3))
         >>> natural_harmonic = music_parameters.NaturalHarmonic(3, string)
         >>> natural_harmonic.pitch
         WesternPitch('d', 5)
@@ -93,10 +93,10 @@ class NaturalHarmonic(music_parameters.Partial):
         >>> from mutwo import music_parameters
         >>> natural_harmonic = music_parameters.NaturalHarmonic(
         ...     2,
-        ...     music_parameters.String(music_parameters.WesternPitch('g', 3)),
+        ...     music_parameters.String(0, music_parameters.WesternPitch('g', 3)),
         ... )
         >>> natural_harmonic.node_tuple
-        (NaturalHarmonic.Node(interval=JustIntonationPitch('2/1'), natural_harmonic=NaturalHarmonic(index=2, tonality=True), string=String(WesternPitch('g', 3))),)
+        (NaturalHarmonic.Node(interval=JustIntonationPitch('2/1'), natural_harmonic=NaturalHarmonic(index=2, tonality=True), string=String(0, WesternPitch('g', 3))),)
         """
         node_list = []
         for node_index in range(1, self.index):
@@ -114,6 +114,10 @@ class NaturalHarmonic(music_parameters.Partial):
 class String(object):
     """:class:`String` represents a string of an instrument.
 
+    :param index: The index of a :class:`String`. This is important
+        in order to differentiate how far two strings are from
+        each other.
+    :type index: int
     :param tuning: The pitch to which the string is tuned to.
     :type tuning: music_parameters.abc.Pitch
     :param tuning_original: If the standard tuning of a string
@@ -140,10 +144,11 @@ class String(object):
     **Example:**
 
     >>> from mutwo import music_parameters
-    >>> g_string = music_parameters.String(music_parameters.WesternPitch('g', 3))
+    >>> g_string = music_parameters.String(0, music_parameters.WesternPitch('g', 3))
     >>> g_string
     String(WesternPitch('g', 3))
     >>> retuned_g_string = music_parameters.String(
+    ...     0,
     ...     music_parameters.WesternPitch('g', 3),
     ...     tuning_original=music_parameters.JustIntonationPitch('8/11'),
     ... )
@@ -151,6 +156,7 @@ class String(object):
     String(WesternPitch('g', 3))
     """
 
+    index: int
     tuning: music_parameters.abc.Pitch
     tuning_original: typing.Optional[music_parameters.abc.Pitch] = None
     max_natural_harmonic_index: int = 6
@@ -184,7 +190,7 @@ class String(object):
 
         >>> from mutwo import music_parameters
         >>> g_string = music_parameters.String(
-        ...     music_parameters.WesternPitch('g', 3)
+        ...     0, music_parameters.WesternPitch('g', 3)
         ... )
         >>> g_string.index_to_natural_harmonic(5)
         NaturalHarmonic(index=5, tonality=True)

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- `index` property to `music_parameters.String`
+
+
 ## [0.22.0] - 2022-12-31
 
 ### Added
