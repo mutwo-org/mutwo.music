@@ -411,7 +411,7 @@ class TrillConverter(PlayingIndicatorConverter):
         simple_event_to_playing_indicator_collection: typing.Callable[
             [core_events.SimpleEvent],
             music_parameters.PlayingIndicatorCollection,
-        ] = music_converters.SimpleEventToPitchList(),
+        ] = music_converters.SimpleEventToPlayingIndicatorCollection(),
     ):
         self._trill_size = trill_size
         self._simple_event_to_pitch_list = simple_event_to_pitch_list
