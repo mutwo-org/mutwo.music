@@ -42,10 +42,10 @@ class PlayingIndicatorConverter(core_converters.abc.Converter):
         :class:`mutwo.core_events.SimpleEvent` a
         :class:`mutwo.music_parameters.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.music_events.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.music_events.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
@@ -128,9 +128,9 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         :class:`mutwo.core_events.SimpleEvent` a tuple that contains pitch objects
         (objects that inherit from :class:`mutwo.music_parameters.abc.Pitch`).
         By default it asks the Event for its
-        :attr:`~mutwo.ext.events.music.NoteLike.pitch_list` attribute
-        (because by default :class:`mutwo.ext.events.music.NoteLike` objects are expected).
-        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.pitch_list` attribute
+        (because by default :class:`mutwo.music_events.NoteLike` objects are expected).
+        When using different Event classes than :class:`~mutwo.music_events.NoteLike`
         with a different name for their pitch property, this argument
         should be overridden.
         If the function call raises an :obj:`AttributeError` (e.g. if no pitch can be
@@ -140,10 +140,10 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         :class:`mutwo.core_events.SimpleEvent` a
         :class:`mutwo.music_parameters.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.music_events.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.music_events.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
@@ -154,8 +154,8 @@ class ArpeggioConverter(PlayingIndicatorConverter):
         a list of :class:`~mutwo.music_parameters.abc.Pitch` objects to a
         :class:`~mutwo.core_events.SimpleEvent`. By default the
         function assigns the passed pitches to the
-        :attr:`~mutwo.ext.events.music.NoteLike.pitch_list` attribute
-        (because by default :class:`mutwo.ext.events.music.NoteLike` objects
+        :attr:`~mutwo.music_events.NoteLike.pitch_list` attribute
+        (because by default :class:`mutwo.music_events.NoteLike` objects
         are expected).
     :type set_pitch_list_for_simple_event: typing.Callable[[core_events.SimpleEvent, list[music_parameters.abc.Pitch]], None]
     """
@@ -240,10 +240,10 @@ class StacattoConverter(PlayingIndicatorConverter):
         :class:`mutwo.core_events.SimpleEvent` a
         :class:`mutwo.music_parameters.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.music_events.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.music_events.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
@@ -299,10 +299,10 @@ class ArticulationConverter(PlayingIndicatorConverter):
         :class:`mutwo.core_events.SimpleEvent` a
         :class:`mutwo.music_parameters.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.music_events.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.music_events.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
@@ -378,9 +378,9 @@ class TrillConverter(PlayingIndicatorConverter):
         :class:`mutwo.core_events.SimpleEvent` a tuple that contains pitch objects
         (objects that inherit from :class:`mutwo.music_parameters.abc.Pitch`).
         By default it asks the Event for its
-        :attr:`~mutwo.ext.events.music.NoteLike.pitch_list` attribute
-        (because by default :class:`mutwo.ext.events.music.NoteLike` objects are expected).
-        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.pitch_list` attribute
+        (because by default :class:`mutwo.music_events.NoteLike` objects are expected).
+        When using different Event classes than :class:`~mutwo.music_events.NoteLike`
         with a different name for their pitch property, this argument
         should be overridden.
         If the function call raises an :obj:`AttributeError` (e.g. if no pitch can be
@@ -388,12 +388,12 @@ class TrillConverter(PlayingIndicatorConverter):
     :type simple_event_to_pitch_list: typing.Callable[[core_events.SimpleEvent], music_parameters.abc.Pitch], optional
     :param simple_event_to_playing_indicator_collection: Function to extract from a
         :class:`mutwo.core_events.SimpleEvent` a
-        :class:`mutwo.ext.parameters.playing_indicators.PlayingIndicatorCollection`
+        :class:`mutwo.music_parameters.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.music_events.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.music_events.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
@@ -475,10 +475,10 @@ class OptionalConverter(PlayingIndicatorConverter):
         :class:`mutwo.core_events.SimpleEvent` a
         :class:`mutwo.music_parameters.PlayingIndicatorCollection`
         object. By default it asks the Event for its
-        :attr:`~mutwo.ext.events.music.NoteLike.playing_indicator_collection`
-        attribute (because by default :class:`mutwo.ext.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.playing_indicator_collection`
+        attribute (because by default :class:`mutwo.music_events.NoteLike`
         objects are expected).
-        When using different Event classes than :class:`~mutwo.ext.events.music.NoteLike`
+        When using different Event classes than :class:`~mutwo.music_events.NoteLike`
         with a different name for their playing_indicator_collection property, this argument
         should be overridden. If the
         function call raises an :obj:`AttributeError` (e.g. if no playing indicator
@@ -527,7 +527,7 @@ class OptionalConverter(PlayingIndicatorConverter):
 
 
 class PlayingIndicatorsConverter(core_converters.abc.SymmetricalEventConverter):
-    """Apply :class:`~mutwo.ext.parameters.abc.PlayingIndicator` on any :class:`~mutwo.core_events.abc.Event`.
+    """Apply :class:`mutwo.music_parameters.abc.PlayingIndicator` on any :class:`~mutwo.core_events.abc.Event`.
 
     :param playing_indicator_converter_sequence: A sequence of :class:`PlayingIndicatorConverter` which shall
         be applied on each :class:`~mutwo.core_events.SimpleEvent`.
