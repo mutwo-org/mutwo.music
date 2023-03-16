@@ -473,6 +473,12 @@ class JustIntonationPitchTest(unittest.TestCase):
             concert_pitch1,
         )
 
+    def test_compare_with_other_pitch(self):
+        p0 = music_parameters.JustIntonationPitch('3/2')
+        p1 = music_parameters.DirectPitch(100)
+        self.assertGreater(p0, p1)
+        self.assertLess(p1, p0)
+
     def test_property_exponent_tuple(self):
         ratio0 = fractions.Fraction(3, 2)
         ratio1 = fractions.Fraction(25, 1)

@@ -435,7 +435,7 @@ class JustIntonationPitch(
             case music_parameters.abc.PitchInterval():
                 return self.interval < other.interval
             case _:  # pitch test
-                return super().__lt__(self, other)
+                return super().__lt__(other)
 
     def __float__(self) -> float:
         """Return the float of a JustIntonationPitch - object.
