@@ -3,7 +3,7 @@ with pkgs.python310Packages;
 
 let
 
-  mutwo-common-archive = builtins.fetchTarball "https://github.com/mutwo-org/mutwo.common/archive/937e193ec031ee1679b716a9306e2a6800e1c7ef.tar.gz";
+  mutwo-common-archive = builtins.fetchTarball "https://github.com/mutwo-org/mutwo.common/archive/4adb24d52f4a8f86e298da01c84082259c93fc23.tar.gz";
   mutwo-common = import (mutwo-common-archive + "/default.nix");
 
   panphon = pkgs.python310Packages.buildPythonPackage rec {
