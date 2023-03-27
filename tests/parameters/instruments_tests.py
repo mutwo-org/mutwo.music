@@ -71,7 +71,8 @@ class StringInstrumentMixinTest(unittest.TestCase):
             (
                 music_parameters.String(
                     0,
-                    music_parameters.WesternPitch("g", 3), max_natural_harmonic_index=3
+                    music_parameters.WesternPitch("g", 3),
+                    max_natural_harmonic_index=3,
                 ),
             )
         )
@@ -233,3 +234,7 @@ class OrchestrationTest(unittest.TestCase):
         self.assertFalse(hasattr(subset, "oboe1"))
         self.assertEqual(subset.oboe0, self.oboe)
         self.assertEqual(subset.clarinet, self.clarinet)
+
+    def test_empty_orchestration(self):
+        """Ensure we can define an empty orchestration"""
+        self.assertEqual(len(music_parameters.Orchestration()), 0)

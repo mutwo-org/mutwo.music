@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - `index` property to `music_parameters.String`
 
+### Fixed
+- allow initialization of empty `Orchestration`
+
 
 ## [0.22.0] - 2022-12-31
 

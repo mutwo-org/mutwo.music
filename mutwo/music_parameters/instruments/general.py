@@ -552,9 +552,11 @@ def Orchestration(**instrument_name_to_instrument: music_parameters.abc.Instrume
     Orchestration(oboe0=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)), oboe1=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)))
     """
 
-    instrument_name_tuple, instrument_tuple = zip(
-        *instrument_name_to_instrument.items()
-    )
+    instrument_name_tuple, instrument_tuple = tuple([]), tuple([])
+    if instrument_name_to_instrument:
+        instrument_name_tuple, instrument_tuple = zip(
+            *instrument_name_to_instrument.items()
+        )
 
     return type(
         "Orchestration",
