@@ -567,3 +567,49 @@ class WesternPitch(EqualDividedOctavePitch):
             return pitch_interval
         else:
             return super().get_pitch_interval(pitch_to_compare)
+
+    @core_utilities.add_copy_option
+    def round_to(
+        self,
+        allowed_division_sequence: typing.Sequence[fractions.Fraction] = (
+            fractions.Fraction(1, 1),
+        ),
+    ) -> WesternPitch:
+        """Round to closest accidental (helpful to avoid microtones).
+
+        param allowed_division_sequence: Only accidentals are allowed which
+            pitch class modification are dividable by any of the provided
+            numbers. So for instance if only chromatic pitches should be
+            allowed this should be ``[fractions.Fraction(1, 1)]``. But if
+            both chromatic and quartertone pitches are allowed this must be
+            ``[fractions.Fraction(1, 1), fractions.Fraction(1, 2)]``. Default
+            to ``(fractions.Fraction(1, 1),)`` (only chromatic pitches are
+            allowed).
+        type allowed_division_sequence: typing.Sequence[fractions.Fraction]
+        """
+
+        allowed_accidental_to_pitch_class_modification = {
+            a: pmod
+            for a, pmod in music_parameters.constants.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT.items()
+            if any([pmod % d == 0 for d in allowed_division_sequence])
+        }
+        pitch_modifiation = (
+            music_parameters.constants.ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT[
+                self.accidental_name
+            ]
+        )
+        if pitch_modifiation not in allowed_accidental_to_pitch_class_modification:
+            pitch_class_modification_to_accidental = {
+                v: k for k, v in allowed_accidental_to_pitch_class_modification.items()
+            }
+            allowed_pitch_class_modification_tuple = tuple(
+                sorted(allowed_accidental_to_pitch_class_modification.values())
+            )
+            new_accidental = pitch_class_modification_to_accidental[
+                core_utilities.find_closest_item(
+                    pitch_modifiation, allowed_pitch_class_modification_tuple
+                )
+            ]
+            self.pitch_class_name = f"{self.pitch_class_name[0]}{new_accidental}"
+
+        return self

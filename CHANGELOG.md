@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - `index` property to `music_parameters.String`
+- `WesternPitch.round_to` in order to round microtonal pitches
 
 ### Fixed
 - allow initialization of empty `Orchestration`

@@ -400,6 +400,22 @@ class WesternPitchTest(unittest.TestCase):
         ):
             self.assertEqual(pitch0.get_pitch_interval(pitch1), expected_pitch_interval)
 
+    def test_round_to(self):
+        w = music_parameters.WesternPitch
+        for w0, w1 in (
+            (w("cqs", 5), w("cs", 5)),
+            (w("fets", 2), w("fss", 2)),
+            (w("df", 7), w("df", 7)),
+            (w("a", 1), w("a", 1)),
+            (w("brf", 2), w("bf", 2)),
+        ):
+            self.assertEqual(w0.round_to(), w1)
+
+        self.assertEqual(
+            w("cqs").round_to((fractions.Fraction(1, 1), fractions.Fraction(1, 2))),
+            w("cqs"),
+        )
+
 
 class JustIntonationPitchTest(unittest.TestCase):
     def test_constructor_from_string(self):
@@ -474,7 +490,7 @@ class JustIntonationPitchTest(unittest.TestCase):
         )
 
     def test_compare_with_other_pitch(self):
-        p0 = music_parameters.JustIntonationPitch('3/2')
+        p0 = music_parameters.JustIntonationPitch("3/2")
         p1 = music_parameters.DirectPitch(100)
         self.assertGreater(p0, p1)
         self.assertLess(p1, p0)
