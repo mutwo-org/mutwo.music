@@ -7,12 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [0.23.0] - 2023-04-23
+
 ### Added
-- `index` property to `music_parameters.String`
-- `WesternPitch.round_to` in order to round microtonal pitches
+- `index` property to `music_parameters.String`, see [here](https://github.com/mutwo-org/mutwo.music/commit/f39421db0534e019b7968d4dfaa15869f87d8c4a)
+- `WesternPitch.round_to` in order to round microtonal pitches, see [here](https://github.com/mutwo-org/mutwo.music/commit/5f0496d095b3bdb315fafb9da2316f13642a1baa)
 
 ### Fixed
-- allow initialization of empty `Orchestration`
+- allow initialization of empty `Orchestration`, see [here](https://github.com/mutwo-org/mutwo.music/commit/ce910b19523ba7d5ca8780dd966a3cf08b36d051)
+- comparision with `JustIntonationPitch` and another pitch, see [here](https://github.com/mutwo-org/mutwo.music/commit/7f414d541c2373ad9c0b11f1eebd9bb8b10d8a0d)
 
 
 ## [0.22.0] - 2022-12-31
