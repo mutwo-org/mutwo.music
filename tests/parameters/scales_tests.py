@@ -88,6 +88,13 @@ class ScaleFamilyTest(unittest.TestCase):
                 self.assertEqual(scale_family.is_rising, is_rising)
                 self.assertEqual(scale_family.is_falling, is_falling)
 
+    def test_scale_degree_count(self):
+        j = music_parameters.JustIntonationPitch
+        scale_family = music_parameters.ScaleFamily(
+            (j("1/1"), j("9/8"), j("5/4"), j("2/1"))
+        )
+        self.assertEqual(scale_family.scale_degree_count, 4)
+
 
 class RepeatingScaleFamilyTest(unittest.TestCase):
     def setUp(self):
@@ -134,6 +141,9 @@ class RepeatingScaleFamilyTest(unittest.TestCase):
             self.repeating_scale_family.period_repetition_count_tuple,
             (-1, -1, -1, -1, -1, 0, 0, 0, 0, 0),
         )
+
+    def test_scale_degree_count(self):
+        self.assertEqual(self.repeating_scale_family.scale_degree_count, 5)
 
 
 class ScaleTest(unittest.TestCase):

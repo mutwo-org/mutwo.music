@@ -172,6 +172,10 @@ class ScaleFamily(object):
     def is_falling(self) -> bool:
         return not self.is_rising
 
+    @functools.cached_property
+    def scale_degree_count(self) -> int:
+        return len(set(self.scale_degree_tuple))
+
 
 class RepeatingScaleFamily(ScaleFamily):
     """A `RepeatingScaleFamily` is a sorted sequence of repeating intervals over a repetition interval.
@@ -377,6 +381,10 @@ class Scale(object):
     @property
     def is_falling(self) -> bool:
         return self.scale_family.is_falling
+
+    @property
+    def scale_degree_count(self) -> int:
+        return self.scale_family.scale_degree_count
 
     # ###################################################################### #
     #                           public methods                               #

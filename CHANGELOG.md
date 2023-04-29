@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- `music_parameters.ScaleFamily.scale_degree_count` and `music_parameters.Scale.scale_degree_count`
+
 
 ## [0.23.0] - 2023-04-23
 
