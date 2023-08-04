@@ -51,6 +51,10 @@ class DecibelVolume(music_parameters.abc.Volume):
     def decibel(self) -> core_constants.Real:
         return self._decibel
 
+    @decibel.setter
+    def decibel(self, decibel: core_constants.Real):
+        self._decibel = decibel
+
     @property
     def amplitude(self) -> core_constants.Real:
         return self.decibel_to_amplitude_ratio(self.decibel)
