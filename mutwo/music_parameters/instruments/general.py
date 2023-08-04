@@ -269,7 +269,7 @@ class StringInstrumentMixin(object):
         :param pitch: The pitch which variants shall be found.
         :type pitch: music_parameters.abc.Pitch
         :param period: The repeating period (usually an octave). If the
-            period is set to `None` the function will fallback to them
+            period is set to `None` the function will fallback to the
             objects method :method:`pitch_to_period`. Default to `None`.
         :type period: typing.Optional[music_parameters.abc.PitchInterval]
         :param tolerance: Because harmonics are just tuned they may
