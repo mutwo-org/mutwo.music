@@ -6,7 +6,6 @@ import abc
 import copy
 import itertools
 import typing
-import warnings
 
 try:
     import quicktions as fractions  # type: ignore
@@ -321,6 +320,7 @@ class ArticulationConverter(PlayingIndicatorConverter):
             music_parameters.PlayingIndicatorCollection,
         ] = music_converters.SimpleEventToPlayingIndicatorCollection(),
     ):
+        self._logger = core_utilities.get_cls_logger(type(self))
         articulation_name_to_playing_indicator_converter = {}
         for (
             articulation_name_tuple,
@@ -331,7 +331,7 @@ class ArticulationConverter(PlayingIndicatorConverter):
                     articulation_name
                     not in articulation_name_to_playing_indicator_converter
                 ):
-                    warnings.warn(
+                    self._logger.warning(
                         music_utilities.DuplicatePlayingIndicatorConverterMappingWarning(
                             articulation_name, playing_indicator_converter
                         )

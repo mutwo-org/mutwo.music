@@ -624,19 +624,12 @@ class JustIntonationPitchTest(unittest.TestCase):
         )
 
     def test_count_accidentals(self):
-        self.assertEqual(
-            music_parameters.JustIntonationPitch._count_accidentals("f"), -1
-        )
-        self.assertEqual(
-            music_parameters.JustIntonationPitch._count_accidentals("s"), 1
-        )
-        self.assertEqual(
-            music_parameters.JustIntonationPitch._count_accidentals("sss"), 3
-        )
-        self.assertEqual(music_parameters.JustIntonationPitch._count_accidentals(""), 0)
-        self.assertEqual(
-            music_parameters.JustIntonationPitch._count_accidentals("ssf"), 1
-        )
+        p = music_parameters.JustIntonationPitch()
+        self.assertEqual(p._count_accidentals("f"), -1)
+        self.assertEqual(p._count_accidentals("s"), 1)
+        self.assertEqual(p._count_accidentals("sss"), 3)
+        self.assertEqual(p._count_accidentals(""), 0)
+        self.assertEqual(p._count_accidentals("ssf"), 1)
 
     def test_get_accidentals(self):
         self.assertEqual(music_parameters.JustIntonationPitch._get_accidentals(2), "ss")

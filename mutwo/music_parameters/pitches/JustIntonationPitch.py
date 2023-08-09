@@ -6,7 +6,6 @@ import functools
 import math
 import operator
 import typing
-import warnings
 
 from sympy import primepi
 from sympy import prime
@@ -77,6 +76,7 @@ class JustIntonationPitch(
         *args,
         **kwargs,
     ):
+        self._logger = core_utilities.get_cls_logger(type(self))
         super().__init__(*args, **kwargs)
 
         if concert_pitch is None:
@@ -353,18 +353,6 @@ class JustIntonationPitch(
         return 2 * sum(summed)
 
     @staticmethod
-    def _count_accidentals(accidentals: str) -> int:
-        accidental_counter = collections.Counter({"f": 0, "s": 0})
-        accidental_counter.update(accidentals)
-        for accidental in accidentals:
-            if accidental not in ("f", "s"):
-                warnings.warn(
-                    f"Found unknown accidental '{accidental}' which will be ignored",
-                    RuntimeWarning,
-                )
-        return (1 * accidental_counter["s"]) - (1 * accidental_counter["f"])
-
-    @staticmethod
     def _get_accidentals(n_accidentals: int) -> str:
         if n_accidentals > 0:
             return "s" * n_accidentals
@@ -374,6 +362,17 @@ class JustIntonationPitch(
     # ###################################################################### #
     #                            private methods                             #
     # ###################################################################### #
+
+    def _count_accidentals(self, accidentals: str) -> int:
+        accidental_counter = collections.Counter({"f": 0, "s": 0})
+        accidental_counter.update(accidentals)
+        for accidental in accidentals:
+            if accidental not in ("f", "s"):
+                self._logger.warning(
+                    f"Found unknown accidental '{accidental}' which will be ignored",
+                    RuntimeWarning,
+                )
+        return (1 * accidental_counter["s"]) - (1 * accidental_counter["f"])
 
     def _ratio_or_fractions_argument_to_exponent_tuple(
         self,
@@ -925,7 +924,7 @@ class JustIntonationPitch(
         # TODO(Add documentation)
 
         diatonic_pitch_name, accidentals = reference[0], reference[1:]
-        n_accidentals_in_reference = JustIntonationPitch._count_accidentals(accidentals)
+        n_accidentals_in_reference = self._count_accidentals(accidentals)
         position_of_diatonic_pitch_in_cycle_of_fifths = (
             music_parameters.constants.DIATONIC_PITCH_NAME_CYCLE_OF_FIFTH_TUPLE.index(
                 diatonic_pitch_name

@@ -3,7 +3,6 @@ from __future__ import annotations
 import numbers
 import operator
 import typing
-import warnings
 
 try:
     import quicktions as fractions  # type: ignore
@@ -59,6 +58,7 @@ class WesternPitch(EqualDividedOctavePitch):
         *args,
         **kwargs,
     ):
+        self._logger = core_utilities.get_cls_logger(type(self))
         if concert_pitch_pitch_class is None:
             concert_pitch_pitch_class = (
                 music_parameters.configurations.DEFAULT_CONCERT_PITCH_PITCH_CLASS_FOR_WESTERN_PITCH
@@ -347,7 +347,7 @@ class WesternPitch(EqualDividedOctavePitch):
             # Fall back to default calculation (because the needed accidental
             # doesn't exist. We would need something even more sharp than
             # double sharp or even more flat than double flat).
-            warnings.warn(
+            self._logger.warning(
                 "Couldn't get correct western pitch with "
                 f"interval '{western_pitch_interval_to_add} to"
                 f" '{self}'; pitch_modifiation: "

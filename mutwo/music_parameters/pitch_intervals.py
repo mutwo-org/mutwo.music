@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-import warnings
 
 from mutwo import core_constants
 from mutwo import core_utilities
@@ -91,6 +90,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         self,
         interval_name_or_semitone_count: str | core_constants.Real = "p1",
     ):
+        self._logger = core_utilities.get_cls_logger(type(self))
         # Define mapping on the fly, so that it is only necessary to adjust
         # music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT
         # if user wants to use different abbreviations.
@@ -102,7 +102,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         if isinstance(interval_name_or_semitone_count, str):
             to_interval_data = WesternPitchInterval._interval_name_to_interval_data
         else:
-            to_interval_data = WesternPitchInterval._semitone_count_to_interval_data
+            to_interval_data = self._semitone_count_to_interval_data
 
         self._set_attribute_by_interval_data(
             *to_interval_data(interval_name_or_semitone_count)  # type: ignore
@@ -151,38 +151,6 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
             interval_quality_end_index = interval_type_start_index - 1
         interval_quality = interval_name[:interval_quality_end_index]
         return interval_type, interval_quality, is_interval_falling
-
-    @staticmethod
-    def _semitone_count_to_interval_data(
-        semitone_count: core_constants.Real,
-    ) -> tuple[str, str, bool]:
-        is_interval_falling = semitone_count < 0
-        semitone_count = abs(semitone_count)
-        semitone_count_reduced = (
-            semitone_count % music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
-        )
-        semitone_count_reduced_and_rounded = int(round(semitone_count_reduced))
-        if semitone_count_reduced_and_rounded != semitone_count_reduced:
-            warnings.warn(
-                "Semitone was rounded by "
-                f"'{semitone_count_reduced_and_rounded - semitone_count_reduced}'"
-                " because WesternPitchInterval doesn't support microtones!",
-                RuntimeWarning,
-            )
-        (
-            interval_type,
-            interval_quality,
-        ) = music_parameters.constants.SEMITONE_TO_WESTERN_PITCH_INTERVAL_BASE_TYPE_AND_QUALITY_DICT[
-            semitone_count_reduced_and_rounded
-        ]
-        interval_quality_abbreviation = music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT[
-            interval_quality
-        ]
-        octave_count = int(
-            semitone_count // music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
-        )
-        interval_type = str(int(interval_type) + (octave_count * 7))
-        return interval_type, interval_quality_abbreviation, is_interval_falling
 
     @staticmethod
     def _assert_interval_quality_avoids_illegal_stacking(
@@ -265,6 +233,36 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
     # ###################################################################### #
     #                          private methods                               #
     # ###################################################################### #
+
+    def _semitone_count_to_interval_data(
+        self, semitone_count: core_constants.Real
+    ) -> tuple[str, str, bool]:
+        is_interval_falling = semitone_count < 0
+        semitone_count = abs(semitone_count)
+        semitone_count_reduced = (
+            semitone_count % music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
+        )
+        semitone_count_reduced_and_rounded = int(round(semitone_count_reduced))
+        if semitone_count_reduced_and_rounded != semitone_count_reduced:
+            self._logger.warning(
+                "Semitone was rounded by "
+                f"'{semitone_count_reduced_and_rounded - semitone_count_reduced}'"
+                " because WesternPitchInterval doesn't support microtones!"
+            )
+        (
+            interval_type,
+            interval_quality,
+        ) = music_parameters.constants.SEMITONE_TO_WESTERN_PITCH_INTERVAL_BASE_TYPE_AND_QUALITY_DICT[
+            semitone_count_reduced_and_rounded
+        ]
+        interval_quality_abbreviation = music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT[
+            interval_quality
+        ]
+        octave_count = int(
+            semitone_count // music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT
+        )
+        interval_type = str(int(interval_type) + (octave_count * 7))
+        return interval_type, interval_quality_abbreviation, is_interval_falling
 
     def _set_attribute_by_interval_data(
         self, interval_type: str, interval_quality: str, is_interval_falling: bool
@@ -532,7 +530,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
     @semitone_count.setter
     def semitone_count(self, semitone_count: core_constants.Real):
         self._set_attribute_by_interval_data(
-            *WesternPitchInterval._semitone_count_to_interval_data(semitone_count)
+            *self._semitone_count_to_interval_data(semitone_count)
         )
 
     @property

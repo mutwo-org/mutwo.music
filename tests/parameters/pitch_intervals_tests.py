@@ -122,7 +122,7 @@ class WesternPitchIntervalTest(unittest.TestCase):
             (-12, ("8", "p", True)),
         ):
             self.assertEqual(
-                music_parameters.WesternPitchInterval._semitone_count_to_interval_data(
+                self.western_pitch_interval._semitone_count_to_interval_data(
                     semitone_count
                 ),
                 expected_interval_data,
