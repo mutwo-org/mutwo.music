@@ -1,9 +1,6 @@
-import typing
-
 __all__ = (
     "DuplicatePlayingIndicatorConverterMappingWarning",
     "UnsortedIntervalTupleError",
-    "IllegalFingeringDistanceError",
     "NotInstalledError",
 )
 
@@ -26,16 +23,6 @@ class UnsortedIntervalTupleError(Exception):
             "'sorted(interval_sequence)' or 'sorted(interval_sequence, "
             "reverse=True)' before passing your interval sequence to "
             "'ScaleFamily'."
-        )
-
-
-class IllegalFingeringDistanceError(ValueError):
-    def __init__(self, distance: typing.Any):
-        super().__init__(
-            f"Illegal value '{distance}' for distance parameter. "
-            "Only integers != 0 are allowed! "
-            "(You can't calculate Δ between fingerings which happen "
-            "at the same time.)"
         )
 
 
