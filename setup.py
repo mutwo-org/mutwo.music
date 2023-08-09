@@ -20,7 +20,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     author="Levin Eric Zimmermann",
     author_email="levin.eric.zimmermann@posteo.eu",
-    url="https://github.com/mutwo-org/mutwo.ext-music",
+    url="https://github.com/mutwo-org/mutwo.music",
     project_urls={"Documentation": "https://mutwo.readthedocs.io/en/latest/"},
     packages=[
         package
