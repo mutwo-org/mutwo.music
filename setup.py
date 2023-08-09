@@ -38,7 +38,6 @@ setuptools.setup(
         "mutwo.core>=1.0.0, <2.0.0",
         "epitran>=1.23, <2.0.0",
         "sympy>=1.10.1, <2.0.0",
-        "gradient-free-optimizers>=1.0.7, <2.0.0",
     ],
     extras_require=extras_require,
     python_requires=">=3.10, <4",

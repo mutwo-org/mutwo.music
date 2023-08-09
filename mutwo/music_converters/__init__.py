@@ -5,7 +5,6 @@ from .parsers import *
 from .grace_notes import *
 from .loudness import *
 from .metricities import *
-from .pitches import *
 from .playing_indicators import *
 from .spectrals import *
 
@@ -14,7 +13,6 @@ from . import (
     loudness,
     metricities,
     parsers,
-    pitches,
     playing_indicators,
     spectrals,
 )
@@ -26,7 +24,6 @@ __all__ = core_utilities.get_all(
     loudness,
     metricities,
     parsers,
-    pitches,
     playing_indicators,
     spectrals,
 )
@@ -38,7 +35,6 @@ del (
     loudness,
     metricities,
     parsers,
-    pitches,
     playing_indicators,
     spectrals,
 )
