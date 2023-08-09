@@ -59,15 +59,6 @@ class WesternPitch(EqualDividedOctavePitch):
         **kwargs,
     ):
         self._logger = core_utilities.get_cls_logger(type(self))
-        if concert_pitch_pitch_class is None:
-            concert_pitch_pitch_class = (
-                music_parameters.configurations.DEFAULT_CONCERT_PITCH_PITCH_CLASS_FOR_WESTERN_PITCH
-            )
-
-        if concert_pitch_octave is None:
-            concert_pitch_octave = (
-                music_parameters.configurations.DEFAULT_CONCERT_PITCH_OCTAVE_FOR_WESTERN_PITCH
-            )
 
         (
             pitch_class,
@@ -80,8 +71,14 @@ class WesternPitch(EqualDividedOctavePitch):
             music_parameters.constants.CHROMATIC_PITCH_CLASS_COUNT,
             pitch_class,
             octave,
-            concert_pitch_pitch_class,
-            concert_pitch_octave,
+            (
+                concert_pitch_pitch_class
+                or music_parameters.configurations.DEFAULT_CONCERT_PITCH_PITCH_CLASS_FOR_WESTERN_PITCH
+            ),
+            (
+                concert_pitch_octave
+                or music_parameters.configurations.DEFAULT_CONCERT_PITCH_OCTAVE_FOR_WESTERN_PITCH
+            ),
             concert_pitch,
             *args,
             **kwargs,
