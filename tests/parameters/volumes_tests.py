@@ -41,5 +41,35 @@ class DirectVolumeTest(unittest.TestCase):
         self.assertAlmostEqual(music_parameters.DirectVolume(0.5).decibel, -6, places=1)
 
 
+class DecibelVolumeTest(unittest.TestCase):
+    def setUp(self):
+        self.vol = music_parameters.DecibelVolume(-12)
+
+    def test_decibel(self):
+        self.assertEqual(self.vol.decibel, -12)
+
+    def test_set_decibel(self):
+        self.vol.decibel = -6
+        self.assertEqual(self.vol.decibel, -6)
+
+    def test_amplitude(self):
+        self.assertEqual(
+            self.vol.amplitude,
+            music_parameters.abc.Volume.decibel_to_amplitude_ratio(-12),
+        )
+
+
+class WesternVolumeTest(unittest.TestCase):
+    def setUp(self):
+        self.vol = music_parameters.WesternVolume("p")
+
+    def test_name(self):
+        self.assertEqual(self.vol.name, "p")
+
+    def test_set_name(self):
+        self.vol.name = "ff"
+        self.assertEqual(self.vol.name, "ff")
+
+
 if __name__ == "__main__":
     unittest.main()
