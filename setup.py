@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 extras_require = {
-    "testing": ["pytest>=7.1.1", "mutwo.common>=0.11.0, <1.0.0"],
+    "testing": ["pytest>=7.1.1"],
     # For CelticHarp
     "ortools": ["ortools>=9.4, <10.0"],
 }
