@@ -69,7 +69,7 @@ class PitchInterval(
         """Makes falling interval to rising and vice versa.
 
         In `music21` the method for equal semantics is called
-        `reverse <https://web.mit.edu/music21/doc/moduleReference/moduleInterval.html#music21.interval.Interval.reverse >`_.
+        `reverse <https://web.mit.edu/music21/doc/moduleReference/moduleInterval.html#music21.interval.Interval.reverse>`_.
         """
 
     def __add__(self, other: PitchInterval) -> PitchInterval:
@@ -734,7 +734,7 @@ class PitchAmbitus(abc.ABC):
         :type pitch: Pitch
         :param period: The repeating period (usually an octave). If the
             period is set to `None` the function will fallback to them
-            objects method :method:`pitch_to_period`. Default to `None`.
+            objects method :meth:`PitchAmbitus.pitch_to_period`. Default to `None`.
         :type period: typing.Optional[PitchInterval]
         """
 
@@ -1015,7 +1015,7 @@ class PitchedInstrument(Instrument):
         :type pitch: Pitch
         :param period: The repeating period (usually an octave). If the
             period is set to `None` the function will fallback to them
-            objects method :method:`pitch_to_period`. Default to `None`.
+            objects method :meth:`PitchAmbitus.pitch_to_period`. Default to `None`.
         :type period: typing.Optional[PitchInterval]
 
         This is not necessarily the same as

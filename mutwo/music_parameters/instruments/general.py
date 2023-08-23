@@ -270,7 +270,8 @@ class StringInstrumentMixin(object):
         :type pitch: music_parameters.abc.Pitch
         :param period: The repeating period (usually an octave). If the
             period is set to `None` the function will fallback to the
-            objects method :method:`pitch_to_period`. Default to `None`.
+            objects method :meth:`~mutwo.music_parameters.abc.PitchAmbitus.pitch_to_period`.
+            Default to `None`.
         :type period: typing.Optional[music_parameters.abc.PitchInterval]
         :param tolerance: Because harmonics are just tuned they may
             differ from tempered pitches. In order to still fetch harmonics

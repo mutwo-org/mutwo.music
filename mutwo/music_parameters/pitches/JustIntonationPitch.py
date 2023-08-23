@@ -39,7 +39,7 @@ class JustIntonationPitch(
         instance: "1/1", "3/2", "9/2", etc.), or a ``fractions.Fraction``
         object that indicates the frequency ratio (for instance:
         ``fractions.Fraction(3, 2)``, ``fractions.Fraction(7, 4)``) or
-        an Iterable that is filled with integer that represents the exponent_tuple
+        a sequence of integer that represents the :attr:``exponent_tuple``
         of the respective prime numbers of the decomposed frequency ratio. The prime
         numbers are rising and start with 2. Therefore the tuple ``(2, 0, -1)``
         would return the frequency ratio ``4/5`` because

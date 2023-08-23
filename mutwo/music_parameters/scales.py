@@ -38,7 +38,7 @@ PeriodRepetitionCountSequence: typing.TypeAlias = typing.Sequence[PeriodRepetiti
 
 
 class ScaleFamily(object):
-    """A :class:`ScaleFamily` is a sorted sequence of :class:`~mutwo.music_parameters.abc.PitchInterval`s.
+    """A :class:`ScaleFamily` is a sorted sequence of :class:`mutwo.music_parameters.abc.PitchInterval`.
 
     Scale families are frozen/immutable.
 
@@ -288,7 +288,7 @@ class RepeatingScaleFamily(ScaleFamily):
 
 
 class Scale(object):
-    """A :class:`Scale` is a sorted sequence of :class:`~mutwo.music_parameters.abc.Pitch`es.
+    """A :class:`Scale` is a sorted sequence of :class:`~mutwo.music_parameters.abc.Pitch`.
 
     The equivalent of a `Scale` in `music21` is an `ConcreteScale`.
 
