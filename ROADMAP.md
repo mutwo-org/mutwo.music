@@ -11,7 +11,6 @@
 
 ### For the sake of completeness
 - add more predefined instruments (perhaps all orchestral instruments)
-- add type hints to [InstrumentNoteLikeToPitchedNoteLike](https://github.com/mutwo-org/mutwo.music/blob/main/mutwo/music_converters/instruments.py)
 
 ### Cosmetics
 - simplify code in https://github.com/mutwo-org/mutwo.music/blob/main/mutwo/music_parameters/constants/pitch_intervals.py#L1-L53 by using enums
