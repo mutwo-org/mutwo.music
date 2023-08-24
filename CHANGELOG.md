@@ -7,8 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [0.24.0] - 2023-08-25
+
 ### Added
-- `music_parameters.ScaleFamily.scale_degree_count` and `music_parameters.Scale.scale_degree_count`
+- `music_parameters.ScaleFamily.scale_degree_count` and `music_parameters.Scale.scale_degree_count`, see [here](https://github.com/mutwo-org/mutwo.music/commit/60c6b9b7da022b81728fa8c429d7bfe71b506971)
+
+### Changed
+- `music_parameters.DecibelVolume.decibel` is now settable, see [here](https://github.com/mutwo-org/mutwo.music/commit/bb4d0305ee8a7b19c19d3c4fc1d495f46a7a1ab2)
+
+### Removed
+- `music_generators.make_product_pitch`, `music_generators.make_common_product_set_scale` and `music_generators.make_wilsons_brun_euclidean_algorithm_generator`, see [here](https://github.com/mutwo-org/mutwo.music/commit/f75b83be5ca26e2586c11f957afbe3eeeda2b13e)
+- `music_converters.ImproveWesternPitchListSequenceReadability`, see [here](https://github.com/mutwo-org/mutwo.music/commit/fa315272b0b7bd5ccd4a67c372940344aace570a)
+- `BodyPart` and `Fingering`, see [here](https://github.com/mutwo-org/mutwo.music/commit/3d39b5a26158fea99405430927f08a8e10268858)
+
+### Fixed
+- missing quicktions dependency, see [here](https://github.com/mutwo-org/mutwo.music/commit/ba8a2908e405e05efe300818c191492a516bc6f5)   
+- more unspecified dependencies, see [here](https://github.com/mutwo-org/mutwo.music/commit/2f209ccc7ec24adeebc2281021e383bfcbd644b4)
 
 
 ## [0.23.0] - 2023-04-23
