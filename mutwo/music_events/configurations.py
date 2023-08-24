@@ -4,7 +4,10 @@ import fractions
 import numbers
 import typing
 
-import quicktions
+try:
+    import quicktions
+except ImportError:
+    quicktions = fractions
 
 from mutwo import core_events
 from mutwo import music_parameters

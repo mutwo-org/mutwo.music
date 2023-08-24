@@ -5,7 +5,10 @@ import dataclasses
 import functools
 import typing
 
-import quicktions as fractions
+try:
+    import quicktions as fractions
+except ImportError:
+    import fractions
 
 from mutwo import core_utilities
 from mutwo import music_parameters
