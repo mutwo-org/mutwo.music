@@ -3,9 +3,6 @@
 ### Cleanup
 - all scale related code
 
-
-## 0.24.0
-
 ### New feature
 - allow semantically correct adding/subtracting of `WesternPitchInterval` (see https://github.com/levinericzimmermann/project/blob/10.2/project/patches/music_parameters.py#L125-L181)
 
