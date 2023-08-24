@@ -10,7 +10,6 @@
 - allow semantically correct adding/subtracting of `WesternPitchInterval` (see https://github.com/levinericzimmermann/project/blob/10.2/project/patches/music_parameters.py#L125-L181)
 
 ### For the sake of completeness
-- document all parameters of `NoteLike`
 - add more predefined instruments (perhaps all orchestral instruments)
 - add type hints to [InstrumentNoteLikeToPitchedNoteLike](https://github.com/mutwo-org/mutwo.music/blob/main/mutwo/music_converters/instruments.py)
 

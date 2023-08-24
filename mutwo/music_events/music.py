@@ -1,5 +1,3 @@
-"""Event classes which are designated for musical usage."""
-
 import typing
 
 from mutwo import core_events
@@ -18,34 +16,38 @@ GraceNotes = core_events.SequentialEvent[core_events.SimpleEvent]
 
 
 class NoteLike(core_events.SimpleEvent):
-    """:class:`NoteLike` represents traditional discreet musical objects.
+    """:class:`NoteLike` can be a tone, chord, percussion note or rest.
 
     :param pitch_list: The pitch or pitches of the event. This can
         be a pitch object (any class that inherits from ``mutwo.music_parameters.abc.Pitch``)
-        or a list of pitch objects. Furthermore mutwo supports syntactic sugar
-        to convert other objects on the fly to pitch objects: Atring can be
+        or a list of pitch objects. Furthermore :mod:`mutwo` supports syntactic sugar
+        to convert other objects on the fly to pitch objects: A string can be
         read as pitch class names to build
         :class:`mutwo.music_parameters.WesternPitch` objects or as ratios to
         build :class:`mutwo.music_parameters.JustIntonationPitch` objects.
         Fraction will also build :class:`mutwo.music_parameters.JustIntonationPitch`
         objects. Other numbers (integer and float) will be read as pitch class numbers
         to make :class:`mutwo.music_parameters.WesternPitch` objects.
-    :param duration: The duration of ``NoteLike``. This can be any number.
-        The unit of the duration is up to the interpretation of the user and the
-        respective converter routine that will be used.
+    :type pitch_list: PitchOrPitchSequence
+    :param duration: The duration of :class:`NoteLike`.
+    :type duration: mutwo.core_constants.DurationType
     :param volume: The volume of the event. Can either be a object of
         :mod:`mutwo.music_parameters.abc.Volume`, a number or a string. If the number
-        ranges from 0 to 1, mutwo automatically generates a
+        ranges from 0 to 1, :mod:`mutwo` automatically generates a
         :class:`mutwo.music_parameters.DirectVolume` object (and the number
-        will be interpreted as the amplitude). If the
-        number is smaller than 0, automatically generates a
-        :class:`mutwo.music_parameters.volumes.DecibelVolume` object (and the number
-        will be interpreted as decibel). If the argument is a string,
-        `mutwo` will try to initialise a :class:`mutwo.music_parameters.volumes.WesternVolume`
-        object.
-    :param grace_note_sequential_event:
+        is interpreted as the amplitude). If the number is smaller than 0,
+        :mod:`mutwo` automatically generates a
+        :class:`mutwo.music_parameters.volumes.DecibelVolume` (and the number
+        is interpreted as `decibel <https://en.wikipedia.org/wiki/Decibel>`_). If the argument is a string,
+        `mutwo` initialises a :class:`mutwo.music_parameters.volumes.WesternVolume`.
+    :type volume: Volume
+    :param grace_note_sequential_event: Specify `grace notes <https://en.wikipedia.org/wiki/Grace_note>`_
+        which are played before the :class:`NoteLike`. If the :class:`~mutwo.core_events.SequentialEvent`
+        is empty, no grace notes are present.
     :type grace_note_sequential_event: core_events.SequentialEvent[NoteLike]
-    :param after_grace_note_sequential_event:
+    :param after_grace_note_sequential_event: Specify `grace notes <https://en.wikipedia.org/wiki/Grace_note>`_
+        which are played after the :class:`NoteLike`. If the :class:`~mutwo.core_events.SequentialEvent`
+        is empty, no grace notes are present.
     :type after_grace_note_sequential_event: core_events.SequentialEvent[NoteLike]
     :param playing_indicator_collection: A :class:`~mutwo.music_parameters.playing_indicator_collection.PlayingIndicatorCollection`.
         Playing indicators alter the sound of :class:`NoteLike` (e.g.
@@ -55,18 +57,19 @@ class NoteLike(core_events.SimpleEvent):
         Notation indicators alter the visual representation of :class:`NoteLike`
         (e.g. ottava, clefs) without affecting the resulting sound.
     :type notation_indicator_collection: music_parameters.notation_indicator_collection.NotationIndicatorCollection
-    :param lyric:
+    :param lyric: If with this :class:`NoteLike` a text is to be sung or spoken,
+        this text can be specified here. Default to ``music_parameters.DirectLyric("")``.
     :type lyric: core_parameters.abc.Lyric
     :param instrument_list: If an event is played with one or more specifc
         :class:`mutwo.music_parameters.abc.Instrument`, these instruments can be
         assigned here. Default is an empty list.
     :type instrument_list: list[music_parameters.abc.Instrument]
 
-    ``mutwo.music`` doesn't differentiate between Tones, Chords and
-    Rests, but rather simply implements one general class which can
-    represent any of the mentioned definitions (e.g. a `NoteLike` object
-    with several pitches may be called a 'Chord' and a `NoteLike` object
-    with only one pitch may be called a 'Tone').
+    ``mutwo.music`` doesn't differentiate between tones, chords and
+    rests, but rather simply implements one general class that can
+    represent any of the mentioned definitions (e.g. a `NoteLike`
+    with several pitches may be called a 'chord' and a `NoteLike`
+    with only one pitch may be called a 'tone').
 
     **Example:**
 
@@ -139,7 +142,6 @@ class NoteLike(core_events.SimpleEvent):
     @property
     def pitch_list(self) -> typing.Any:
         """The pitch or pitches of the event."""
-
         return self._pitch_list
 
     @pitch_list.setter
@@ -162,7 +164,7 @@ class NoteLike(core_events.SimpleEvent):
 
     @property
     def volume(self) -> typing.Any:
-        """The volume of the event."""
+        """The :class:`~mutwo.music_parameters.abc.Volume` of the event."""
         return self._volume
 
     @volume.setter
@@ -171,7 +173,7 @@ class NoteLike(core_events.SimpleEvent):
 
     @property
     def grace_note_sequential_event(self) -> GraceNotes:
-        """:class:`core_events.SequentialEvent` before :class:`NoteLike`"""
+        """:class:`~mutwo.core_events.SequentialEvent` before :class:`NoteLike`"""
         return self._grace_note_sequential_event
 
     @grace_note_sequential_event.setter
@@ -187,7 +189,7 @@ class NoteLike(core_events.SimpleEvent):
 
     @property
     def after_grace_note_sequential_event(self) -> GraceNotes:
-        """:class:`core_events.SequentialEvent` after :class:`NoteLike`"""
+        """:class:`~mutwo.core_events.SequentialEvent` after :class:`NoteLike`"""
         return self._after_grace_note_sequential_event
 
     @after_grace_note_sequential_event.setter

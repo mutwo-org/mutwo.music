@@ -1,3 +1,5 @@
+"""Event classes which are designated for musical usage."""
+
 from . import configurations
 
 from .music import *
