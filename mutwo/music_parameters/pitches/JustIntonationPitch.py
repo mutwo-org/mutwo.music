@@ -978,8 +978,8 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> from mutwo.music_parameters import pitches
-        >>> p = pitches.JustIntonationPitch('3/2')
+        >>> from mutwo import music_parameters
+        >>> p = music_parameters.JustIntonationPitch('3/2')
         >>> p.register(1)
         JustIntonationPitch('3/1')
         >>> p
@@ -1036,8 +1036,8 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> from mutwo.music_parameters import pitches
-        >>> p = pitches.JustIntonationPitch('12/2')
+        >>> from mutwo import music_parameters
+        >>> p = music_parameters.JustIntonationPitch('12/2')
         >>> p.normalize()
         JustIntonationPitch('3/2')
         >>> p
@@ -1061,8 +1061,8 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> from mutwo.music_parameters import pitches
-        >>> p = pitches.JustIntonationPitch('3/2')
+        >>> from mutwo import music_parameters
+        >>> p = music_parameters.JustIntonationPitch('3/2')
         >>> p.inverse()
         JustIntonationPitch('2/3')
         >>> p
@@ -1087,9 +1087,9 @@ class JustIntonationPitch(
 
         **Example:**
 
-        >>> from mutwo.music_parameters import pitches
-        >>> p = pitches.JustIntonationPitch('3/2')
-        >>> p.add(pitches.JustIntonationPitch('3/2'))
+        >>> from mutwo import music_parameters
+        >>> p = music_parameters.JustIntonationPitch('3/2')
+        >>> p.add(music_parameters.JustIntonationPitch('3/2'))
         JustIntonationPitch('9/4')
         >>> p
         JustIntonationPitch('9/4')

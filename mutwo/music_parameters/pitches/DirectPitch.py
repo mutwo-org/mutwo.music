@@ -18,8 +18,8 @@ class DirectPitch(music_parameters.abc.Pitch):
 
     **Example:**
 
-    >>> from mutwo.music_parameters import pitches
-    >>> my_pitch = pitches.DirectPitch(440)
+    >>> from mutwo import music_parameters
+    >>> my_pitch = music_parameters.DirectPitch(440)
     """
 
     def __init__(self, frequency: core_constants.Real, *args, **kwargs):

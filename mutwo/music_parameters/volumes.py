@@ -79,8 +79,8 @@ class WesternVolume(music_parameters.abc.Volume):
 
     **Example:**
 
-    >>> from mutwo.music_parameters import volumes
-    >>> volumes.WesternVolume('fff')
+    >>> from mutwo import music_parameters
+    >>> music_parameters.WesternVolume('fff')
     WesternVolume(fff)
     """
 
@@ -174,8 +174,8 @@ class WesternVolume(music_parameters.abc.Volume):
         :param amplitude: The amplitude which shall be converted to a `WesternVolume`
             object.
 
-        >>> from mutwo.music_parameters import volumes
-        >>> volumes.WesternVolume.from_amplitude(0.05)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.WesternVolume.from_amplitude(0.05)
         WesternVolume(p)
         """
         decibel = cls.amplitude_ratio_to_decibel(amplitude)
@@ -188,8 +188,8 @@ class WesternVolume(music_parameters.abc.Volume):
         :param decibel: The decibel which shall be converted to a `WesternVolume`
             object.
 
-        >>> from mutwo.music_parameters import volumes
-        >>> volumes.WesternVolume.from_decibel(-24)
+        >>> from mutwo import music_parameters
+        >>> music_parameters.WesternVolume.from_decibel(-24)
         WesternVolume(p)
         """
         volume_object = cls("mf")

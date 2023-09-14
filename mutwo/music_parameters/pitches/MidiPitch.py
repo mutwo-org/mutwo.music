@@ -16,9 +16,9 @@ class MidiPitch(music_parameters.abc.Pitch):
 
     **Example:**
 
-    >>> from mutwo.music_parameters import pitches
-    >>> middle_c = pitches.MidiPitch(60)
-    >>> middle_c_quarter_tone_high = pitches.MidiPitch(60.5)
+    >>> from mutwo import music_parameters
+    >>> middle_c = music_parameters.MidiPitch(60)
+    >>> middle_c_quarter_tone_high = music_parameters.MidiPitch(60.5)
     """
 
     def __init__(self, midi_pitch_number: float, *args, **kwargs):
