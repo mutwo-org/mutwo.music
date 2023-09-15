@@ -149,14 +149,14 @@ class String(object):
     >>> from mutwo import music_parameters
     >>> g_string = music_parameters.String(0, music_parameters.WesternPitch('g', 3))
     >>> g_string
-    String(WesternPitch('g', 3))
+    String(0, WesternPitch('g', 3))
     >>> retuned_g_string = music_parameters.String(
     ...     0,
     ...     music_parameters.WesternPitch('g', 3),
     ...     tuning_original=music_parameters.JustIntonationPitch('8/11'),
     ... )
     >>> retuned_g_string
-    String(WesternPitch('g', 3))
+    String(0, WesternPitch('g', 3))
     """
 
     index: int
@@ -169,7 +169,7 @@ class String(object):
         object.__setattr__(self, "_index_to_natural_harmonic", {})
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}({self.tuning})"
+        return f"{type(self).__name__}({self.index}, {self.tuning})"
 
     @functools.cached_property
     def natural_harmonic_tuple(self) -> tuple[NaturalHarmonic, ...]:
