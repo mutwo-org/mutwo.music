@@ -999,5 +999,44 @@ class JustIntonationPitchTest(unittest.TestCase):
             self.assertEqual(pitch == any_object, expected_value)
 
 
+class ScalePitchTest(unittest.TestCase):
+    def test_default_values(self):
+        self.assertTrue(music_parameters.ScalePitch().frequency)
+
+    def test_frequency(self):
+        p = music_parameters.ScalePitch(
+            0,
+            0,
+            scale=music_parameters.Scale(
+                music_parameters.DirectPitch(100),
+                music_parameters.RepeatingScaleFamily(
+                    [music_parameters.DirectPitchInterval(0)]
+                ),
+            ),
+        )
+        self.assertEqual(p.frequency, 100)
+
+    def test_add(self):
+        scale = music_parameters.Scale(
+            music_parameters.DirectPitch(100),
+            music_parameters.RepeatingScaleFamily(
+                [music_parameters.DirectPitchInterval(i) for i in (0, 500, 1000)]
+            ),
+        )
+        p = music_parameters.ScalePitch(0, 0, scale=scale)
+        self.assertEqual(
+            p.add(music_parameters.DirectPitchInterval(500), mutate=False),
+            music_parameters.ScalePitch(1, 0, scale=scale),
+        )
+        # Safety check: old object didn't change.
+        self.assertEqual(p.scale_degree, 0)
+        # We can only add intervals so that we end on other
+        # scale degrees. Pitches outside of the current
+        # reference scale aren't supported.
+        self.assertRaises(
+            RuntimeError, p.add, music_parameters.DirectPitchInterval(312)
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

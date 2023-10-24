@@ -24,6 +24,7 @@ from .JustIntonationPitch import *
 from .CommonHarmonic import *
 from .EqualDividedOctavePitch import *
 from .WesternPitch import *
+from .ScalePitch import *
 
 
 __all__ = (
@@ -34,4 +35,5 @@ __all__ = (
     "WesternPitch",
     "MidiPitch",
     "CommonHarmonic",
+    "ScalePitch",
 )

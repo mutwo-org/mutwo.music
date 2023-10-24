@@ -68,4 +68,9 @@ EQUAL_DIVIDED_OCTAVE_PITCH_ROUND_FREQUENCY_DIGIT_COUNT = 4
 """By how many digits `frequency` of :class:`mutwo.music_parameters.EqualDividedOctavePitch`
 is rounded. This helps fixing floating point errors."""
 
+# This is set in 'mutwo/music_parameters/__init__.py' to
+# avoid circular import problems.
+DEFAULT_SCALE = None
+"""The default value for the scale parameter of :class:`~mutwo.music_parameters.ScalePitch`."""
+
 del commas, fractions

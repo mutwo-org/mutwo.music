@@ -9,10 +9,20 @@ from .pitch_intervals import *
 from .pitches import *
 from .scales import *
 
+# This needs to be set here, instead of the configurations file
+# in order to avoid circular import errors.
+configurations.DEFAULT_SCALE = Scale(
+    WesternPitch("c", 4),
+    RepeatingScaleFamily(
+        [WesternPitchInterval(i) for i in "p1 M2 M3 p4 p5 M6 M7".split(" ")]
+    ),
+)
+
 # instruments need configurations. We can't load configurations
 # in mutwo.music_parameters.configurations.__init__.py, because
 # we use objects there which aren't available yet.
 from mutwo.music_parameters.configurations import instruments
+
 configurations.__dict__.update(instruments.__dict__)
 del instruments
 
