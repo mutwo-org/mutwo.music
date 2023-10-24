@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.25.0] - 2023-10-24
+
+### Added
+- `music_parameters.ScalePitch`, see [here](https://github.com/mutwo-org/mutwo.music/commit/4c0e6738c15587225d80967e9fc0c0e6596dc6b2)
 
 ## [0.24.0] - 2023-08-25
 
