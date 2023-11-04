@@ -47,6 +47,7 @@ class NoteLikeTest(unittest.TestCase):
             ],
             music_events.NoteLike("5/3 aqs5", 1, 1).pitch_list,
         )
+        self.assertEqual([], music_events.NoteLike("", 1, 1).pitch_list)
 
     def test_pitch_list_setter_from_fraction(self):
         ratio = fractions.Fraction(3, 2)

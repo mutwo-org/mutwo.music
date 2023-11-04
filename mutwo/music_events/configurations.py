@@ -37,6 +37,7 @@ def _unknown_object_to_pitch_list(
             pitch_list = [
                 _string_to_pitch(pitch_indication)
                 for pitch_indication in unknown_object.split(" ")
+                if pitch_indication
             ]
         case fractions.Fraction() | quicktions.Fraction():
             pitch_list = [music_parameters.JustIntonationPitch(unknown_object)]
