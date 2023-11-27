@@ -19,7 +19,7 @@ class NoteLike(core_events.SimpleEvent):
     """:class:`NoteLike` can be a tone, chord, percussion note or rest.
 
     :param pitch_list: The pitch or pitches of the event. This can
-        be a pitch object (any class that inherits from ``mutwo.music_parameters.abc.Pitch``)
+        be a pitch object (any class that inherits from :class:`~mutwo.music_parameters.abc.Pitch`)
         or a list of pitch objects. Furthermore :mod:`mutwo` supports syntactic sugar
         to convert other objects on the fly to pitch objects: A string can be
         read as pitch class names to build
