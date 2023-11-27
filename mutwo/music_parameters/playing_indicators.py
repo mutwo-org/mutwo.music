@@ -144,9 +144,7 @@ class NaturalHarmonicNodeList(
 
 @dataclasses.dataclass()
 class Fermata(music_parameters.abc.ImplicitPlayingIndicator):
-    type: typing.Optional[
-        music_parameters.constants.FERMATA_TYPE_LITERAL
-    ] = None
+    type: typing.Optional[music_parameters.constants.FERMATA_TYPE_LITERAL] = None
 
 
 @dataclasses.dataclass()
@@ -175,61 +173,37 @@ class Cue(music_parameters.abc.ImplicitPlayingIndicator):
     index: typing.Optional[int] = None
 
 
+def f(factory=music_parameters.abc.ExplicitPlayingIndicator):
+    return dataclasses.field(default_factory=factory)
+
+
 @dataclasses.dataclass
 class PlayingIndicatorCollection(
     music_parameters.abc.IndicatorCollection[music_parameters.abc.PlayingIndicator]
 ):
-    # this is kind of redundant, but perhaps still better than without using
-    # the `dataclasses` module
-    articulation: Articulation = dataclasses.field(default_factory=Articulation)
-    artifical_harmonic: ArtificalHarmonic = dataclasses.field(
-        default_factory=ArtificalHarmonic
-    )
-    arpeggio: Arpeggio = dataclasses.field(default_factory=Arpeggio)
-    bartok_pizzicato: music_parameters.abc.PlayingIndicator = dataclasses.field(
-        default_factory=music_parameters.abc.ExplicitPlayingIndicator
-    )
-    bend_after: BendAfter = dataclasses.field(default_factory=BendAfter)
-    breath_mark: music_parameters.abc.PlayingIndicator = dataclasses.field(
-        default_factory=music_parameters.abc.ExplicitPlayingIndicator
-    )
-    cue: Cue = dataclasses.field(default_factory=Cue)
-    duration_line_dashed: music_parameters.abc.PlayingIndicator = dataclasses.field(
-        default_factory=music_parameters.abc.ExplicitPlayingIndicator
-    )
-    duration_line_triller: music_parameters.abc.PlayingIndicator = dataclasses.field(
-        default_factory=music_parameters.abc.ExplicitPlayingIndicator
-    )
-    fermata: Fermata = dataclasses.field(default_factory=Fermata)
-    glissando: music_parameters.abc.PlayingIndicator = dataclasses.field(
-        default_factory=music_parameters.abc.ExplicitPlayingIndicator
-    )
-    hairpin: Hairpin = dataclasses.field(default_factory=Hairpin)
-    natural_harmonic_node_list: NaturalHarmonicNodeList = dataclasses.field(
-        default_factory=NaturalHarmonicNodeList
-    )
-    laissez_vibrer: music_parameters.abc.PlayingIndicator = dataclasses.field(
-        default_factory=music_parameters.abc.ExplicitPlayingIndicator
-    )
-    optional: music_parameters.abc.PlayingIndicator = dataclasses.field(
-        default_factory=music_parameters.abc.ExplicitPlayingIndicator
-    )
-    ornamentation: Ornamentation = dataclasses.field(default_factory=Ornamentation)
-    pedal: Pedal = dataclasses.field(default_factory=Pedal)
-    prall: music_parameters.abc.PlayingIndicator = dataclasses.field(
-        default_factory=music_parameters.abc.ExplicitPlayingIndicator
-    )
-    string_contact_point: StringContactPoint = dataclasses.field(
-        default_factory=StringContactPoint
-    )
-    tie: music_parameters.abc.PlayingIndicator = dataclasses.field(
-        default_factory=music_parameters.abc.ExplicitPlayingIndicator
-    )
-    tremolo: Tremolo = dataclasses.field(default_factory=Tremolo)
-    trill: Trill = dataclasses.field(default_factory=Trill)
-    woodwind_fingering: WoodwindFingering = dataclasses.field(
-        default_factory=WoodwindFingering
-    )
+    articulation: Articulation = f(Articulation)
+    artifical_harmonic: ArtificalHarmonic = f(ArtificalHarmonic)
+    arpeggio: Arpeggio = f(Arpeggio)
+    bartok_pizzicato: music_parameters.abc.PlayingIndicator = f()
+    bend_after: BendAfter = f(BendAfter)
+    breath_mark: music_parameters.abc.PlayingIndicator = f()
+    cue: Cue = f(Cue)
+    duration_line_dashed: music_parameters.abc.PlayingIndicator = f()
+    duration_line_triller: music_parameters.abc.PlayingIndicator = f()
+    fermata: Fermata = f(Fermata)
+    glissando: music_parameters.abc.PlayingIndicator = f()
+    hairpin: Hairpin = f(Hairpin)
+    natural_harmonic_node_list: NaturalHarmonicNodeList = f(NaturalHarmonicNodeList)
+    laissez_vibrer: music_parameters.abc.PlayingIndicator = f()
+    optional: music_parameters.abc.PlayingIndicator = f()
+    ornamentation: Ornamentation = f(Ornamentation)
+    pedal: Pedal = f(Pedal)
+    prall: music_parameters.abc.PlayingIndicator = f()
+    string_contact_point: StringContactPoint = f(StringContactPoint)
+    tie: music_parameters.abc.PlayingIndicator = f()
+    tremolo: Tremolo = f(Tremolo)
+    trill: Trill = f(Trill)
+    woodwind_fingering: WoodwindFingering = f(WoodwindFingering)
 
     def __setattr__(self, parameter_name: str, value: bool):
         """Overriding default behaviour to allow syntactic sugar.

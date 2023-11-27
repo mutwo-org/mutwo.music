@@ -67,16 +67,20 @@ class RehearsalMark(music_parameters.abc.NotationIndicator):
     markup: typing.Optional[str] = None
 
 
+def f(factory):
+    return dataclasses.field(default_factory=factory)
+
+
 @dataclasses.dataclass
 class NotationIndicatorCollection(
     music_parameters.abc.IndicatorCollection[music_parameters.abc.NotationIndicator]
 ):
-    bar_line: BarLine = dataclasses.field(default_factory=BarLine)
-    clef: Clef = dataclasses.field(default_factory=Clef)
-    ottava: Ottava = dataclasses.field(default_factory=Ottava)
-    margin_markup: MarginMarkup = dataclasses.field(default_factory=MarginMarkup)
-    markup: Markup = dataclasses.field(default_factory=Markup)
-    rehearsal_mark: RehearsalMark = dataclasses.field(default_factory=RehearsalMark)
+    bar_line: BarLine = f(BarLine)
+    clef: Clef = f(Clef)
+    ottava: Ottava = f(Ottava)
+    margin_markup: MarginMarkup = f(MarginMarkup)
+    markup: Markup = f(Markup)
+    rehearsal_mark: RehearsalMark = f(RehearsalMark)
 
     def __setattr__(self, parameter_name: str, value: bool):
         if (notation_indicator := getattr(self, parameter_name, None)) is not None:
