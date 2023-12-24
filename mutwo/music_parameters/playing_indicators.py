@@ -75,6 +75,11 @@ class Pedal(music_parameters.abc.ImplicitPlayingIndicator):
 
 
 @dataclasses.dataclass()
+class Slur(music_parameters.abc.ImplicitPlayingIndicator):
+    activity: typing.Optional[bool] = None
+
+
+@dataclasses.dataclass()
 class StringContactPoint(music_parameters.abc.ImplicitPlayingIndicator):
     contact_point: typing.Optional[
         music_parameters.constants.CONTACT_POINT_LITERAL
@@ -199,6 +204,7 @@ class PlayingIndicatorCollection(
     ornamentation: Ornamentation = f(Ornamentation)
     pedal: Pedal = f(Pedal)
     prall: music_parameters.abc.PlayingIndicator = f()
+    slur: Slur = f(Slur)
     string_contact_point: StringContactPoint = f(StringContactPoint)
     tie: music_parameters.abc.PlayingIndicator = f()
     tremolo: Tremolo = f(Tremolo)
