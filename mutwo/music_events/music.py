@@ -108,14 +108,8 @@ class NoteLike(core_events.SimpleEvent):
         self.after_grace_note_sequential_event = (
             after_grace_note_sequential_event or core_events.SequentialEvent([])
         )
-        self.playing_indicator_collection = (
-            playing_indicator_collection
-            or music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
-        )
-        self.notation_indicator_collection = (
-            notation_indicator_collection
-            or music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
-        )
+        self.playing_indicator_collection = playing_indicator_collection
+        self.notation_indicator_collection = notation_indicator_collection
         self.lyric = lyric
         self.instrument_list = instrument_list
 
@@ -199,5 +193,43 @@ class NoteLike(core_events.SimpleEvent):
         self._after_grace_note_sequential_event = (
             music_events.configurations.UNKNOWN_OBJECT_TO_GRACE_NOTE_SEQUENTIAL_EVENT(
                 after_grace_note_sequential_event
+            )
+        )
+
+    @property
+    def playing_indicator_collection(
+        self,
+    ) -> music_parameters.PlayingIndicatorCollection:
+        return self._playing_indicator_collection
+
+    @playing_indicator_collection.setter
+    def playing_indicator_collection(
+        self,
+        playing_indicator_collection: typing.Optional[
+            music_parameters.PlayingIndicatorCollection | str
+        ],
+    ):
+        self._playing_indicator_collection = (
+            music_events.configurations.UNKNOWN_OBJECT_TO_PLAYING_INDICATOR_COLLECTION(
+                playing_indicator_collection
+            )
+        )
+
+    @property
+    def notation_indicator_collection(
+        self,
+    ) -> music_parameters.NotationIndicatorCollection:
+        return self._notation_indicator_collection
+
+    @notation_indicator_collection.setter
+    def notation_indicator_collection(
+        self,
+        notation_indicator_collection: typing.Optional[
+            music_parameters.NotationIndicatorCollection | str
+        ],
+    ):
+        self._notation_indicator_collection = (
+            music_events.configurations.UNKNOWN_OBJECT_TO_NOTATION_INDICATOR_COLLECTION(
+                notation_indicator_collection
             )
         )

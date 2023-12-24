@@ -115,6 +115,22 @@ class NoteLikeTest(unittest.TestCase):
         )
 
     # ###################################################################### #
+    #                          test indicators setter                        #
+    # ###################################################################### #
+
+    def test_set_playing_indicator_collection(self):
+        n = music_events.NoteLike(playing_indicator_collection="articulation.name=.")
+        self.assertEqual(n.playing_indicator_collection.articulation.name, ".")
+        n.playing_indicator_collection = "articulation.name = tenuto"
+        self.assertEqual(n.playing_indicator_collection.articulation.name, "tenuto")
+
+    def test_set_notation_indicator_collection(self):
+        n = music_events.NoteLike(notation_indicator_collection="clef.name=bass")
+        self.assertEqual(n.notation_indicator_collection.clef.name, "bass")
+        n.notation_indicator_collection = "clef.name = treble_8"
+        self.assertEqual(n.notation_indicator_collection.clef.name, "treble_8")
+
+    # ###################################################################### #
     #                          other                                         #
     # ###################################################################### #
 

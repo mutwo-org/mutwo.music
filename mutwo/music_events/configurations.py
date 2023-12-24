@@ -11,6 +11,7 @@ except ImportError:
 
 from mutwo import core_events
 from mutwo import music_parameters
+from mutwo import music_utilities
 
 DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS = (
     music_parameters.PlayingIndicatorCollection
@@ -23,6 +24,71 @@ DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS = (
 )
 """Default value for :attr:`mutwo.music_events.NoteLike.notation_indicator_collection`
 in :class:`~mutwo.music_events.NoteLike`"""
+
+
+_indicator_collection_parser = music_utilities.IndicatorCollectionParser()
+
+
+def _unknown_object_to_playing_indicator_collection(
+    unknown_object: typing.Any,
+) -> list[music_parameters.PlayingIndicatorCollection]:
+    match unknown_object:
+        case None:
+            return DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
+        case music_parameters.PlayingIndicatorCollection():
+            return unknown_object
+        case str():
+            return _indicator_collection_parser.parse(
+                unknown_object, DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
+            )
+        case _:
+            raise NotImplementedError(
+                f"Can't build PlayingIndicatorCollection from '{unknown_object}'"
+            )
+
+
+UNKNOWN_OBJECT_TO_PLAYING_INDICATOR_COLLECTION = (
+    _unknown_object_to_playing_indicator_collection
+)
+"""This function is called whenever an object is assigned to
+the `playing_indicator_collection` property of :class:`mutwo.music_events.NoteLike`.
+The function is called on the object which is tried to be assigned
+to the `playing_indicator_collection` property. The function tries to return an instance
+of :class:`mutwo.music_parameters.PlayingIndicatorCollection` or an instance
+of any child class. The aim of this function is to allow syntactic
+sugar.
+"""
+
+
+def _unknown_object_to_notation_indicator_collection(
+    unknown_object: typing.Any,
+) -> list[music_parameters.NotationIndicatorCollection]:
+    match unknown_object:
+        case None:
+            return DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
+        case music_parameters.NotationIndicatorCollection():
+            return unknown_object
+        case str():
+            return _indicator_collection_parser.parse(
+                unknown_object, DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS()
+            )
+        case _:
+            raise NotImplementedError(
+                f"Can't build NotationIndicatorCollection from '{unknown_object}'"
+            )
+
+
+UNKNOWN_OBJECT_TO_NOTATION_INDICATOR_COLLECTION = (
+    _unknown_object_to_notation_indicator_collection
+)
+"""This function is called when any object is assigned to
+the `notation_indicator_collection` property of :class:`mutwo.music_events.NoteLike`.
+The function is called on the object which is tried to be assigned
+to the `notation_indicator_collection` property. The function tries to return an instance
+of :class:`mutwo.music_parameters.NotationIndicatorCollection` or an instance
+of any child class. The aim of this function is to allow syntactic
+sugar.
+"""
 
 
 def _unknown_object_to_pitch_list(
