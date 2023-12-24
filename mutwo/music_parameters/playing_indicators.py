@@ -70,8 +70,8 @@ class Arpeggio(music_parameters.abc.ImplicitPlayingIndicator):
 
 @dataclasses.dataclass()
 class Pedal(music_parameters.abc.ImplicitPlayingIndicator):
-    pedal_type: typing.Optional[music_parameters.constants.PEDAL_TYPE_LITERAL] = None
-    pedal_activity: typing.Optional[bool] = True
+    type: typing.Optional[music_parameters.constants.PEDAL_TYPE_LITERAL] = None
+    activity: typing.Optional[bool] = True
 
 
 @dataclasses.dataclass()

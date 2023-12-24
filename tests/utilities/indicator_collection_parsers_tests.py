@@ -41,30 +41,30 @@ class IndicatorCollectionParserTest(unittest.TestCase):
         self.assertEqual(self.pc.woodwind_fingering.cc, ("a", "b", "c"))
 
     def test_parse1none(self):
-        self.assertEqual(self.pc.pedal.pedal_activity, True)
-        self.parse("pedal.pedal_activity")
-        self.assertEqual(self.pc.pedal.pedal_activity, None)
+        self.assertEqual(self.pc.pedal.activity, True)
+        self.parse("pedal.activity")
+        self.assertEqual(self.pc.pedal.activity, None)
 
     def test_parse_multiple(self):
         self._test_parse_multiple(
-            "articulation.name=stacatto;pedal.pedal_activity;tremolo.flag_count=4"
+            "articulation.name=stacatto;pedal.activity;tremolo.flag_count=4"
         )
 
     def test_parse_multiple_with_whitespace(self):
         self._test_parse_multiple(
-            "   pedal.pedal_activity; articulation.name=   stacatto  ;  tremolo.flag_count   =4"
+            "   pedal.activity; articulation.name=   stacatto  ;  tremolo.flag_count   =4"
         )
 
     def test_parse_multiple_with_newline(self):
         self._test_parse_multiple(
-            "pedal.pedal_activity\narticulation.name=stacatto\n\ntremolo.flag_count=4"
+            "pedal.activity\narticulation.name=stacatto\n\ntremolo.flag_count=4"
         )
 
     def _test_parse_multiple(self, s: str):
         self.assertEqual(self.pc.articulation.name, None)
         self.assertEqual(self.pc.tremolo.flag_count, None)
-        self.assertEqual(self.pc.pedal.pedal_activity, True)
+        self.assertEqual(self.pc.pedal.activity, True)
         self.parse(s)
         self.assertEqual(self.pc.tremolo.flag_count, 4)
         self.assertEqual(self.pc.articulation.name, "stacatto")
-        self.assertEqual(self.pc.pedal.pedal_activity, None)
+        self.assertEqual(self.pc.pedal.activity, None)
