@@ -165,16 +165,16 @@ class WesternPitchIntervalTest(unittest.TestCase):
             Exception,
             lambda: music_parameters.WesternPitchInterval._assert_interval_quality_avoids_illegal_stacking(
                 [
-                    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_MAJOR,
-                    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_MAJOR,
+                    music_parameters.constants.WesternPitchIntervalQuality.MAJOR,
+                    music_parameters.constants.WesternPitchIntervalQuality.MAJOR,
                 ]
             ),
         )
         self.assertEqual(
             music_parameters.WesternPitchInterval._assert_interval_quality_avoids_illegal_stacking(
                 [
-                    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_DIMINISHED,
-                    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_DIMINISHED,
+                    music_parameters.constants.WesternPitchIntervalQuality.DIMINISHED,
+                    music_parameters.constants.WesternPitchIntervalQuality.DIMINISHED,
                 ]
             ),
             None,
@@ -185,9 +185,9 @@ class WesternPitchIntervalTest(unittest.TestCase):
             Exception,
             lambda: music_parameters.WesternPitchInterval._assert_interval_quality_avoids_illegal_stacking(
                 [
-                    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_MINOR,
-                    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_DIMINISHED,
-                    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_MAJOR,
+                    music_parameters.constants.WesternPitchIntervalQuality.MINOR,
+                    music_parameters.constants.WesternPitchIntervalQuality.DIMINISHED,
+                    music_parameters.constants.WesternPitchIntervalQuality.MAJOR,
                 ]
             ),
         )
@@ -245,18 +245,18 @@ class WesternPitchIntervalTest(unittest.TestCase):
 
     def test_interval_quality_string_to_interval_quality_tuple(self):
         for interval_quality_string, expected_interval_quality_tuple in (
-            ("p", (music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_PERFECT,)),
-            ("M", (music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_MAJOR,)),
-            ("m", (music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_MINOR,)),
+            ("p", (music_parameters.constants.WesternPitchIntervalQuality.PERFECT,)),
+            ("M", (music_parameters.constants.WesternPitchIntervalQuality.MAJOR,)),
+            ("m", (music_parameters.constants.WesternPitchIntervalQuality.MINOR,)),
             (
                 "A",
-                (music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_AUGMENTED,),
+                (music_parameters.constants.WesternPitchIntervalQuality.AUGMENTED,),
             ),
             (
                 "dd",
                 (
-                    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_DIMINISHED,
-                    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_DIMINISHED,
+                    music_parameters.constants.WesternPitchIntervalQuality.DIMINISHED,
+                    music_parameters.constants.WesternPitchIntervalQuality.DIMINISHED,
                 ),
             ),
         ):
@@ -332,7 +332,7 @@ class WesternPitchIntervalTest(unittest.TestCase):
     def test_interval_quality_tuple(self):
         self.assertEqual(
             music_parameters.WesternPitchInterval("p8").interval_quality_tuple,
-            (music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_PERFECT,),
+            (music_parameters.constants.WesternPitchIntervalQuality.PERFECT,),
         )
 
     def test_interval_type_cent_deviation(self):

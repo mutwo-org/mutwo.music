@@ -1,11 +1,11 @@
 from mutwo import music_parameters
 
 WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT = {
-    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_PERFECT: "p",
-    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_MINOR: "m",
-    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_MAJOR: "M",
-    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_AUGMENTED: "A",
-    music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_DIMINISHED: "d",
+    music_parameters.constants.WesternPitchIntervalQuality.PERFECT: "p",
+    music_parameters.constants.WesternPitchIntervalQuality.MINOR: "m",
+    music_parameters.constants.WesternPitchIntervalQuality.MAJOR: "M",
+    music_parameters.constants.WesternPitchIntervalQuality.AUGMENTED: "A",
+    music_parameters.constants.WesternPitchIntervalQuality.DIMINISHED: "d",
 }
 """Maps the quality of a pitch interval to its short
 name. The short name is used in the initialisation of

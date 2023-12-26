@@ -453,7 +453,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         # -100.
         if (
             self.is_imperfect_interval
-            and music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_DIMINISHED
+            and music_parameters.constants.WesternPitchIntervalQuality.DIMINISHED
             in interval_quality_tuple
         ):
             cent_deviation -= 100
@@ -538,10 +538,10 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         """`True` if interval could be written in a simpler way, `False` otherwise."""
 
         diminished_abbreviation = music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT[
-            music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_AUGMENTED
+            music_parameters.constants.WesternPitchIntervalQuality.AUGMENTED
         ]
         augmented_abbreviation = music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT[
-            music_parameters.constants.WESTERN_PITCH_INTERVAL_QUALITY_DIMINISHED
+            music_parameters.constants.WesternPitchIntervalQuality.DIMINISHED
         ]
 
         # Special treatment for tritone which can't be written in any other way
