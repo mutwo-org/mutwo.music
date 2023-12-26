@@ -5,11 +5,10 @@
 
 import typing
 
-import numpy as np  # type: ignore
-
 from mutwo import core_constants
 from mutwo import core_utilities
 from mutwo import music_parameters
+from mutwo import music_utilities
 
 __all__ = ("DirectVolume", "DecibelVolume", "WesternVolume")
 
@@ -133,11 +132,10 @@ class WesternVolume(music_parameters.abc.Volume):
             dynamic_indicator: decibel
             for dynamic_indicator, decibel in zip(
                 music_parameters.constants.STANDARD_DYNAMIC_INDICATOR,
-                np.linspace(
+                music_utilities.linear_space(
                     minima,
                     maxima,
                     len(music_parameters.constants.STANDARD_DYNAMIC_INDICATOR),
-                    dtype=dtype,
                 ),
             )
         }
