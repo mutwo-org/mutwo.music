@@ -1,16 +1,13 @@
 from . import configurations
-from . import constants
 
 from .parsers import *
 from .grace_notes import *
-from .loudness import *
 from .metricities import *
 from .playing_indicators import *
 from .spectrals import *
 
 from . import (
     grace_notes,
-    loudness,
     metricities,
     parsers,
     playing_indicators,
@@ -21,7 +18,6 @@ from mutwo import core_utilities
 
 __all__ = core_utilities.get_all(
     grace_notes,
-    loudness,
     metricities,
     parsers,
     playing_indicators,
@@ -32,7 +28,6 @@ __all__ = core_utilities.get_all(
 del (
     core_utilities,
     grace_notes,
-    loudness,
     metricities,
     parsers,
     playing_indicators,

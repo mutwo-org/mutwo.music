@@ -25,7 +25,7 @@ setuptools.setup(
     packages=[
         package
         for package in setuptools.find_namespace_packages(
-            include=["mutwo.*", "mutwo_third_party.*"]
+            include=["mutwo.*"]
         )
         if package[:5] != "tests"
     ],
@@ -35,8 +35,6 @@ setuptools.setup(
         "epitran>=1.23, <2.0.0",
         "sympy>=1.10.1, <2.0.0",
         "python-ranges>=1.2.0, <2.0.0",
-        "numpy>=1.18, <2.00",
-        "scipy>=1.4.1, <2.0.0",
     ],
     extras_require=extras_require,
     classifiers=[
