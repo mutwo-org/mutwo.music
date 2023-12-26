@@ -5,14 +5,13 @@
 import abc
 import copy
 import itertools
+import random
 import typing
 
 try:
     import quicktions as fractions  # type: ignore
 except ImportError:
     import fractions  # type: ignore
-
-import numpy as np
 
 from mutwo import core_constants
 from mutwo import core_converters
@@ -501,7 +500,7 @@ class OptionalConverter(PlayingIndicatorConverter):
     ):
         self._make_rest = make_rest
         self._likelihood = likelihood
-        self._random = np.random.default_rng(random_seed)
+        self._random = random.Random(random_seed)
         super().__init__(simple_event_to_playing_indicator_collection)
 
     def _apply_playing_indicator(
