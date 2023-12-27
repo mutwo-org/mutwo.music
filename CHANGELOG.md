@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.26.0] - 2023-12-27
+
+### Added
+- Add syntactic sugar for indicator collections initialization in `NoteLike`, see [here](https://github.com/mutwo-org/mutwo.music/commit/0a018af78f2adf4d473896b32dbe91994abf772f)
+- `music_parameters.Slur`, see [here](https://github.com/mutwo-org/mutwo.music/commit/7767d1a99bdf17c6aec970fde2e82e3ce55c46b6)
+- `music_utilities.linear_space` to replace `numpy.linspace`, see [here](https://github.com/mutwo-org/mutwo.music/commit/7b46f656b7f1c077d6417fc9987b6438131d33c5)
+
+### Fixed
+- Fix empty string in pitch parser of `NoteLike`, see [here](https://github.com/mutwo-org/mutwo.music/commit/9b01ba9126444e80d54991b5e0a33f2c217d1e62)
+
+### Chaned
+- `music_parameters.Pedal.pedal_type` to `music_parameters.Pedal.type` and `music_parameters.Pedal.pedal_activity` to `music_parameters.Pedal.activity`, see [here](https://github.com/mutwo-org/mutwo.music/commit/abc74d582c36d939e49cb7081ac5bc03a3e467be)
+- simplify pitch interval constants, see [here](https://github.com/mutwo-org/mutwo.music/commit/5fd03c01d7b0a4eca9f865011dc776dc885274ed)
+
+### Removed
+- `music_converters.LoudnessToAmplitude`, see [here](https://github.com/mutwo-org/mutwo.music/commit/41239d1bdeb03297cb9c96f8854aeed8dbca8674)
+
+
 ## [0.25.0] - 2023-10-24
 
 ### Added

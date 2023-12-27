@@ -1,4 +1,4 @@
-## 0.26.0
+## unreleased
 
 ### Cleanup
 - all scale related code
