@@ -196,6 +196,7 @@ class PlayingIndicatorCollection(
     duration_line_dashed: music_parameters.abc.PlayingIndicator = f()
     duration_line_triller: music_parameters.abc.PlayingIndicator = f()
     fermata: Fermata = f(Fermata)
+    flageolet: music_parameters.abc.PlayingIndicator = f()
     glissando: music_parameters.abc.PlayingIndicator = f()
     hairpin: Hairpin = f(Hairpin)
     natural_harmonic_node_list: NaturalHarmonicNodeList = f(NaturalHarmonicNodeList)
