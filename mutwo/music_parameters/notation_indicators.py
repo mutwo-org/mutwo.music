@@ -3,7 +3,7 @@
 This submodules provides several classes to express notation
 specifications for :class:`mutwo.core_events.SimpleEvent` objects.
 They mostly derive from traditional Western notation.
-Unlike indicators of the :mod:`mutwo.music_parameters.notation_indicators`
+Unlike playing indicators (see 'mutwo/music_parameters/playing_indicators.py')
 module, notation indicators shouldn't have an effect on the played music
 and are merely specifications of representation. The proper way to handle
 notation indicators should be via a :class:`NotationIndicatorCollection`
@@ -91,7 +91,7 @@ class NotationIndicatorCollection(
             super().__setattr__(parameter_name, value)
 
 
-# Dynamically define __all__ in order to catch all PlayingIndicator classes
+# Dynamically define __all__ in order to catch all NotationIndicator classes
 __all__ = tuple(
     name
     for name, cls in globals().items()
