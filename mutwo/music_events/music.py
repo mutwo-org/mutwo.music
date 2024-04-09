@@ -2,6 +2,7 @@ import typing
 
 from mutwo import core_events
 from mutwo import core_constants
+from mutwo import core_parameters
 from mutwo import music_events
 from mutwo import music_parameters
 
@@ -12,10 +13,10 @@ PitchOrPitchSequence = (
 )
 
 Volume = music_parameters.abc.Volume | core_constants.Real | str
-GraceNotes = core_events.SequentialEvent[core_events.SimpleEvent]
+GraceNotes = core_events.Consecution[core_events.Chronon]
 
 
-class NoteLike(core_events.SimpleEvent):
+class NoteLike(core_events.Chronon):
     """:class:`NoteLike` can be a tone, chord, percussion note or rest.
 
     :param pitch_list: The pitch or pitches of the event. This can
@@ -30,7 +31,7 @@ class NoteLike(core_events.SimpleEvent):
         to make :class:`mutwo.music_parameters.WesternPitch` objects.
     :type pitch_list: PitchOrPitchSequence
     :param duration: The duration of :class:`NoteLike`.
-    :type duration: mutwo.core_constants.DurationType
+    :type duration: mutwo.core_parameters.abc.Duration.Type
     :param volume: The volume of the event. Can either be a object of
         :mod:`mutwo.music_parameters.abc.Volume`, a number or a string. If the number
         ranges from 0 to 1, :mod:`mutwo` automatically generates a
@@ -41,14 +42,14 @@ class NoteLike(core_events.SimpleEvent):
         is interpreted as `decibel <https://en.wikipedia.org/wiki/Decibel>`_). If the argument is a string,
         `mutwo` initialises a :class:`mutwo.music_parameters.volumes.WesternVolume`.
     :type volume: Volume
-    :param grace_note_sequential_event: Specify `grace notes <https://en.wikipedia.org/wiki/Grace_note>`_
-        which are played before the :class:`NoteLike`. If the :class:`~mutwo.core_events.SequentialEvent`
+    :param grace_note_consecution: Specify `grace notes <https://en.wikipedia.org/wiki/Grace_note>`_
+        which are played before the :class:`NoteLike`. If the :class:`~mutwo.core_events.Consecution`
         is empty, no grace notes are present.
-    :type grace_note_sequential_event: core_events.SequentialEvent[NoteLike]
-    :param after_grace_note_sequential_event: Specify `grace notes <https://en.wikipedia.org/wiki/Grace_note>`_
-        which are played after the :class:`NoteLike`. If the :class:`~mutwo.core_events.SequentialEvent`
+    :type grace_note_consecution: core_events.Consecution[NoteLike]
+    :param after_grace_note_consecution: Specify `grace notes <https://en.wikipedia.org/wiki/Grace_note>`_
+        which are played after the :class:`NoteLike`. If the :class:`~mutwo.core_events.Consecution`
         is empty, no grace notes are present.
-    :type after_grace_note_sequential_event: core_events.SequentialEvent[NoteLike]
+    :type after_grace_note_consecution: core_events.Consecution[NoteLike]
     :param playing_indicator_collection: A :class:`~mutwo.music_parameters.playing_indicator_collection.PlayingIndicatorCollection`.
         Playing indicators alter the sound of :class:`NoteLike` (e.g.
         tremolo, fermata, pizzicato).
@@ -86,10 +87,10 @@ class NoteLike(core_events.SimpleEvent):
     def __init__(
         self,
         pitch_list: PitchOrPitchSequence = [],
-        duration: core_constants.DurationType = 1,
+        duration: core_parameters.abc.Duration.Type = 1,
         volume: Volume = "mf",
-        grace_note_sequential_event: typing.Optional[GraceNotes] = None,
-        after_grace_note_sequential_event: typing.Optional[GraceNotes] = None,
+        grace_note_consecution: typing.Optional[GraceNotes] = None,
+        after_grace_note_consecution: typing.Optional[GraceNotes] = None,
         playing_indicator_collection: typing.Optional[
             music_parameters.PlayingIndicatorCollection
         ] = None,
@@ -102,11 +103,11 @@ class NoteLike(core_events.SimpleEvent):
         self.pitch_list = pitch_list
         self.volume = volume
         super().__init__(duration)
-        self.grace_note_sequential_event = (
-            grace_note_sequential_event or core_events.SequentialEvent([])
+        self.grace_note_consecution = (
+            grace_note_consecution or core_events.Consecution([])
         )
-        self.after_grace_note_sequential_event = (
-            after_grace_note_sequential_event or core_events.SequentialEvent([])
+        self.after_grace_note_consecution = (
+            after_grace_note_consecution or core_events.Consecution([])
         )
         self.playing_indicator_collection = playing_indicator_collection
         self.notation_indicator_collection = notation_indicator_collection
@@ -128,8 +129,8 @@ class NoteLike(core_events.SimpleEvent):
             not in (
                 "playing_indicator_collection",
                 "notation_indicator_collection",
-                "grace_note_sequential_event",
-                "after_grace_note_sequential_event",
+                "grace_note_consecution",
+                "after_grace_note_consecution",
             )
         )
 
@@ -166,33 +167,33 @@ class NoteLike(core_events.SimpleEvent):
         self._volume = music_events.configurations.UNKNOWN_OBJECT_TO_VOLUME(volume)
 
     @property
-    def grace_note_sequential_event(self) -> GraceNotes:
-        """:class:`~mutwo.core_events.SequentialEvent` before :class:`NoteLike`"""
-        return self._grace_note_sequential_event
+    def grace_note_consecution(self) -> GraceNotes:
+        """:class:`~mutwo.core_events.Consecution` before :class:`NoteLike`"""
+        return self._grace_note_consecution
 
-    @grace_note_sequential_event.setter
-    def grace_note_sequential_event(
+    @grace_note_consecution.setter
+    def grace_note_consecution(
         self,
-        grace_note_sequential_event: GraceNotes | core_events.SimpleEvent,
+        grace_note_consecution: GraceNotes | core_events.Chronon,
     ):
-        self._grace_note_sequential_event = (
+        self._grace_note_consecution = (
             music_events.configurations.UNKNOWN_OBJECT_TO_GRACE_NOTE_SEQUENTIAL_EVENT(
-                grace_note_sequential_event
+                grace_note_consecution
             )
         )
 
     @property
-    def after_grace_note_sequential_event(self) -> GraceNotes:
-        """:class:`~mutwo.core_events.SequentialEvent` after :class:`NoteLike`"""
-        return self._after_grace_note_sequential_event
+    def after_grace_note_consecution(self) -> GraceNotes:
+        """:class:`~mutwo.core_events.Consecution` after :class:`NoteLike`"""
+        return self._after_grace_note_consecution
 
-    @after_grace_note_sequential_event.setter
-    def after_grace_note_sequential_event(
-        self, after_grace_note_sequential_event: GraceNotes | core_events.SimpleEvent
+    @after_grace_note_consecution.setter
+    def after_grace_note_consecution(
+        self, after_grace_note_consecution: GraceNotes | core_events.Chronon
     ):
-        self._after_grace_note_sequential_event = (
+        self._after_grace_note_consecution = (
             music_events.configurations.UNKNOWN_OBJECT_TO_GRACE_NOTE_SEQUENTIAL_EVENT(
-                after_grace_note_sequential_event
+                after_grace_note_consecution
             )
         )
 

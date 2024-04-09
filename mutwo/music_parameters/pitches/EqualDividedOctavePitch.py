@@ -198,8 +198,7 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
     #                          public methods                                #
     # ###################################################################### #
 
-    @core_utilities.add_copy_option
-    def add(  # type: ignore
+    def add(
         self, pitch_interval: music_parameters.abc.PitchInterval | core_constants.Real
     ) -> EqualDividedOctavePitch:  # type: ignore
         """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""
@@ -208,9 +207,9 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
             pitch_interval
         )
         self._math(n_pitch_classes_difference, operator.add)
+        return self
 
-    @core_utilities.add_copy_option
-    def subtract(  # type: ignore
+    def subtract(
         self, pitch_interval: music_parameters.abc.PitchInterval | core_constants.Real
     ) -> EqualDividedOctavePitch:  # type: ignore
         """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""

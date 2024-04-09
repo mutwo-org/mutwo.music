@@ -1,5 +1,4 @@
 from mutwo import core_converters
-from mutwo import core_constants
 from mutwo import core_events
 from mutwo import core_parameters
 from mutwo import music_parameters
@@ -19,10 +18,10 @@ class InstrumentNoteLikeToPitchedNoteLike(
     ):
         self.instrument_to_pitch_dict = instrument_to_pitch_dict
 
-    def _convert_simple_event(
+    def _convert_chronon(
         self,
-        event_to_convert: core_events.SimpleEvent,
-        absolute_time: core_constants.DurationType,
+        event_to_convert: core_events.Chronon,
+        absolute_time: core_parameters.abc.Duration.Type,
     ):
         instrument = getattr(event_to_convert, "instrument", None)
         if instrument is not None:

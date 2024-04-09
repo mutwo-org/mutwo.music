@@ -4,7 +4,7 @@ DEFAULT_PITCH_LIST_TO_SEARCH_NAME = "pitch_list"
 """Default value for :param:`pitch_list_to_search_name` parameter in
 :class:`mutwo.music_converters.MutwoParameterDictToPitchList` and
 default value for :param:`attribute_name` in
-:class:`mutwo.music_converters.SimpleEventToPitchList`."""
+:class:`mutwo.music_converters.ChrononToPitchList`."""
 
 DEFAULT_PITCH_LIST_KEYWORD_NAME = "pitch_list"
 """Default value for :param:`pitch_list_keyword_name` parameter in
@@ -14,7 +14,7 @@ DEFAULT_VOLUME_TO_SEARCH_NAME = "volume"
 """Default value for :param:`volume_to_search_name` parameter in
 :class:`mutwo.music_converters.MutwoParameterDictToVolume` and
 default value for :param:`attribute_name` in
-:class:`mutwo.music_converters.SimpleEventToVolume`."""
+:class:`mutwo.music_converters.ChrononToVolume`."""
 
 DEFAULT_VOLUME_KEYWORD_NAME = "volume"
 """Default value for :param:`volume_keyword_name` parameter in
@@ -24,7 +24,7 @@ DEFAULT_INSTRUMENT_LIST_TO_SEARCH_NAME = "instrument_list"
 """Default value for :param:`instrument_list_to_search_name` parameter in
 :class:`mutwo.music_converters.MutwoParameterDictToInstrumentList` and
 default value for :param:`attribute_name` in
-:class:`mutwo.music_converters.SimpleEventToInstrumentList`."""
+:class:`mutwo.music_converters.ChrononToInstrumentList`."""
 
 DEFAULT_INSTRUMENT_LIST_KEYWORD_NAME = "instrument_list"
 """Default value for :param:`instrument_list_keyword_name` parameter in
@@ -34,7 +34,7 @@ DEFAULT_PLAYING_INDICATOR_COLLECTION_TO_SEARCH_NAME = "playing_indicator_collect
 """Default value for :param:`playing_indicator_collection_to_search_name` parameter in
 :class:`mutwo.music_converters.MutwoParameterDictToPlayingIndicatorCollection` and
 default value for :param:`attribute_name` in
-:class:`mutwo.music_converters.SimpleEventToPlayingIndicatorCollection`."""
+:class:`mutwo.music_converters.ChrononToPlayingIndicatorCollection`."""
 
 DEFAULT_PLAYING_INDICATOR_COLLECTION_KEYWORD_NAME = "playing_indicator_collection"
 """Default value for :param:`playing_indicator_collection_keyword_name` parameter in
@@ -44,38 +44,38 @@ DEFAULT_NOTATION_INDICATOR_COLLECTION_TO_SEARCH_NAME = "notation_indicator_colle
 """Default value for :param:`notation_indicator_collection_to_search_name` parameter in
 :class:`mutwo.music_converters.MutwoParameterDictToNotationIndicatorCollection` and
 default value for :param:`attribute_name` in
-:class:`mutwo.music_converters.SimpleEventToNotationIndicatorCollection`."""
+:class:`mutwo.music_converters.ChrononToNotationIndicatorCollection`."""
 
 DEFAULT_NOTATION_INDICATOR_COLLECTION_KEYWORD_NAME = "notation_indicator_collection"
 """Default value for :param:`notation_indicator_collection_keyword_name` parameter in
 :class:`mutwo.core_converters.MutwoParameterDictToNotationIndicatorCollection`"""
 
-DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME = "grace_note_sequential_event"
-"""Default value for :param:`grace_note_sequential_event_to_search_name` parameter in
-:class:`mutwo.music_converters.MutwoParameterDictToGraceNoteSequentialEvent` and
+DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME = "grace_note_consecution"
+"""Default value for :param:`grace_note_consecution_to_search_name` parameter in
+:class:`mutwo.music_converters.MutwoParameterDictToGraceNoteConsecution` and
 default value for :param:`attribute_name` in
-:class:`mutwo.music_converters.SimpleEventToGraceNoteSequentialEvent`."""
+:class:`mutwo.music_converters.ChrononToGraceNoteConsecution`."""
 
-DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME = "grace_note_sequential_event"
-"""Default value for :param:`grace_note_sequential_event_keyword_name` parameter in
-:class:`mutwo.core_converters.MutwoParameterDictToGraceNoteSequentialEvent`"""
+DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME = "grace_note_consecution"
+"""Default value for :param:`grace_note_consecution_keyword_name` parameter in
+:class:`mutwo.core_converters.MutwoParameterDictToGraceNoteConsecution`"""
 
 DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME = (
-    "after_grace_note_sequential_event"
+    "after_grace_note_consecution"
 )
-"""Default value for :param:`after_grace_note_sequential_event_to_search_name` parameter in
-:class:`mutwo.music_converters.MutwoParameterDictToAfterGraceNoteSequentialEvent` and
+"""Default value for :param:`after_grace_note_consecution_to_search_name` parameter in
+:class:`mutwo.music_converters.MutwoParameterDictToAfterGraceNoteConsecution` and
 default value for :param:`attribute_name` in
-:class:`mutwo.music_converters.SimpleEventToAfterGraceNoteSequentialEvent`."""
+:class:`mutwo.music_converters.ChrononToAfterGraceNoteConsecution`."""
 
 DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME = (
-    "after_grace_note_sequential_event"
+    "after_grace_note_consecution"
 )
-"""Default value for :param:`after_grace_note_sequential_event_keyword_name` parameter in
-:class:`mutwo.core_converters.MutwoParameterDictToAfterGraceNoteSequentialEvent`"""
+"""Default value for :param:`after_grace_note_consecution_keyword_name` parameter in
+:class:`mutwo.core_converters.MutwoParameterDictToAfterGraceNoteConsecution`"""
 
 DEFAULT_LYRIC_TO_SEARCH_NAME = "lyric"
 """Default value for :param:`lyric_to_search_name` parameter in
 :class:`mutwo.music_converters.MutwoParameterDictToLyric` and
 default value for :param:`attribute_name` in
-:class:`mutwo.music_converters.SimpleEventToLyric`."""
+:class:`mutwo.music_converters.ChrononToLyric`."""

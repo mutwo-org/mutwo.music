@@ -94,24 +94,24 @@ class NoteLikeTest(unittest.TestCase):
     #                   test grace notes setter                              #
     # ###################################################################### #
 
-    def test_grace_note_sequential_event_setter_from_simple_event(self):
-        grace_note_sequential_event = music_events.NoteLike()
+    def test_grace_note_consecution_setter_from_chronon(self):
+        grace_note_consecution = music_events.NoteLike()
         self.assertEqual(
-            core_events.SequentialEvent([grace_note_sequential_event]),
+            core_events.Consecution([grace_note_consecution]),
             music_events.NoteLike(
-                None, 1, 1, grace_note_sequential_event
-            ).grace_note_sequential_event,
+                None, 1, 1, grace_note_consecution
+            ).grace_note_consecution,
         )
 
-    def test_grace_note_sequential_event_setter_from_sequential_event(self):
-        grace_note_sequential_event = core_events.SequentialEvent(
+    def test_grace_note_consecution_setter_from_consecution(self):
+        grace_note_consecution = core_events.Consecution(
             [music_events.NoteLike()]
         )
         self.assertEqual(
-            grace_note_sequential_event,
+            grace_note_consecution,
             music_events.NoteLike(
-                None, 1, 1, core_events.SequentialEvent([]), grace_note_sequential_event
-            ).after_grace_note_sequential_event,
+                None, 1, 1, core_events.Consecution([]), grace_note_consecution
+            ).after_grace_note_consecution,
         )
 
     # ###################################################################### #
@@ -137,15 +137,16 @@ class NoteLikeTest(unittest.TestCase):
     def test_parameter_to_compare_tuple(self):
         note_like = music_events.NoteLike([music_parameters.WesternPitch()], 1, 1)
         expected_parameter_to_compare_tuple = (
-            "after_grace_note_sequential_event",
+            "after_grace_note_consecution",
             "duration",
-            "grace_note_sequential_event",
+            "grace_note_consecution",
             "instrument_list",
             "lyric",
             "notation_indicator_collection",
             "pitch_list",
             "playing_indicator_collection",
-            "tempo_envelope",
+            "tag",
+            "tempo",
             "volume",
         )
         self.assertEqual(
@@ -158,7 +159,7 @@ class NoteLikeTest(unittest.TestCase):
         note_like2 = music_events.NoteLike([100], 1, 1)
         note_like3 = music_events.NoteLike([], 1, 2)
         note_like4 = music_events.NoteLike([400, 500], 1, 2)
-        simple_event = core_events.SimpleEvent(1)
+        chronon = core_events.Chronon(1)
 
         self.assertEqual(note_like0, note_like0)
         self.assertEqual(note_like1, note_like0)
@@ -169,5 +170,5 @@ class NoteLikeTest(unittest.TestCase):
         self.assertNotEqual(note_like2, note_like3)
         self.assertNotEqual(note_like2, note_like4)
         self.assertNotEqual(note_like3, note_like4)
-        self.assertNotEqual(note_like0, simple_event)
-        self.assertNotEqual(simple_event, note_like0)  # different order
+        self.assertNotEqual(note_like0, chronon)
+        self.assertNotEqual(chronon, note_like0)  # different order

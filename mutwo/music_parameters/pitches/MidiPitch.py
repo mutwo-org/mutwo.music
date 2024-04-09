@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from mutwo import core_utilities
 from mutwo import music_parameters
 
 __all__ = ("MidiPitch",)
@@ -41,9 +40,8 @@ class MidiPitch(music_parameters.abc.Pitch):
     def midi_pitch_number(self, new_midi_pitch_number: float):
         self._midi_pitch_number = new_midi_pitch_number
 
-    @core_utilities.add_copy_option
     def add(
-        self, pitch_interval: music_parameters.abc.PitchInterval, mutate: bool = False
+        self, pitch_interval: music_parameters.abc.PitchInterval
     ) -> MidiPitch:
         self.midi_pitch_number = self.hertz_to_midi_pitch_number(
             self.cents_to_ratio(pitch_interval.interval) * self.frequency

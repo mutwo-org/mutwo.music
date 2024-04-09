@@ -36,8 +36,7 @@ class DirectPitchInterval(music_parameters.abc.PitchInterval):
     def interval(self, interval: float):
         self._interval = interval
 
-    @core_utilities.add_copy_option
-    def inverse(self, mutate: bool = False) -> DirectPitchInterval:
+    def inverse(self) -> DirectPitchInterval:
         """Makes falling interval to rising and vice versa.
 
         **Example:**
@@ -568,8 +567,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
     #                           public methods                               #
     # ###################################################################### #
 
-    @core_utilities.add_copy_option
-    def inverse(self, mutate: bool = False) -> WesternPitchInterval:
+    def inverse(self) -> WesternPitchInterval:
         """Makes falling interval to rising and vice versa.
 
         **Example:**

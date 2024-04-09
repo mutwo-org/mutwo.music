@@ -528,7 +528,7 @@ class OrchestrationMixin(object):
         ...   oboe2=music_parameters.Oboe(),
         ... )
         >>> orch.get_subset('oboe0', 'oboe2')
-        Orchestration(oboe0=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)), oboe2=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)))
+        Orchestration(oboe0=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=D(0)), oboe2=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=D(0)))
         """
         return Orchestration(**{name: getattr(self, name) for name in instrument_name})
 
@@ -553,7 +553,7 @@ def Orchestration(**instrument_name_to_instrument: music_parameters.abc.Instrume
     ...   oboe0=music_parameters.Oboe(),
     ...   oboe1=music_parameters.Oboe(),
     ... )
-    Orchestration(oboe0=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)), oboe1=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=DirectPitchInterval(interval = 0)))
+    Orchestration(oboe0=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=D(0)), oboe1=Oboe(name='oboe', short_name='ob.', pitch_count_range=Range[1, 2), transposition_pitch_interval=D(0)))
     """
 
     instrument_name_tuple, instrument_tuple = tuple([]), tuple([])

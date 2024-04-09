@@ -25,7 +25,6 @@ except ImportError:
 import ranges
 
 from mutwo import core_constants
-from mutwo import core_events
 from mutwo import core_parameters
 from mutwo import core_utilities
 from mutwo import music_parameters
@@ -65,7 +64,7 @@ class PitchInterval(
         return str(self)
 
     @abc.abstractmethod
-    def inverse(self, mutate: bool = False) -> PitchInterval:
+    def inverse(self) -> PitchInterval:
         """Makes falling interval to rising and vice versa.
 
         In `music21` the method for equal semantics is called
@@ -81,7 +80,6 @@ class PitchInterval(
 
 class Pitch(
     core_parameters.abc.SingleNumberParameter,
-    core_parameters.abc.ParameterWithEnvelope,
     value_name="frequency",
     value_return_type=float,
 ):
@@ -92,214 +90,6 @@ class Pitch(
     from mutwo version = 0.46.0 the user will furthermore have
     to define an :func:`add` method.
     """
-
-    class PitchEnvelope(core_events.Envelope):
-        """Default resolution envelope class for :class:`Pitch`"""
-
-        def __init__(
-            self,
-            *args,
-            event_to_parameter: typing.Optional[
-                typing.Callable[[core_events.abc.Event], core_constants.ParameterType]
-            ] = None,
-            value_to_parameter: typing.Optional[
-                typing.Callable[
-                    [core_events.Envelope.Value], core_constants.ParameterType
-                ]
-            ] = None,
-            parameter_to_value: typing.Optional[
-                typing.Callable[
-                    [core_constants.ParameterType], core_events.Envelope.Value
-                ]
-            ] = None,
-            apply_parameter_on_event: typing.Optional[
-                typing.Callable[
-                    [core_events.abc.Event, core_constants.ParameterType], None
-                ]
-            ] = None,
-            **kwargs,
-        ):
-            event_to_parameter = event_to_parameter or self._event_to_parameter
-            value_to_parameter = value_to_parameter or self._value_to_parameter
-            apply_parameter_on_event = (
-                apply_parameter_on_event or self._apply_parameter_on_event
-            )
-            parameter_to_value = parameter_to_value or self._parameter_to_value
-
-            super().__init__(
-                *args,
-                event_to_parameter=event_to_parameter,
-                value_to_parameter=value_to_parameter,
-                parameter_to_value=parameter_to_value,
-                apply_parameter_on_event=apply_parameter_on_event,
-                **kwargs,
-            )
-
-        @classmethod
-        def frequency_and_envelope_to_pitch(
-            cls,
-            frequency: core_constants.Real,
-            envelope: typing.Optional[
-                Pitch.PitchIntervalEnvelope | typing.Sequence
-            ] = None,
-        ) -> Pitch:
-            return music_parameters.DirectPitch(frequency, envelope=envelope)
-
-        @classmethod
-        def _value_to_parameter(
-            cls,
-            value: core_events.Envelope.Value,  # type: ignore
-        ) -> core_constants.ParameterType:
-            # For inner calculation (value) cents are used instead
-            # of frequencies. In this way we can ensure that the transitions
-            # are closer to the human logarithmic hearing.
-            # See als `_parameter_to_value`.
-            frequency = (
-                Pitch.cents_to_ratio(value)
-                * music_parameters.constants.PITCH_ENVELOPE_REFERENCE_FREQUENCY
-            )
-            return cls.frequency_and_envelope_to_pitch(frequency)
-
-        @classmethod
-        def _event_to_parameter(
-            cls, event: core_events.abc.Event
-        ) -> core_constants.ParameterType:
-            if hasattr(
-                event,
-                music_parameters.configurations.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
-            ):
-                return getattr(
-                    event,
-                    music_parameters.configurations.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
-                )
-            else:
-                return cls.frequency_and_envelope_to_pitch(
-                    music_parameters.configurations.DEFAULT_CONCERT_PITCH
-                )
-
-        @classmethod
-        def _apply_parameter_on_event(
-            cls, event: core_events.abc.Event, parameter: core_constants.ParameterType
-        ):
-            setattr(
-                event,
-                music_parameters.configurations.DEFAULT_PITCH_ENVELOPE_PARAMETER_NAME,
-                parameter,
-            )
-
-        @classmethod
-        def _parameter_to_value(
-            cls, parameter: core_constants.ParameterType
-        ) -> core_constants.Real:
-            # For inner calculation (value) cents are used instead
-            # of frequencies. In this way we can ensure that the transitions
-            # are closer to the human logarithmic hearing.
-            # See als `_value_to_parameter`.
-            return Pitch.hertz_to_cents(
-                music_parameters.constants.PITCH_ENVELOPE_REFERENCE_FREQUENCY,
-                parameter.frequency,
-            )
-
-    class PitchIntervalEnvelope(core_events.RelativeEnvelope):
-        """Default envelope class for :class:`Pitch`
-
-        Resolves into :class:`Pitch.PitchEnvelope`.
-        """
-
-        def __init__(
-            self,
-            *args,
-            event_to_parameter: typing.Optional[
-                typing.Callable[[core_events.abc.Event], core_constants.ParameterType]
-            ] = None,
-            value_to_parameter: typing.Optional[
-                typing.Callable[
-                    [core_events.Envelope.Value], core_constants.ParameterType
-                ]
-            ] = None,
-            parameter_to_value: typing.Callable[
-                [core_constants.ParameterType], core_events.Envelope.Value
-            ] = lambda parameter: parameter.interval,
-            apply_parameter_on_event: typing.Optional[
-                typing.Callable[
-                    [core_events.abc.Event, core_constants.ParameterType], None
-                ]
-            ] = None,
-            base_parameter_and_relative_parameter_to_absolute_parameter: typing.Optional[
-                typing.Callable[
-                    [core_constants.ParameterType, core_constants.ParameterType],
-                    core_constants.ParameterType,
-                ]
-            ] = None,
-            **kwargs,
-        ):
-            if not event_to_parameter:
-                event_to_parameter = self._event_to_parameter
-            if not value_to_parameter:
-                value_to_parameter = self._value_to_parameter
-            if not apply_parameter_on_event:
-                apply_parameter_on_event = self._apply_parameter_on_event
-            if not base_parameter_and_relative_parameter_to_absolute_parameter:
-                base_parameter_and_relative_parameter_to_absolute_parameter = (
-                    self._base_parameter_and_relative_parameter_to_absolute_parameter
-                )
-
-            super().__init__(
-                *args,
-                event_to_parameter=event_to_parameter,
-                value_to_parameter=value_to_parameter,
-                parameter_to_value=parameter_to_value,
-                apply_parameter_on_event=apply_parameter_on_event,
-                base_parameter_and_relative_parameter_to_absolute_parameter=base_parameter_and_relative_parameter_to_absolute_parameter,
-                **kwargs,
-            )
-
-        @classmethod
-        def cents_to_pitch_interval(cls, cents: core_constants.Real) -> PitchInterval:
-            return music_parameters.DirectPitchInterval(cents)
-
-        @classmethod
-        def _event_to_parameter(
-            cls, event: core_events.abc.Event
-        ) -> core_constants.ParameterType:
-            if hasattr(
-                event,
-                music_parameters.configurations.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
-            ):
-                return getattr(
-                    event,
-                    music_parameters.configurations.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
-                )
-            else:
-                return cls.cents_to_pitch_interval(0)
-
-        @classmethod
-        def _value_to_parameter(
-            cls, value: core_events.Envelope.Value
-        ) -> core_constants.ParameterType:
-            return cls.cents_to_pitch_interval(value)
-
-        @classmethod
-        def _apply_parameter_on_event(
-            cls, event: core_events.abc.Event, parameter: core_constants.ParameterType
-        ):
-            setattr(
-                event,
-                music_parameters.configurations.DEFAULT_PITCH_INTERVAL_ENVELOPE_PARAMETER_NAME,
-                parameter,
-            ),
-
-        @classmethod
-        def _base_parameter_and_relative_parameter_to_absolute_parameter(
-            cls, base_parameter: Pitch, relative_parameter: PitchInterval
-        ) -> Pitch:
-            return base_parameter + relative_parameter
-
-    def __init__(
-        self,
-        envelope: typing.Optional[Pitch.PitchIntervalEnvelope | typing.Sequence] = None,
-    ):
-        self.envelope = envelope
 
     # ###################################################################### #
     #     conversion methods between different pitch describing units        #
@@ -394,50 +184,22 @@ class Pitch(
         """The midi pitch number (from 0 to 127) of the pitch."""
         return self.hertz_to_midi_pitch_number(self.frequency)
 
-    @core_parameters.abc.ParameterWithEnvelope.envelope.setter
-    def envelope(
-        self,
-        envelope_or_envelope_argument: typing.Optional[
-            Pitch.PitchIntervalEnvelope | typing.Sequence
-        ],
-    ):
-        if not envelope_or_envelope_argument:
-            generic_pitch_interval = self.PitchIntervalEnvelope.cents_to_pitch_interval(
-                0
-            )
-            envelope = self.PitchIntervalEnvelope([[0, generic_pitch_interval]])
-        elif isinstance(envelope_or_envelope_argument, core_events.RelativeEnvelope):
-            envelope = envelope_or_envelope_argument
-        else:
-            envelope = self.PitchIntervalEnvelope(envelope_or_envelope_argument)
-        self._envelope = envelope
-
     # ###################################################################### #
     #                            comparison methods                          #
     # ###################################################################### #
 
     @abc.abstractmethod
-    def add(self, pitch_interval: PitchInterval, mutate: bool = True) -> Pitch:
+    def add(self, pitch_interval: PitchInterval) -> Pitch:
         ...
 
-    @core_utilities.add_copy_option
     def subtract(self, pitch_interval: music_parameters.abc.PitchInterval) -> Pitch:
-        return self.add(music_parameters.DirectPitchInterval(-pitch_interval.interval))  # type: ignore
+        return self.add(music_parameters.DirectPitchInterval(-pitch_interval.interval))
 
     def __add__(self, pitch_interval: PitchInterval) -> Pitch:
-        return self.add(pitch_interval, mutate=False)
+        return self.copy().add(pitch_interval)
 
     def __sub__(self, pitch_interval: PitchInterval) -> Pitch:
-        return self.subtract(pitch_interval, mutate=False)
-
-    def resolve_envelope(
-        self,
-        duration: core_constants.DurationType,
-        resolve_envelope_class: typing.Optional[type[core_events.Envelope]] = None,
-    ) -> core_events.Envelope:
-        if not resolve_envelope_class:
-            resolve_envelope_class = Pitch.PitchEnvelope
-        return super().resolve_envelope(duration, resolve_envelope_class)
+        return self.copy().subtract(pitch_interval)
 
     def get_pitch_interval(self, pitch_to_compare: Pitch) -> PitchInterval:
         """Get :class:`PitchInterval` between itself and other pitch

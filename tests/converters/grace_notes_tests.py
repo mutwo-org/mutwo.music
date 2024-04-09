@@ -12,7 +12,7 @@ class GraceNotesConverterTest(unittest.TestCase):
     def test_convert_note_like(self):
         note_like = music_events.NoteLike(
             duration=1,
-            grace_note_sequential_event=core_events.SequentialEvent(
+            grace_note_consecution=core_events.Consecution(
                 [
                     music_events.NoteLike(duration=0.5),
                     music_events.NoteLike(duration=1),
@@ -23,29 +23,29 @@ class GraceNotesConverterTest(unittest.TestCase):
 
         self.assertEqual(note_like.duration, converted_note_like.duration)
         self.assertEqual(
-            len(converted_note_like), 1 + len(note_like.grace_note_sequential_event)
+            len(converted_note_like), 1 + len(note_like.grace_note_consecution)
         )
-        self.assertTrue(isinstance(converted_note_like, core_events.SequentialEvent))
+        self.assertTrue(isinstance(converted_note_like, core_events.Consecution))
         self.assertAlmostEqual(
             converted_note_like[0].duration / converted_note_like[1].duration,
-            note_like.grace_note_sequential_event[0].duration
-            / note_like.grace_note_sequential_event[1].duration,
+            note_like.grace_note_consecution[0].duration
+            / note_like.grace_note_consecution[1].duration,
         )
 
-    def test_convert_sequential_event(self):
-        sequential_event = core_events.SequentialEvent(
+    def test_convert_consecution(self):
+        consecution = core_events.Consecution(
             [
                 music_events.NoteLike("a"),
                 music_events.NoteLike(
                     "e",
-                    after_grace_note_sequential_event=core_events.SequentialEvent(
+                    after_grace_note_consecution=core_events.Consecution(
                         [music_events.NoteLike("f")]
                     ),
                 ),
             ]
         )
-        converted_sequental_event = self.grace_notes_converter.convert(sequential_event)
-        self.assertEqual(sequential_event.duration, converted_sequental_event.duration)
+        converted_sequental_event = self.grace_notes_converter.convert(consecution)
+        self.assertEqual(consecution.duration, converted_sequental_event.duration)
         self.assertEqual(
             len(converted_sequental_event), 3  # two main events + one after grace note
         )

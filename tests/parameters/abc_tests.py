@@ -7,7 +7,6 @@ try:
 except ImportError:
     import fractions  # type: ignore
 
-from mutwo import core_utilities
 from mutwo import music_parameters
 
 
@@ -23,14 +22,12 @@ class PitchTest(unittest.TestCase):
         def frequency(self) -> float:
             return self._frequency
 
-        @core_utilities.add_copy_option
         def add(self, pitch_interval: music_parameters.PitchInterval) -> GenericPitch:
             self._frequency = (
                 self.cents_to_ratio(pitch_interval.interval) * self.frequency
             )
             return self
 
-        @core_utilities.add_copy_option
         def subtract(
             self, pitch_interval: music_parameters.PitchInterval
         ) -> GenericPitch:
@@ -81,124 +78,6 @@ class PitchTest(unittest.TestCase):
         self.assertEqual(
             60, round(music_parameters.abc.Pitch.hertz_to_midi_pitch_number(261))
         )
-
-    def test_initialise_envelope_from_none(self):
-        generic_pitch = self.GenericPitch(100)
-        self.assertEqual(
-            generic_pitch.envelope,
-            generic_pitch.PitchIntervalEnvelope(
-                [
-                    [
-                        0,
-                        music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(
-                            0
-                        ),
-                    ]
-                ]
-            ),
-        )
-
-    def test_initialise_envelope_from_list(self):
-        generic_pitch = self.GenericPitch(100, envelope=[[0, 0], [1, 100], [2, 0]])
-        self.assertEqual(
-            generic_pitch.envelope,
-            generic_pitch.PitchIntervalEnvelope([[0, 0], [1, 100], [2, 0]]),
-        )
-
-
-class PitchIntervalEnvelopeTest(unittest.TestCase):
-    def setUp(cls):
-        pitch_interval0 = (
-            music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(
-                1200
-            )
-        )
-        pitch_interval1 = (
-            music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(0)
-        )
-        pitch_interval2 = (
-            music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(
-                -100
-            )
-        )
-        cls.pitch = (
-            music_parameters.abc.Pitch.PitchEnvelope.frequency_and_envelope_to_pitch(
-                440,
-                envelope=music_parameters.abc.Pitch.PitchIntervalEnvelope(
-                    [[0, pitch_interval0], [10, pitch_interval1], [20, pitch_interval2]]
-                ),
-            )
-        )
-        cls.pitch_envelope = cls.pitch.resolve_envelope(1)
-
-    def test_value_at(self):
-        self.assertEqual(self.pitch.envelope.value_at(0), 1200)
-        self.assertEqual(self.pitch.envelope.value_at(5), 600)
-        self.assertEqual(self.pitch.envelope.value_at(10), 0)
-        self.assertEqual(self.pitch.envelope.value_at(15), -50)
-        self.assertEqual(self.pitch.envelope.value_at(20), -100)
-
-    def test_parameter_at(self):
-        for absolute_time, cents in (
-            (0, 1200),
-            (5, 600),
-            (10, 0),
-            (15, -50),
-            (20, -100),
-        ):
-            self.assertEqual(
-                self.pitch.envelope.parameter_at(absolute_time),
-                music_parameters.abc.Pitch.PitchIntervalEnvelope.cents_to_pitch_interval(
-                    cents
-                ),
-            )
-
-    def test_value_tuple(self):
-        self.assertEqual(self.pitch.envelope.value_tuple, (1200, 0, -100))
-
-    def test_resolve_envelope(self):
-        point_list = []
-        for position, frequency in (
-            (0, 880),
-            (0.5, 440),
-            (1, fractions.Fraction(116897880079141095, 281474976710656)),
-        ):
-            point_list.append(
-                (
-                    position,
-                    music_parameters.abc.Pitch.PitchEnvelope.frequency_and_envelope_to_pitch(
-                        frequency
-                    ),
-                )
-            )
-        pitch_envelope = self.pitch.PitchEnvelope(point_list)
-        self.assertEqual(self.pitch_envelope, pitch_envelope)
-
-    def test_value_at_resolved_envelope(self):
-        for position, frequency in (
-            (0, 880),
-            (0.25, 622.2539674441618),
-            (0.5, 440),
-            (1, 415.3046975799451),
-        ):
-            self.assertAlmostEqual(
-                self.pitch_envelope.value_at(position),  # type: ignore
-                music_parameters.abc.Pitch.hertz_to_cents(
-                    music_parameters.constants.PITCH_ENVELOPE_REFERENCE_FREQUENCY,
-                    frequency,
-                ),  # type: ignore
-            )
-
-    def test_parameter_at_resolved_envelope(self):
-        for position, frequency in (
-            (0, 880),
-            (0.25, 622.2539674441618),
-            (0.5, 440),
-            (1, 415.3046975799451),
-        ):
-            self.assertAlmostEqual(
-                self.pitch_envelope.parameter_at(position).frequency, frequency
-            )
 
 
 class VolumeTest(unittest.TestCase):

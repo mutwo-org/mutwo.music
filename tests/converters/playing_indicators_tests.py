@@ -18,7 +18,7 @@ class ArpeggioConverterTest(unittest.TestCase):
         )
         note_like = music_events.NoteLike("c g e b", duration=5)
         note_like.playing_indicator_collection.arpeggio.direction = "up"
-        arpeggio = core_events.SequentialEvent(
+        arpeggio = core_events.Consecution(
             [
                 music_events.NoteLike(pitch, duration)
                 for pitch, duration in zip(
@@ -42,7 +42,7 @@ class PlayingIndicatorsConverterTest(unittest.TestCase):
     def setUp(self):
         self.default_note_like = music_events.NoteLike("c g e b", duration=5)
         self.default_note_like.playing_indicator_collection.arpeggio.direction = "up"
-        self.default_note_like_arpeggio_resolution = core_events.SequentialEvent(
+        self.default_note_like_arpeggio_resolution = core_events.Consecution(
             [
                 music_events.NoteLike(pitch, duration)
                 for pitch, duration in zip(
@@ -74,33 +74,33 @@ class PlayingIndicatorsConverterTest(unittest.TestCase):
             self.default_note_like_arpeggio_resolution,
         )
 
-    def test_convert_sequential_event(self):
+    def test_convert_consecution(self):
         self.assertEqual(
             self.default_converter.convert(
-                core_events.SequentialEvent([self.default_note_like])
+                core_events.Consecution([self.default_note_like])
             ),
-            core_events.SequentialEvent([self.default_note_like_arpeggio_resolution]),
+            core_events.Consecution([self.default_note_like_arpeggio_resolution]),
         )
 
     def test_convert_simultaneous_event(self):
         self.assertEqual(
             self.default_converter.convert(
-                core_events.SimultaneousEvent([self.default_note_like])
+                core_events.Concurrence([self.default_note_like])
             ),
-            core_events.SimultaneousEvent([self.default_note_like_arpeggio_resolution]),
+            core_events.Concurrence([self.default_note_like_arpeggio_resolution]),
         )
 
 
 class OptionalConverterTest(unittest.TestCase):
     def test_convert(self):
         o = music_converters.OptionalConverter
-        seq = core_events.SequentialEvent
+        seq = core_events.Consecution
         duration = 5
         note_like = music_events.NoteLike("c", duration=duration)
         note_like.playing_indicator_collection.optional = True
         self.assertEqual(
             o(likelihood=0).convert(note_like),
-            seq([core_events.SimpleEvent(duration=duration)]),
+            seq([core_events.Chronon(duration=duration)]),
         )
         self.assertEqual(o(likelihood=1).convert(note_like), seq([note_like]))
 

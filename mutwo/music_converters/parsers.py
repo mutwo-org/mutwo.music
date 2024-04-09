@@ -1,4 +1,4 @@
-"""Standardization for transformations between parameters and simple events
+"""Standardization for transformations between parameters and chronons
 
 All converters here expect by default a :class:`mutwo.music_events.NoteLike`
 (and uses the attribute names defined for the
@@ -17,26 +17,26 @@ from mutwo import music_parameters
 
 
 __all__ = (
-    "SimpleEventToPitchList",
-    "SimpleEventToVolume",
-    "SimpleEventToLyric",
-    "SimpleEventToInstrumentList",
-    "SimpleEventToPlayingIndicatorCollection",
-    "SimpleEventToNotationIndicatorCollection",
-    "SimpleEventToGraceNoteSequentialEvent",
-    "SimpleEventToAfterGraceNoteSequentialEvent",
+    "ChrononToPitchList",
+    "ChrononToVolume",
+    "ChrononToLyric",
+    "ChrononToInstrumentList",
+    "ChrononToPlayingIndicatorCollection",
+    "ChrononToNotationIndicatorCollection",
+    "ChrononToGraceNoteConsecution",
+    "ChrononToAfterGraceNoteConsecution",
     "MutwoParameterDictToPitchList",
     "MutwoParameterDictToVolume",
     "MutwoParameterDictToInstrumentList",
     "MutwoParameterDictToPlayingIndicatorCollection",
     "MutwoParameterDictToNotationIndicatorCollection",
-    "MutwoParameterDictToGraceNoteSequentialEvent",
-    "MutwoParameterDictToAfterGraceNoteSequentialEvent",
+    "MutwoParameterDictToGraceNoteConsecution",
+    "MutwoParameterDictToAfterGraceNoteConsecution",
     "MutwoParameterDictToNoteLike",
 )
 
 
-class SimpleEventToPitchList(core_converters.SimpleEventToAttribute):
+class ChrononToPitchList(core_converters.ChrononToAttribute):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
@@ -49,7 +49,7 @@ class SimpleEventToPitchList(core_converters.SimpleEventToAttribute):
         )
 
 
-class SimpleEventToVolume(core_converters.SimpleEventToAttribute):
+class ChrononToVolume(core_converters.ChrononToAttribute):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
@@ -62,7 +62,7 @@ class SimpleEventToVolume(core_converters.SimpleEventToAttribute):
         )
 
 
-class SimpleEventToLyric(core_converters.SimpleEventToAttribute):
+class ChrononToLyric(core_converters.ChrononToAttribute):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
@@ -75,7 +75,7 @@ class SimpleEventToLyric(core_converters.SimpleEventToAttribute):
         )
 
 
-class SimpleEventToInstrumentList(core_converters.SimpleEventToAttribute):
+class ChrononToInstrumentList(core_converters.ChrononToAttribute):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
@@ -88,7 +88,7 @@ class SimpleEventToInstrumentList(core_converters.SimpleEventToAttribute):
         )
 
 
-class SimpleEventToAttributeWithDefaultValue(core_converters.SimpleEventToAttribute):
+class ChrononToAttributeWithDefaultValue(core_converters.ChrononToAttribute):
     @abc.abstractmethod
     def _get_default_exception_value(self) -> typing.Any:
         raise NotImplementedError
@@ -112,7 +112,7 @@ class SimpleEventToAttributeWithDefaultValue(core_converters.SimpleEventToAttrib
         return attribute
 
 
-class SimpleEventToPlayingIndicatorCollection(SimpleEventToAttributeWithDefaultValue):
+class ChrononToPlayingIndicatorCollection(ChrononToAttributeWithDefaultValue):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
@@ -130,7 +130,7 @@ class SimpleEventToPlayingIndicatorCollection(SimpleEventToAttributeWithDefaultV
         return music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS()
 
 
-class SimpleEventToNotationIndicatorCollection(SimpleEventToAttributeWithDefaultValue):
+class ChrononToNotationIndicatorCollection(ChrononToAttributeWithDefaultValue):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
@@ -150,11 +150,11 @@ class SimpleEventToNotationIndicatorCollection(SimpleEventToAttributeWithDefault
         )
 
 
-class SimpleEventToGraceNoteSequentialEvent(core_converters.SimpleEventToAttribute):
+class ChrononToGraceNoteConsecution(core_converters.ChrononToAttribute):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
-        exception_value: core_events.SequentialEvent = core_events.SequentialEvent([]),
+        exception_value: core_events.Consecution = core_events.Consecution([]),
     ):
         super().__init__(
             attribute_name
@@ -163,13 +163,13 @@ class SimpleEventToGraceNoteSequentialEvent(core_converters.SimpleEventToAttribu
         )
 
 
-class SimpleEventToAfterGraceNoteSequentialEvent(
-    core_converters.SimpleEventToAttribute
+class ChrononToAfterGraceNoteConsecution(
+    core_converters.ChrononToAttribute
 ):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
-        exception_value: core_events.SequentialEvent = core_events.SequentialEvent([]),
+        exception_value: core_events.Consecution = core_events.Consecution([]),
     ):
         super().__init__(
             attribute_name
@@ -256,47 +256,47 @@ class MutwoParameterDictToNotationIndicatorCollection(
         )
 
 
-class MutwoParameterDictToGraceNoteSequentialEvent(
+class MutwoParameterDictToGraceNoteConsecution(
     core_converters.MutwoParameterDictToKeywordArgument
 ):
     def __init__(
         self,
-        grace_note_sequential_event_to_search_name: typing.Optional[str] = None,
-        grace_note_sequential_event_keyword_name: typing.Optional[str] = None,
+        grace_note_consecution_to_search_name: typing.Optional[str] = None,
+        grace_note_consecution_keyword_name: typing.Optional[str] = None,
     ):
         super().__init__(
-            grace_note_sequential_event_to_search_name
+            grace_note_consecution_to_search_name
             or music_converters.configurations.DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME,
-            grace_note_sequential_event_keyword_name
+            grace_note_consecution_keyword_name
             or music_converters.configurations.DEFAULT_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME,
         )
 
 
-class MutwoParameterDictToAfterGraceNoteSequentialEvent(
+class MutwoParameterDictToAfterGraceNoteConsecution(
     core_converters.MutwoParameterDictToKeywordArgument
 ):
     def __init__(
         self,
-        after_grace_note_sequential_event_to_search_name: typing.Optional[str] = None,
-        after_grace_note_sequential_event_keyword_name: typing.Optional[str] = None,
+        after_grace_note_consecution_to_search_name: typing.Optional[str] = None,
+        after_grace_note_consecution_keyword_name: typing.Optional[str] = None,
     ):
         super().__init__(
-            after_grace_note_sequential_event_to_search_name
+            after_grace_note_consecution_to_search_name
             or music_converters.configurations.DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_TO_SEARCH_NAME,
-            after_grace_note_sequential_event_keyword_name
+            after_grace_note_consecution_keyword_name
             or music_converters.configurations.DEFAULT_AFTER_GRACE_NOTE_SEQUENTIAL_EVENT_KEYWORD_NAME,
         )
 
 
-class MutwoParameterDictToNoteLike(core_converters.MutwoParameterDictToSimpleEvent):
+class MutwoParameterDictToNoteLike(core_converters.MutwoParameterDictToChronon):
     """Convert a dict of mutwo parameters to a :class:`mutwo.music_events.NoteLike`
 
     :param mutwo_parameter_dict_to_keyword_argument_sequence: A sequence of
         :class:`MutwoParameterDictToKeywordArgument`.
         Default to `None`.
     :type mutwo_parameter_dict_to_keyword_argument_sequence: typing.Optional[typing.Sequence[MutwoParameterDictToKeywordArgument]]
-    :param simple_event_class: Default to :class:`mutwo.music_events.NoteLike`.
-    :type simple_event_class: typing.Type[core_events.SimpleEvent]
+    :param chronon_class: Default to :class:`mutwo.music_events.NoteLike`.
+    :type chronon_class: typing.Type[core_events.Chronon]
     """
 
     def __init__(
@@ -304,8 +304,8 @@ class MutwoParameterDictToNoteLike(core_converters.MutwoParameterDictToSimpleEve
         mutwo_parameter_dict_to_keyword_argument_sequence: typing.Optional[
             typing.Sequence[core_converters.MutwoParameterDictToKeywordArgument]
         ] = None,
-        simple_event_class: typing.Type[
-            core_events.SimpleEvent
+        chronon_class: typing.Type[
+            core_events.Chronon
         ] = music_events.NoteLike,
     ):
         if mutwo_parameter_dict_to_keyword_argument_sequence is None:
@@ -315,10 +315,10 @@ class MutwoParameterDictToNoteLike(core_converters.MutwoParameterDictToSimpleEve
                 MutwoParameterDictToVolume(),
                 MutwoParameterDictToPlayingIndicatorCollection(),
                 MutwoParameterDictToNotationIndicatorCollection(),
-                MutwoParameterDictToGraceNoteSequentialEvent(),
-                MutwoParameterDictToAfterGraceNoteSequentialEvent(),
+                MutwoParameterDictToGraceNoteConsecution(),
+                MutwoParameterDictToAfterGraceNoteConsecution(),
                 MutwoParameterDictToInstrumentList(),
             )
         super().__init__(
-            mutwo_parameter_dict_to_keyword_argument_sequence, simple_event_class
+            mutwo_parameter_dict_to_keyword_argument_sequence, chronon_class
         )

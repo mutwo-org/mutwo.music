@@ -108,9 +108,9 @@ class EqualDividedOctavePitch_Test(unittest.TestCase):
         pitch3 = music_parameters.EqualDividedOctavePitch(12, 11, -1, 0, 0)
         pitch4 = music_parameters.EqualDividedOctavePitch(12, 0, 0, 0, 0)
         pitch4.add(-1)
-        self.assertEqual(pitch0.add(-6, mutate=False), pitch1)
-        self.assertEqual(pitch0.add(5, mutate=False), pitch2)
-        self.assertEqual(pitch0.add(-8, mutate=False), pitch3)
+        self.assertEqual(pitch0.copy().add(-6), pitch1)
+        self.assertEqual(pitch0.copy().add(5), pitch2)
+        self.assertEqual(pitch0.copy().add(-8), pitch3)
         self.assertEqual(pitch4, pitch3)
 
     def test_subtract(self):
@@ -120,9 +120,9 @@ class EqualDividedOctavePitch_Test(unittest.TestCase):
         pitch3 = music_parameters.EqualDividedOctavePitch(12, 11, -1, 0, 0)
         pitch4 = music_parameters.EqualDividedOctavePitch(12, 0, 0, 0, 0)
         pitch4.subtract(1)
-        self.assertEqual(pitch0.subtract(6, mutate=False), pitch1)
-        self.assertEqual(pitch0.subtract(-5, mutate=False), pitch2)
-        self.assertEqual(pitch0.subtract(8, mutate=False), pitch3)
+        self.assertEqual(pitch0.copy().subtract(6), pitch1)
+        self.assertEqual(pitch0.copy().subtract(-5), pitch2)
+        self.assertEqual(pitch0.copy().subtract(8), pitch3)
         self.assertEqual(pitch4, pitch3)
 
 
@@ -441,7 +441,7 @@ class JustIntonationPitchTest(unittest.TestCase):
         )
         self.assertEqual(pitch0.get_pitch_interval(pitch1), pitch1)
         self.assertEqual(
-            pitch1.get_pitch_interval(pitch0), pitch1.inverse(mutate=False)
+            pitch1.get_pitch_interval(pitch0), pitch1.copy().inverse()
         )
         self.assertEqual(
             pitch0.get_pitch_interval(pitch2), music_parameters.DirectPitchInterval(0)
@@ -848,7 +848,7 @@ class JustIntonationPitchTest(unittest.TestCase):
 
         self.assertEqual(jip0, jip0inverse)
         self.assertEqual(jip1, jip1inverse)
-        self.assertEqual(jip2.inverse(mutate=False), jip2inverse)
+        self.assertEqual(jip2.copy().inverse(), jip2inverse)
 
     def test_normalize(self):
         jip0 = music_parameters.JustIntonationPitch("3/1")
@@ -863,7 +863,7 @@ class JustIntonationPitchTest(unittest.TestCase):
 
         self.assertEqual(jip0, jip0normalized)
         self.assertEqual(jip1, jip1normalized)
-        self.assertEqual(jip2.normalize(mutate=False), jip2normalized)
+        self.assertEqual(jip2.copy().normalize(), jip2normalized)
 
     def test_register(self):
         jip0 = music_parameters.JustIntonationPitch("3/1")
@@ -878,7 +878,7 @@ class JustIntonationPitchTest(unittest.TestCase):
 
         self.assertEqual(jip0, jip0registered)
         self.assertEqual(jip1, jip1registered)
-        self.assertEqual(jip2.register(2, mutate=False), jip2registered)
+        self.assertEqual(jip2.copy().register(2), jip2registered)
 
     def test_move_to_closest_register(self):
         jip0 = music_parameters.JustIntonationPitch("3/1")
@@ -896,10 +896,10 @@ class JustIntonationPitchTest(unittest.TestCase):
         jip2.move_to_closest_register(jip2_reference)
 
         self.assertEqual(
-            jip0.move_to_closest_register(jip0_reference, mutate=False), jip0_closest
+            jip0.copy().move_to_closest_register(jip0_reference), jip0_closest
         )
         self.assertEqual(
-            jip1.move_to_closest_register(jip1_reference, mutate=False), jip1_closest
+            jip1.copy().move_to_closest_register(jip1_reference), jip1_closest
         )
         self.assertEqual(jip2, jip2_closest)
 
@@ -1025,7 +1025,7 @@ class ScalePitchTest(unittest.TestCase):
         )
         p = music_parameters.ScalePitch(0, 0, scale=scale)
         self.assertEqual(
-            p.add(music_parameters.DirectPitchInterval(500), mutate=False),
+            p.copy().add(music_parameters.DirectPitchInterval(500)),
             music_parameters.ScalePitch(1, 0, scale=scale),
         )
         # Safety check: old object didn't change.

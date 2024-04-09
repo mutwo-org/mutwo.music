@@ -205,25 +205,25 @@ and `UNKNOWN_OBJECT_TO_PITCH` and
 functions."""
 
 
-GraceNotes = core_events.SequentialEvent[core_events.SimpleEvent]
+GraceNotes = core_events.Consecution[core_events.Chronon]
 
 
-def _unknown_object_to_grace_note_sequential_event(
-    unknown_object: GraceNotes | core_events.SimpleEvent,
+def _unknown_object_to_grace_note_consecution(
+    unknown_object: GraceNotes | core_events.Chronon,
 ) -> GraceNotes:
     match unknown_object:
-        case core_events.SimpleEvent():
-            return core_events.SequentialEvent([unknown_object])
-        case core_events.SequentialEvent():
+        case core_events.Chronon():
+            return core_events.Consecution([unknown_object])
+        case core_events.Consecution():
             return unknown_object
         case _:
             raise TypeError(f"Can't set grace notes to {unknown_object}")
 
 
 UNKNOWN_OBJECT_TO_GRACE_NOTE_SEQUENTIAL_EVENT = (
-    _unknown_object_to_grace_note_sequential_event
+    _unknown_object_to_grace_note_consecution
 )
-"""Convert any object to a :class:`mutwo.core_events.SequentialEvent`.
+"""Convert any object to a :class:`mutwo.core_events.Consecution`.
 This function is used inside :class:`mutwo.music_events.NoteLike`. It
 helps to allow syntactic sugar and raises errors for unsupported types.
 It can be overridden by the user."""

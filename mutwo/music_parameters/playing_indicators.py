@@ -1,13 +1,13 @@
-"""Define playing indicators for simple events.
+"""Define playing indicators for chronons.
 
 This submodules provides several classes to add specific musical
-playing techniques to :class:`mutwo.events.basic.SimpleEvent` objects.
+playing techniques to :class:`mutwo.events.basic.Chronon` objects.
 They mostly derive from traditional Western playing techniques and their
 notation. Unlike indicators of the :mod:`mutwo.music_parameters.notation_indicators`
 module, playing indicators have an effect on the played music and aren't
 merely specifications of representation. The proper way to handle
 playing  indicators should be via a :class:`PlayingIndicatorCollection`
-object that should be attached to the respective :class:`SimpleEvent`.
+object that should be attached to the respective :class:`Chronon`.
 The collection contains all possible playing indicators which are defined
 in this module. :class:`mutwo.events.music.NoteLike` contain by default
 a playing indicator collection.
@@ -38,12 +38,12 @@ Set playing indicators of :class:`NoteLike`:
 >>> my_chord.playing_indicator_collection.arpeggio.direction= "up"  # add arpeggio
 >>> my_chord.playing_indicator_collection.laissez_vibrer = True  # and laissez_vibrer
 
-Attach :class:`PlayingIndicatorCollection` to :class:`SimpleEvent`:
+Attach :class:`PlayingIndicatorCollection` to :class:`Chronon`:
 
 >>> from mutwo import core_events
 >>> from mutwo import music_parameters
->>> my_simple_event = core_events.SimpleEvent(1)
->>> my_simple_event.playing_indicator_collection = music_parameters.PlayingIndicatorCollection()
+>>> my_chronon = core_events.Chronon(1)
+>>> my_chronon.playing_indicator_collection = music_parameters.PlayingIndicatorCollection()
 """
 
 import dataclasses

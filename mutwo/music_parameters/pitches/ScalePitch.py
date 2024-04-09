@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import typing
 
-from mutwo import core_utilities
 from mutwo import music_parameters
 
 __all__ = ("ScalePitch",)
@@ -60,11 +59,10 @@ class ScalePitch(music_parameters.abc.Pitch):
     def frequency(self) -> float:
         return self.scale_pitch.frequency
 
-    @core_utilities.add_copy_option
     def add(
-        self, pitch_interval: music_parameters.abc.PitchInterval, mutate: bool = False
+        self, pitch_interval: music_parameters.abc.PitchInterval
     ) -> ScalePitch:
-        p = self.scale_pitch.add(pitch_interval, mutate=False)
+        p = self.scale_pitch.copy().add(pitch_interval)
         if p not in self.scale.pitch_tuple:
             raise RuntimeError(f"Pitch '{p}' isn't part of reference scale.")
         self.scale_degree, self.octave = self.scale.pitch_to_scale_position(p)

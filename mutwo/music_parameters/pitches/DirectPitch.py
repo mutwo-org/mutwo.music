@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from mutwo import core_constants
-from mutwo import core_utilities
 from mutwo import music_parameters
 
 __all__ = ("DirectPitch",)
@@ -35,9 +34,6 @@ class DirectPitch(music_parameters.abc.Pitch):
     def __repr__(self) -> str:
         return "DirectPitch(frequency = {})".format(self.frequency)
 
-    @core_utilities.add_copy_option
-    def add(
-        self, pitch_interval: music_parameters.abc.PitchInterval, mutate: bool = False
-    ) -> DirectPitch:
+    def add(self, pitch_interval: music_parameters.abc.PitchInterval) -> DirectPitch:
         self._frequency = self.cents_to_ratio(pitch_interval.interval) * self.frequency
         return self

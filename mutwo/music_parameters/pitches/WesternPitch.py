@@ -266,7 +266,11 @@ class WesternPitch(EqualDividedOctavePitch):
     def _parse_pitch_interval(
         self,
         pitch_interval: str | music_parameters.abc.PitchInterval | core_constants.Real,
-    ) -> music_parameters.abc.PitchInterval | core_constants.Real | music_parameters.abc.PitchInterval:
+    ) -> (
+        music_parameters.abc.PitchInterval
+        | core_constants.Real
+        | music_parameters.abc.PitchInterval
+    ):
         if isinstance(pitch_interval, str):
             pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
         elif isinstance(pitch_interval, core_constants.Real.__args__ + (int,)):
@@ -296,7 +300,6 @@ class WesternPitch(EqualDividedOctavePitch):
         western_pitch_interval_to_add: music_parameters.WesternPitchInterval,
         new_diatonic_pitch_class_name: str,
     ) -> fractions.Fraction:
-
         key = (self.diatonic_pitch_class_name, new_diatonic_pitch_class_name)
         if western_pitch_interval_to_add.is_interval_falling:
             key = tuple(reversed(key))
@@ -460,8 +463,7 @@ class WesternPitch(EqualDividedOctavePitch):
     #                          public methods                                #
     # ###################################################################### #
 
-    @core_utilities.add_copy_option
-    def add(  # type: ignore
+    def add(
         self,
         pitch_interval: str | music_parameters.abc.PitchInterval | core_constants.Real,
     ) -> WesternPitch:  # type: ignore
@@ -470,15 +472,15 @@ class WesternPitch(EqualDividedOctavePitch):
             self._add_western_pitch_interval(pitch_interval)
         else:
             return super().add(pitch_interval)  # type: ignore
+        return self
 
-    @core_utilities.add_copy_option
-    def subtract(  # type: ignore
+    def subtract(
         self,
         pitch_interval: str | music_parameters.abc.PitchInterval | core_constants.Real,
     ) -> WesternPitch:  # type: ignore
         pitch_interval = self._parse_pitch_interval(pitch_interval)
         if isinstance(pitch_interval, music_parameters.WesternPitchInterval):
-            return self.add(pitch_interval.inverse(mutate=False))
+            return self.add(pitch_interval.copy().inverse())
         else:
             return super().subtract(pitch_interval)  # type: ignore
 
@@ -565,7 +567,6 @@ class WesternPitch(EqualDividedOctavePitch):
         else:
             return super().get_pitch_interval(pitch_to_compare)
 
-    @core_utilities.add_copy_option
     def round_to(
         self,
         allowed_division_sequence: typing.Sequence[fractions.Fraction] = (

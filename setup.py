@@ -31,7 +31,7 @@ setuptools.setup(
     ],
     setup_requires=[],
     install_requires=[
-        "mutwo.core>=1.3.0, <2.0.0",
+        "mutwo.core>=2.0.0, <3.0.0",
         "epitran>=1.23, <1.25",
         "sympy>=1.10.1, <2.0.0",
         "python-ranges>=1.2.0, <2.0.0",

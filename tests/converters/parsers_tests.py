@@ -6,9 +6,9 @@ from mutwo import music_events
 from mutwo import music_parameters
 
 
-class SimpleEventToPitchListTest(unittest.TestCase):
+class ChrononToPitchListTest(unittest.TestCase):
     def setUp(self):
-        self.converter = music_converters.SimpleEventToPitchList()
+        self.converter = music_converters.ChrononToPitchList()
 
     def test_convert_with_attribute(self):
         self.assertEqual(
@@ -20,12 +20,12 @@ class SimpleEventToPitchListTest(unittest.TestCase):
         )
 
     def test_convert_without_attribute(self):
-        self.assertEqual(self.converter(core_events.SimpleEvent(10)), [])
+        self.assertEqual(self.converter(core_events.Chronon(10)), [])
 
 
-class SimpleEventToVolumeTest(unittest.TestCase):
+class ChrononToVolumeTest(unittest.TestCase):
     def setUp(self):
-        self.converter = music_converters.SimpleEventToVolume()
+        self.converter = music_converters.ChrononToVolume()
 
     def test_convert_with_attribute(self):
         self.assertEqual(
@@ -35,14 +35,14 @@ class SimpleEventToVolumeTest(unittest.TestCase):
 
     def test_convert_without_attribute(self):
         self.assertEqual(
-            self.converter(core_events.SimpleEvent(10)),
+            self.converter(core_events.Chronon(10)),
             music_parameters.DirectVolume(0),
         )
 
 
-class SimpleEventToInstrumentListTest(unittest.TestCase):
+class ChrononToInstrumentListTest(unittest.TestCase):
     def setUp(self):
-        self.converter = music_converters.SimpleEventToInstrumentList()
+        self.converter = music_converters.ChrononToInstrumentList()
 
     def test_convert_with_attribute(self):
         oboe = music_parameters.Oboe()
@@ -52,14 +52,14 @@ class SimpleEventToInstrumentListTest(unittest.TestCase):
 
     def test_convert_without_attribute(self):
         self.assertEqual(
-            self.converter(core_events.SimpleEvent(10)),
+            self.converter(core_events.Chronon(10)),
             [],
         )
 
 
-class SimpleEventToPlayingIndicatorCollectionTest(unittest.TestCase):
+class ChrononToPlayingIndicatorCollectionTest(unittest.TestCase):
     def setUp(self):
-        self.converter = music_converters.SimpleEventToPlayingIndicatorCollection()
+        self.converter = music_converters.ChrononToPlayingIndicatorCollection()
 
     def test_convert_with_attribute(self):
         self.assertEqual(
@@ -69,14 +69,14 @@ class SimpleEventToPlayingIndicatorCollectionTest(unittest.TestCase):
 
     def test_convert_without_attribute(self):
         self.assertEqual(
-            self.converter(core_events.SimpleEvent(10)),
+            self.converter(core_events.Chronon(10)),
             music_events.configurations.DEFAULT_PLAYING_INDICATORS_COLLECTION_CLASS(),
         )
 
 
-class SimpleEventToNotationIndicatorCollectionTest(unittest.TestCase):
+class ChrononToNotationIndicatorCollectionTest(unittest.TestCase):
     def setUp(self):
-        self.converter = music_converters.SimpleEventToNotationIndicatorCollection()
+        self.converter = music_converters.ChrononToNotationIndicatorCollection()
 
     def test_convert_with_attribute(self):
         self.assertEqual(
@@ -86,7 +86,7 @@ class SimpleEventToNotationIndicatorCollectionTest(unittest.TestCase):
 
     def test_convert_without_attribute(self):
         self.assertEqual(
-            self.converter(core_events.SimpleEvent(10)),
+            self.converter(core_events.Chronon(10)),
             music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS(),
         )
 
@@ -99,64 +99,64 @@ class SimpleEventToNotationIndicatorCollectionTest(unittest.TestCase):
         music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS = (
             lambda: "TEST"
         )
-        self.assertEqual(self.converter(core_events.SimpleEvent(10)), "TEST")
+        self.assertEqual(self.converter(core_events.Chronon(10)), "TEST")
         # Cleanup
         music_events.configurations.DEFAULT_NOTATION_INDICATORS_COLLECTION_CLASS = (
             default_notation_indicators_collection_class
         )
 
 
-class SimpleEventToGraceOrAfterGraceNoteSequentialEventTestMixin(object):
+class ChrononToGraceOrAfterGraceNoteConsecutionTestMixin(object):
     def test_convert_without_attribute(self):
         self.assertEqual(
-            self.converter(core_events.SimpleEvent(10)),
-            core_events.SequentialEvent([]),
+            self.converter(core_events.Chronon(10)),
+            core_events.Consecution([]),
         )
 
 
-class SimpleEventToGraceNoteSequentialEventTest(
-    unittest.TestCase, SimpleEventToGraceOrAfterGraceNoteSequentialEventTestMixin
+class ChrononToGraceNoteConsecutionTest(
+    unittest.TestCase, ChrononToGraceOrAfterGraceNoteConsecutionTestMixin
 ):
     def setUp(self):
-        self.converter = music_converters.SimpleEventToGraceNoteSequentialEvent()
+        self.converter = music_converters.ChrononToGraceNoteConsecution()
 
     def test_convert_with_attribute(self):
-        grace_note_sequential_event = core_events.SequentialEvent(
+        grace_note_consecution = core_events.Consecution(
             [music_events.NoteLike("c")]
         )
         self.assertEqual(
             self.converter(
                 music_events.NoteLike(
-                    grace_note_sequential_event=grace_note_sequential_event
+                    grace_note_consecution=grace_note_consecution
                 )
             ),
-            grace_note_sequential_event,
+            grace_note_consecution,
         )
 
     def test_convert_without_attribute(self):
         self.assertEqual(
-            self.converter(core_events.SimpleEvent(10)),
-            core_events.SequentialEvent([]),
+            self.converter(core_events.Chronon(10)),
+            core_events.Consecution([]),
         )
 
 
-class SimpleEventToAfterGraceNoteSequentialEventTest(
-    unittest.TestCase, SimpleEventToGraceOrAfterGraceNoteSequentialEventTestMixin
+class ChrononToAfterGraceNoteConsecutionTest(
+    unittest.TestCase, ChrononToGraceOrAfterGraceNoteConsecutionTestMixin
 ):
     def setUp(self):
-        self.converter = music_converters.SimpleEventToAfterGraceNoteSequentialEvent()
+        self.converter = music_converters.ChrononToAfterGraceNoteConsecution()
 
     def test_convert_with_attribute(self):
-        after_grace_note_sequential_event = core_events.SequentialEvent(
+        after_grace_note_consecution = core_events.Consecution(
             [music_events.NoteLike("c")]
         )
         self.assertEqual(
             self.converter(
                 music_events.NoteLike(
-                    after_grace_note_sequential_event=after_grace_note_sequential_event
+                    after_grace_note_consecution=after_grace_note_consecution
                 )
             ),
-            after_grace_note_sequential_event,
+            after_grace_note_consecution,
         )
 
 
@@ -181,10 +181,10 @@ class MutwoParameterDictToNoteLikeTest(unittest.TestCase):
                     "pitch_list": [music_parameters.DirectPitch(440)],
                     "duration": 10,
                     "volume": music_parameters.WesternVolume("f"),
-                    "grace_note_sequential_event": core_events.SequentialEvent(
+                    "grace_note_consecution": core_events.Consecution(
                         [music_events.NoteLike("f", 2, "pp")]
                     ),
-                    "after_grace_note_sequential_event": core_events.SequentialEvent(
+                    "after_grace_note_consecution": core_events.Consecution(
                         [music_events.NoteLike("g", 0.5, "f")]
                     ),
                     "playing_indicator_collection": playing_indicator_collection,
@@ -195,10 +195,10 @@ class MutwoParameterDictToNoteLikeTest(unittest.TestCase):
                 pitch_list=[music_parameters.DirectPitch(440)],
                 duration=10,
                 volume=music_parameters.WesternVolume("f"),
-                grace_note_sequential_event=core_events.SequentialEvent(
+                grace_note_consecution=core_events.Consecution(
                     [music_events.NoteLike("f", 2, "pp")]
                 ),
-                after_grace_note_sequential_event=core_events.SequentialEvent(
+                after_grace_note_consecution=core_events.Consecution(
                     [music_events.NoteLike("g", 0.5, "f")]
                 ),
                 notation_indicator_collection=notation_indicator_collection,

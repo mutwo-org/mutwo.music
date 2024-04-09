@@ -1,13 +1,13 @@
-"""Define notation indicators for simple events.
+"""Define notation indicators for chronons.
 
 This submodules provides several classes to express notation
-specifications for :class:`mutwo.core_events.SimpleEvent` objects.
+specifications for :class:`mutwo.core_events.Chronon` objects.
 They mostly derive from traditional Western notation.
 Unlike playing indicators (see 'mutwo/music_parameters/playing_indicators.py')
 module, notation indicators shouldn't have an effect on the played music
 and are merely specifications of representation. The proper way to handle
 notation indicators should be via a :class:`NotationIndicatorCollection`
-object that should be attached to the respective :class:`SimpleEvent`.
+object that should be attached to the respective :class:`Chronon`.
 The collection contains all possible notation indicators which are defined
 in this module. :class:`mutwo.music_events.NoteLike` contain by default
 a notation indicator collection.

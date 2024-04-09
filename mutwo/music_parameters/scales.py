@@ -240,7 +240,7 @@ class RepeatingScaleFamily(ScaleFamily):
 
         for local_repetition_interval in (
             repetition_interval,
-            repetition_interval.inverse(mutate=False),
+            repetition_interval.copy().inverse(),
         ):
             last_interval_data_list = list(
                 zip(
@@ -410,3 +410,8 @@ class Scale(object):
         self, scale_index: ScaleIndex
     ) -> music_parameters.abc.Pitch:
         return self.pitch_tuple[scale_index]
+
+    def scale_degree_to_pitch_class(
+        self, scale_degree: ScaleDegree
+    ) -> music_parameters.abc.Pitch:
+        ...

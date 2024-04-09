@@ -404,7 +404,6 @@ class JustIntonationPitch(
             )
         return exponent_tuple
 
-    @core_utilities.add_copy_option
     def _math(  # type: ignore
         self, other: JustIntonationPitch, operation: typing.Callable
     ) -> JustIntonationPitch:
@@ -415,6 +414,7 @@ class JustIntonationPitch(
             operation(exponent0, exponent1)
             for exponent0, exponent1 in zip(exponent_tuple0, exponent_tuple1)
         )
+        return self
 
     # ###################################################################### #
     #                            magic methods                               #
@@ -654,7 +654,7 @@ class JustIntonationPitch(
             )
             closest_pythagorean_interval.normalize()
         else:
-            closest_pythagorean_interval = self.normalize(mutate=False)  # type: ignore
+            closest_pythagorean_interval = self.copy().normalize()  # type: ignore
 
         return closest_pythagorean_interval
 
@@ -968,8 +968,7 @@ class JustIntonationPitch(
         else:
             return super().get_pitch_interval(pitch_to_compare)
 
-    @core_utilities.add_copy_option
-    def register(self, octave: int) -> JustIntonationPitch:  # type: ignore
+    def register(self, octave: int) -> JustIntonationPitch:
         """Move :class:`JustIntonationPitch` to the given octave.
 
         :param octave: 0 for the octave from 1/1 to 2/1, negative values for octaves
@@ -994,23 +993,23 @@ class JustIntonationPitch(
         JustIntonationPitch('3/2')
         """
 
-        normalized_just_intonation_pitch = self.normalize(mutate=False)  # type: ignore
+        normalized_just_intonation_pitch = self.copy().normalize()  # type: ignore
         factor = 2 ** abs(octave)
         if octave < 1:
             added = type(self)(fractions.Fraction(1, factor))
         else:
             added = type(self)(fractions.Fraction(factor, 1))
         self.exponent_tuple = (normalized_just_intonation_pitch + added).exponent_tuple  # type: ignore
+        return self
 
-    @core_utilities.add_copy_option
-    def move_to_closest_register(  # type: ignore
+    def move_to_closest_register(
         self, reference: JustIntonationPitch
     ) -> JustIntonationPitch:
         reference_register = reference.octave
 
         best = None
         for adaption in range(-1, 2):
-            candidate: JustIntonationPitch = self.register(reference_register + adaption, mutate=False)  # type: ignore
+            candidate: JustIntonationPitch = self.copy().register(reference_register + adaption)  # type: ignore
             difference = abs((candidate - reference).interval)
             set_best = True
             if best and difference > best[1]:
@@ -1025,9 +1024,9 @@ class JustIntonationPitch(
             raise NotImplementedError(
                 f"Couldn't find closest register of '{self}' to '{reference}'."
             )
+        return self
 
-    @core_utilities.add_copy_option
-    def normalize(self, prime: int = 2) -> JustIntonationPitch:  # type: ignore
+    def normalize(self, prime: int = 2) -> JustIntonationPitch:
         """Normalize :class:`JustIntonationPitch`.
 
         :param prime: The normalization period (2 for octave,
@@ -1048,9 +1047,9 @@ class JustIntonationPitch(
         self.exponent_tuple = self._ratio_or_fractions_argument_to_exponent_tuple(
             adjusted
         )
+        return self
 
-    @core_utilities.add_copy_option
-    def inverse(  # type: ignore
+    def inverse(
         self, axis: typing.Optional[JustIntonationPitch] = None
     ) -> JustIntonationPitch:
         """Inverse current pitch on given axis.
@@ -1075,8 +1074,8 @@ class JustIntonationPitch(
             distance = self - axis
             exponent_tuple = (axis - distance).exponent_tuple
         self.exponent_tuple = exponent_tuple
+        return self
 
-    @core_utilities.add_copy_option
     def add(
         self, pitch_interval: music_parameters.abc.PitchInterval
     ) -> JustIntonationPitch:
@@ -1102,7 +1101,6 @@ class JustIntonationPitch(
             )
         return self
 
-    @core_utilities.add_copy_option
     def subtract(
         self, pitch_interval: music_parameters.abc.PitchInterval
     ) -> JustIntonationPitch:
@@ -1129,7 +1127,6 @@ class JustIntonationPitch(
             )
         return self
 
-    @core_utilities.add_copy_option
     def intersection(
         self, other: JustIntonationPitch, strict: bool = False
     ) -> JustIntonationPitch:
@@ -1193,3 +1190,4 @@ class JustIntonationPitch(
             )
         )
         self.exponent_tuple = intersected_exponent_tuple
+        return self
