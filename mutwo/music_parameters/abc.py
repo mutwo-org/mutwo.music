@@ -422,7 +422,7 @@ class Volume(
         return self.decibel_to_midi_velocity(self.decibel)
 
 
-class PitchAmbitus(abc.ABC):
+class PitchAmbitus(core_parameters.abc.Parameter):
     """Abstract base class for all pitch ambituses.
 
     To setup a new PitchAmbitus class override the abstract method
@@ -564,7 +564,7 @@ class PitchAmbitus(abc.ABC):
 
 
 @dataclasses.dataclass()  # type: ignore
-class Indicator(abc.ABC):
+class Indicator(core_parameters.abc.Parameter):
     @property
     @abc.abstractmethod
     def is_active(self) -> bool:
@@ -627,7 +627,7 @@ T = typing.TypeVar("T", PlayingIndicator, NotationIndicator)
 
 
 @dataclasses.dataclass
-class IndicatorCollection(typing.Generic[T]):
+class IndicatorCollection(core_parameters.abc.Parameter, typing.Generic[T]):
     def get_all_indicator(self) -> tuple[T, ...]:
         return tuple(
             getattr(self, key)
@@ -675,9 +675,8 @@ class Syllable(Lyric):
         self.is_last_syllable = is_last_syllable
 
 
-
 @dataclasses.dataclass(frozen=True)
-class Instrument(abc.ABC):
+class Instrument(core_parameters.abc.Parameter):
     """Model a musical instrument.
 
     :param name: The name of the instrument.
