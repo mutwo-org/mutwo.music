@@ -58,7 +58,6 @@ class WesternPitch(EqualDividedOctavePitch):
         *args,
         **kwargs,
     ):
-        self._logger = core_utilities.get_cls_logger(type(self))
 
         (
             pitch_class,

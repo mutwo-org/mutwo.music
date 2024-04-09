@@ -89,7 +89,6 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         self,
         interval_name_or_semitone_count: str | core_constants.Real = "p1",
     ):
-        self._logger = core_utilities.get_cls_logger(type(self))
         # Define mapping on the fly, so that it is only necessary to adjust
         # music_parameters.configurations.WESTERN_PITCH_INTERVAL_QUALITY_NAME_TO_ABBREVIATION_DICT
         # if user wants to use different abbreviations.

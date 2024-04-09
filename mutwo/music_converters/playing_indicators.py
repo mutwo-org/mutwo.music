@@ -309,7 +309,6 @@ class ArticulationConverter(PlayingIndicatorConverter):
             music_parameters.PlayingIndicatorCollection,
         ] = music_converters.ChrononToPlayingIndicatorCollection(),
     ):
-        self._logger = core_utilities.get_cls_logger(type(self))
         articulation_name_to_playing_indicator_converter = {}
         for (
             articulation_name_tuple,

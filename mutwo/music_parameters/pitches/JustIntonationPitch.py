@@ -76,7 +76,6 @@ class JustIntonationPitch(
         *args,
         **kwargs,
     ):
-        self._logger = core_utilities.get_cls_logger(type(self))
         super().__init__(*args, **kwargs)
 
         if concert_pitch is None:
