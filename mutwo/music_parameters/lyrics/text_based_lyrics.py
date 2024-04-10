@@ -55,7 +55,7 @@ class LanguageBasedLyric(music_parameters.abc.Lyric):
         self._written_representation = written_representation
 
     @property
-    def phonetic_representation(self) -> str:
+    def xsampa(self) -> str:
         word_tuple = self.written_representation.split(" ")
         return " ".join(
             ["".join(self._epitran.xsampa_list(word)) for word in word_tuple]
@@ -79,15 +79,15 @@ class LanguageBasedSyllable(music_parameters.abc.Syllable, LanguageBasedLyric):
     **Warning:**
 
     It is a known bug that a split word (syllables) and the word
-    itself will return different values for :attr:`phonetic_representation`.
+    itself will return different values for :attr:`xsampa`.
     For instance:
 
-    >>> LanguageBasedLyric('hallo').phonetic_representation
+    >>> LanguageBasedLyric('hallo').xsampa
     'halo:'
     >>> # And now splitted to syllables:
-    >>> LanguageBasedSyllable(False, 'hal').phonetic_representation
+    >>> LanguageBasedSyllable(False, 'hal').xsampa
     'hA:l'
-    >>> LanguageBasedSyllable(True, 'lo').phonetic_representation
+    >>> LanguageBasedSyllable(True, 'lo').xsampa
     'lo:'
     """
 

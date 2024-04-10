@@ -17,14 +17,14 @@ class NaturalHarmonicTest(unittest.TestCase):
 
     def test_pitch(self):
         self.assertAlmostEqual(
-            self.natural_harmonic.pitch.frequency,
+            self.natural_harmonic.pitch.hertz,
             (
                 # It's a fifth + two octaves higher,
                 music_parameters.WesternPitch("d", 5)
                 # but with a just interval and not a tempered one
                 # (2 ct difference).
                 + music_parameters.DirectPitchInterval(2)
-            ).frequency,
+            ).hertz,
             1,
         )
 

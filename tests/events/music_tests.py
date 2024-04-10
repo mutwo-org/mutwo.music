@@ -77,17 +77,17 @@ class NoteLikeTest(unittest.TestCase):
     # ###################################################################### #
 
     def test_volume_setter_from_volume(self):
-        volume = music_parameters.DecibelVolume(-6)
+        volume = music_parameters.DirectVolume(-6)
         self.assertEqual(volume, music_events.NoteLike(None, 1, volume).volume)
 
     def test_volume_setter_from_positive_number(self):
         amplitude = 0.5
-        volume = music_parameters.DirectVolume(amplitude)
+        volume = music_parameters.AmplitudeVolume(amplitude)
         self.assertEqual(volume, music_events.NoteLike(None, 1, amplitude).volume)
 
     def test_volume_setter_from_negative_number(self):
         n_decibel = -12
-        volume = music_parameters.DecibelVolume(n_decibel)
+        volume = music_parameters.DirectVolume(n_decibel)
         self.assertEqual(volume, music_events.NoteLike(None, 1, n_decibel).volume)
 
     # ###################################################################### #

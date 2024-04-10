@@ -51,16 +51,14 @@ __all__ = (
 
 class PitchInterval(
     core_parameters.abc.SingleNumberParameter,
-    value_name="interval",
+    value_name="cents",
     value_return_type=float,
 ):
     """Abstract base class for any pitch interval class
 
     If the user wants to define a new pitch interval class, the abstract
-    property :attr:`interval` and the abstract method `inverse`
+    property :attr:`cents` and the abstract method `inverse`
     have to be overridden.
-
-    :attr:`interval` is stored in unit `cents`.
 
     See `wikipedia entry <https://en.wikipedia.org/wiki/Cent_(music)>`_
     for definition of 'cents'.
@@ -78,21 +76,21 @@ class PitchInterval(
         """
 
     def __add__(self, other: PitchInterval) -> PitchInterval:
-        return music_parameters.DirectPitchInterval(self.interval + other.interval)
+        return music_parameters.DirectPitchInterval(self.cents + other.cents)
 
     def __sub__(self, other: PitchInterval) -> PitchInterval:
-        return music_parameters.DirectPitchInterval(self.interval - other.interval)
+        return music_parameters.DirectPitchInterval(self.cents - other.cents)
 
 
 class Pitch(
     core_parameters.abc.SingleNumberParameter,
-    value_name="frequency",
+    value_name="hertz",
     value_return_type=float,
 ):
     """Abstract base class for any pitch class.
 
     If the user wants to define a new pitch class, the abstract
-    property :attr:`frequency` has to be overridden. Starting
+    property :attr:`hertz` has to be overridden. Starting
     from mutwo version = 0.46.0 the user will furthermore have
     to define an :func:`add` method.
     """
@@ -223,7 +221,7 @@ class Pitch(
     @property
     def midi_pitch_number(self) -> float:
         """The midi pitch number (from 0 to 127) of the pitch."""
-        return self.hertz_to_midi_pitch_number(self.frequency)
+        return self.hertz_to_midi_pitch_number(self.hertz)
 
     # ###################################################################### #
     #                            comparison methods                          #
@@ -234,7 +232,7 @@ class Pitch(
         ...
 
     def subtract(self, pitch_interval: music_parameters.abc.PitchInterval) -> Pitch:
-        return self.add(music_parameters.DirectPitchInterval(-pitch_interval.interval))
+        return self.add(music_parameters.DirectPitchInterval(-pitch_interval.cents))
 
     def __add__(self, pitch_interval: PitchInterval) -> Pitch:
         return self.copy().add(pitch_interval)
@@ -253,13 +251,13 @@ class Pitch(
         **Example:**
 
         >>> from mutwo import music_parameters
-        >>> a4 = music_parameters.DirectPitch(frequency=440)
-        >>> a5 = music_parameters.DirectPitch(frequency=880)
+        >>> a4 = music_parameters.DirectPitch(hertz=440)
+        >>> a5 = music_parameters.DirectPitch(hertz=880)
         >>> pitch_interval = a4.get_pitch_interval(a5)
         """
 
         cent_difference = self.ratio_to_cents(
-            pitch_to_compare.frequency / self.frequency
+            pitch_to_compare.hertz / self.hertz
         )
         return music_parameters.DirectPitchInterval(cent_difference)
 
@@ -293,13 +291,13 @@ class PitchList(core_parameters.abc.Parameter, list[Pitch]):
 @functools.total_ordering  # type: ignore
 class Volume(
     core_parameters.abc.SingleNumberParameter,
-    value_name="amplitude",
+    value_name="decibel",
     value_return_type=float,
 ):
     """Abstract base class for any volume class.
 
     If the user wants to define a new volume class, the abstract
-    property :attr:`amplitude` has to be overridden.
+    property :attr:`decibel` has to be overridden.
     """
 
     Type: typing.TypeAlias = typing.Union[core_constants.Real, str, "Volume"]
@@ -488,9 +486,9 @@ class Volume(
                 return object
             case numbers.Real():
                 if object >= 0:  # type: ignore
-                    return music_parameters.DirectVolume(object)  # type: ignore
+                    return music_parameters.AmplitudeVolume(object)  # type: ignore
                 else:
-                    return music_parameters.DecibelVolume(object)  # type: ignore
+                    return music_parameters.DirectVolume(object)  # type: ignore
             case str():
                 return music_parameters.WesternVolume(object)
             case _:
@@ -498,9 +496,8 @@ class Volume(
 
     # properties
     @property
-    def decibel(self) -> core_constants.Real:
-        """The decibel of the volume (from -120 to 0)"""
-        return self.amplitude_ratio_to_decibel(self.amplitude)
+    def amplitude(self) -> core_constants.Real:
+        return self.decibel_to_amplitude_ratio(self.decibel)
 
     @property
     def midi_velocity(self) -> int:
@@ -744,16 +741,16 @@ class IndicatorCollection(core_parameters.abc.Parameter, typing.Generic[T]):
 
 class Lyric(
     core_parameters.abc.SingleValueParameter,
-    value_name="phonetic_representation",
+    value_name="xsampa",
     value_return_type=str,
 ):
     """Abstract base class for any spoken, sung or written text.
 
     If the user wants to define a new lyric class, the abstract
-    properties :attr:`phonetic_representation` and
+    properties :attr:`xampa` and
     :attr:`written_representation` have to be overridden.
 
-    The :attr:`phonetic_representation` should return a string of
+    The :attr:`xsampa` should return a string of
     X-SAMPA format phonemes, separated by space to indicate new words.
     Consult `wikipedia entry <https://en.wikipedia.org/wiki/X-SAMPA>`_
     for detailed information regarding X-SAMPA.

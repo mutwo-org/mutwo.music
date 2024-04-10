@@ -36,7 +36,7 @@ class ChrononToVolumeTest(unittest.TestCase):
     def test_convert_without_attribute(self):
         self.assertEqual(
             self.converter(core_events.Chronon(10)),
-            music_parameters.DirectVolume(0),
+            music_parameters.AmplitudeVolume(0),
         )
 
 

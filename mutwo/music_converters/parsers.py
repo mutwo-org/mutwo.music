@@ -53,7 +53,7 @@ class ChrononToVolume(core_converters.ChrononToAttribute):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
-        exception_value: music_parameters.abc.Volume = music_parameters.DirectVolume(0),
+        exception_value: music_parameters.abc.Volume = music_parameters.AmplitudeVolume(0),
     ):
         super().__init__(
             attribute_name

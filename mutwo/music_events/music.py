@@ -28,7 +28,7 @@ class NoteLike(core_events.Chronon):
     :param volume: The volume of the event. Can either be a object of
         :mod:`mutwo.music_parameters.abc.Volume`, a number or a string. If the number
         ranges from 0 to 1, :mod:`mutwo` automatically generates a
-        :class:`mutwo.music_parameters.DirectVolume` object (and the number
+        :class:`mutwo.music_parameters.AmplitudeVolume` object (and the number
         is interpreted as the amplitude). If the number is smaller than 0,
         :mod:`mutwo` automatically generates a
         :class:`mutwo.music_parameters.volumes.DecibelVolume` (and the number

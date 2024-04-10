@@ -13,25 +13,25 @@ del text_based_lyrics
 class DirectLyric(music_parameters.abc.Lyric):
     """Lyric which is directly initialised by its phonetic representation
 
-    :param phonetic_representation: The phonetic representation of
+    :param xsampa: The phonetic representation of
         the text.
-    :type phonetic_representation: str
+    :type xsampa: str
 
     In this class the `written_representation` is simply equal to
-    `phonetic_representation`.
+    `xsampa`.
     """
 
-    def __init__(self, phonetic_representation: str):
-        self.phonetic_representation = phonetic_representation
+    def __init__(self, xsampa: str):
+        self.xsampa = xsampa
 
     @property
-    def phonetic_representation(self) -> str:
-        return self._phonetic_representation
+    def xsampa(self) -> str:
+        return self._xsampa
 
-    @phonetic_representation.setter
-    def phonetic_representation(self, phonetic_representation: str):
-        self._phonetic_representation = phonetic_representation
+    @xsampa.setter
+    def xsampa(self, xsampa: str):
+        self._xsampa = xsampa
 
     @property
     def written_representation(self) -> str:
-        return self.phonetic_representation
+        return self.xsampa

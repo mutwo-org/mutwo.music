@@ -28,7 +28,7 @@ class MidiPitch(music_parameters.abc.Pitch):
         return f"{type(self).__name__}(midi_pitch_number = {self.midi_pitch_number})"
 
     @property
-    def frequency(self) -> float:
+    def hertz(self) -> float:
         difference_to_middle_a = self.midi_pitch_number - 69
         return float(440 * self.cents_to_ratio(difference_to_middle_a * 100))
 
@@ -44,6 +44,6 @@ class MidiPitch(music_parameters.abc.Pitch):
         self, pitch_interval: music_parameters.abc.PitchInterval
     ) -> MidiPitch:
         self.midi_pitch_number = self.hertz_to_midi_pitch_number(
-            self.cents_to_ratio(pitch_interval.interval) * self.frequency
+            self.cents_to_ratio(pitch_interval.cents) * self.hertz
         )
         return self

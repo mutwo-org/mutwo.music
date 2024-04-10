@@ -219,10 +219,10 @@ class RepeatingScaleFamily(ScaleFamily):
         is_rising = ScaleFamily._is_interval_tuple_rising(repeating_interval_tuple)
 
         interval_range = (
-            repeating_interval_tuple[0].interval - repeating_interval_tuple[-1].interval
+            repeating_interval_tuple[0].cents - repeating_interval_tuple[-1].cents
         )
 
-        assert abs(interval_range) < abs(repetition_interval.interval), (
+        assert abs(interval_range) < abs(repetition_interval.cents), (
             "Repetition interval has to be bigger than "
             "ambitus of repeating interval sequence!"
         )
@@ -250,7 +250,7 @@ class RepeatingScaleFamily(ScaleFamily):
                     repeating_period_repetition_count_tuple,
                 )
             )
-            if local_repetition_interval.interval > 0:
+            if local_repetition_interval.cents > 0:
                 period_repetition_delta = 1
             else:
                 period_repetition_delta = -1

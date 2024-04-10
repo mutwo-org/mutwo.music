@@ -285,14 +285,14 @@ class StringInstrumentMixin(object):
             with 2 cents.
         :type tolerance: music_parameters.abc.PitchInterval
         """
-        t_interval = abs(tolerance.interval)
+        t_interval = abs(tolerance.cents)
         g = self.harmonic_pitch_ambitus.get_pitch_variant_tuple
         h_t = self.harmonic_pitch_tuple
         return tuple(
             p
             for p in g(pitch, period)
             if any(
-                [abs(p.get_pitch_interval(h_p).interval) < t_interval for h_p in h_t]
+                [abs(p.get_pitch_interval(h_p).cents) < t_interval for h_p in h_t]
             )
         )
 
@@ -317,11 +317,11 @@ class StringInstrumentMixin(object):
             with 2 cents.
         :type tolerance: music_parameters.abc.PitchInterval
         """
-        t_interval = abs(tolerance.interval)
+        t_interval = abs(tolerance.cents)
         natural_harmonic_list = []
         for s in self.string_tuple:
             for h in s.natural_harmonic_tuple:
-                if abs((h.pitch.get_pitch_interval(pitch)).interval) < t_interval:
+                if abs((h.pitch.get_pitch_interval(pitch)).cents) < t_interval:
                     natural_harmonic_list.append(h)
         return tuple(natural_harmonic_list)
 

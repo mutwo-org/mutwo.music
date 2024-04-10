@@ -56,8 +56,8 @@ class ScalePitch(music_parameters.abc.Pitch):
         return self.scale.scale_position_to_pitch(self.scale_position)
 
     @property
-    def frequency(self) -> float:
-        return self.scale_pitch.frequency
+    def hertz(self) -> float:
+        return self.scale_pitch.hertz
 
     def add(
         self, pitch_interval: music_parameters.abc.PitchInterval

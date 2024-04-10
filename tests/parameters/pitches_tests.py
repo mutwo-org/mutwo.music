@@ -29,13 +29,13 @@ class Partial_Test(unittest.TestCase):
 
 
 class DirectPitch_Test(unittest.TestCase):
-    def test_property_frequency(self):
+    def test_property_hertz(self):
         frequency0 = 200
         frequency1 = 502.42
         frequency2 = 10
-        self.assertEqual(frequency0, music_parameters.DirectPitch(frequency0).frequency)
-        self.assertEqual(frequency1, music_parameters.DirectPitch(frequency1).frequency)
-        self.assertEqual(frequency2, music_parameters.DirectPitch(frequency2).frequency)
+        self.assertEqual(frequency0, music_parameters.DirectPitch(frequency0).hertz)
+        self.assertEqual(frequency1, music_parameters.DirectPitch(frequency1).hertz)
+        self.assertEqual(frequency2, music_parameters.DirectPitch(frequency2).hertz)
 
     def test_get_pitch_interval(self):
         pitch0 = music_parameters.DirectPitch(200)
@@ -51,11 +51,11 @@ class DirectPitch_Test(unittest.TestCase):
 
 
 class MidiPitch_Test(unittest.TestCase):
-    def test_property_frequency(self):
+    def test_property_hertz(self):
         frequency0 = 440
         frequency1 = 261.626
-        self.assertEqual(frequency0, music_parameters.MidiPitch(69).frequency)
-        self.assertEqual(frequency1, round(music_parameters.MidiPitch(60).frequency, 3))
+        self.assertEqual(frequency0, music_parameters.MidiPitch(69).hertz)
+        self.assertEqual(frequency1, round(music_parameters.MidiPitch(60).hertz, 3))
 
 
 class EqualDividedOctavePitch_Test(unittest.TestCase):
@@ -69,26 +69,26 @@ class EqualDividedOctavePitch_Test(unittest.TestCase):
             lambda: music_parameters.EqualDividedOctavePitch(12, 13, 0, 0, 0),
         )
 
-    def test_property_frequency(self):
+    def test_property_hertz(self):
         pitch0 = music_parameters.EqualDividedOctavePitch(12, 0, 1, 0, 0)
         pitch1 = music_parameters.EqualDividedOctavePitch(6, 0, -1, 0, 0)
         pitch2 = music_parameters.EqualDividedOctavePitch(12, 6, 0, 0, 0)
-        self.assertAlmostEqual(pitch0.frequency, pitch0.concert_pitch.frequency * 2)
-        self.assertAlmostEqual(pitch1.frequency, pitch1.concert_pitch.frequency * 0.5)
-        self.assertAlmostEqual(pitch2.frequency, 622.254)
+        self.assertAlmostEqual(pitch0.hertz, pitch0.concert_pitch.hertz * 2)
+        self.assertAlmostEqual(pitch1.hertz, pitch1.concert_pitch.hertz * 0.5)
+        self.assertAlmostEqual(pitch2.hertz, 622.254)
 
     def test_property_step_factor(self):
         pitch0 = music_parameters.EqualDividedOctavePitch(12, 0, 1, 0, 0)
         pitch1 = music_parameters.EqualDividedOctavePitch(6, 0, -1, 0, 0)
         self.assertAlmostEqual(
             (pitch0.step_factor**pitch0.n_pitch_classes_per_octave)
-            * pitch0.concert_pitch.frequency,
-            pitch0.frequency,
+            * pitch0.concert_pitch.hertz,
+            pitch0.hertz,
         )
         self.assertAlmostEqual(
-            pitch1.concert_pitch.frequency
+            pitch1.concert_pitch.hertz
             / (pitch1.step_factor**pitch1.n_pitch_classes_per_octave),
-            pitch1.frequency,
+            pitch1.hertz,
         )
 
     def test_magic_method_sub(self):
@@ -161,24 +161,24 @@ class WesternPitchTest(unittest.TestCase):
             repr(music_parameters.WesternPitch("cs", 2)), "WesternPitch('cs', 2)"
         )
 
-    def test_property_frequency(self):
+    def test_property_hertz(self):
         pitch0 = music_parameters.WesternPitch("a", 4)
         pitch1 = music_parameters.WesternPitch("a", 3)
         pitch2 = music_parameters.WesternPitch("a", 5)
         pitch3 = music_parameters.WesternPitch("as", 4)
         pitch4 = music_parameters.WesternPitch("bqs", 4)
         self.assertAlmostEqual(
-            pitch0.frequency, music_parameters.configurations.DEFAULT_CONCERT_PITCH
+            pitch0.hertz, music_parameters.configurations.DEFAULT_CONCERT_PITCH
         )
         self.assertAlmostEqual(
-            pitch1.frequency,
+            pitch1.hertz,
             music_parameters.configurations.DEFAULT_CONCERT_PITCH * 0.5,
         )
         self.assertAlmostEqual(
-            pitch2.frequency, music_parameters.configurations.DEFAULT_CONCERT_PITCH * 2
+            pitch2.hertz, music_parameters.configurations.DEFAULT_CONCERT_PITCH * 2
         )
         self.assertAlmostEqual(
-            pitch3.frequency,
+            pitch3.hertz,
             core_utilities.round_floats(
                 music_parameters.configurations.DEFAULT_CONCERT_PITCH
                 * pitch3.step_factor,
@@ -186,7 +186,7 @@ class WesternPitchTest(unittest.TestCase):
             ),
         )
         self.assertAlmostEqual(
-            pitch4.frequency,
+            pitch4.hertz,
             core_utilities.round_floats(
                 music_parameters.configurations.DEFAULT_CONCERT_PITCH
                 * (pitch4.step_factor**2.5),
@@ -484,7 +484,7 @@ class JustIntonationPitchTest(unittest.TestCase):
         )
         self.assertEqual(
             music_parameters.JustIntonationPitch(
-                concert_pitch=concert_pitch1.frequency
+                concert_pitch=concert_pitch1.hertz
             ).concert_pitch,
             concert_pitch1,
         )
@@ -538,7 +538,7 @@ class JustIntonationPitchTest(unittest.TestCase):
             music_parameters.JustIntonationPitch(ratio2).occupied_primes, (3, 11)
         )
 
-    def test_property_frequency(self):
+    def test_property_hertz(self):
         ratio0 = fractions.Fraction(3, 2)
         concert_pitch0 = 200
         ratio1 = fractions.Fraction(25, 1)
@@ -546,15 +546,15 @@ class JustIntonationPitchTest(unittest.TestCase):
         ratio2 = fractions.Fraction(11, 9)
         concert_pitch2 = 10
         self.assertAlmostEqual(
-            music_parameters.JustIntonationPitch(ratio0, concert_pitch0).frequency,
+            music_parameters.JustIntonationPitch(ratio0, concert_pitch0).hertz,
             ratio0 * concert_pitch0,
         )
         self.assertAlmostEqual(
-            music_parameters.JustIntonationPitch(ratio1, concert_pitch1).frequency,
+            music_parameters.JustIntonationPitch(ratio1, concert_pitch1).hertz,
             ratio1 * concert_pitch1,
         )
         self.assertAlmostEqual(
-            music_parameters.JustIntonationPitch(ratio2, concert_pitch2).frequency,
+            music_parameters.JustIntonationPitch(ratio2, concert_pitch2).hertz,
             ratio2 * concert_pitch2,
         )
 
@@ -1001,9 +1001,9 @@ class JustIntonationPitchTest(unittest.TestCase):
 
 class ScalePitchTest(unittest.TestCase):
     def test_default_values(self):
-        self.assertTrue(music_parameters.ScalePitch().frequency)
+        self.assertTrue(music_parameters.ScalePitch().hertz)
 
-    def test_frequency(self):
+    def test_hertz(self):
         p = music_parameters.ScalePitch(
             0,
             0,
@@ -1014,7 +1014,7 @@ class ScalePitchTest(unittest.TestCase):
                 ),
             ),
         )
-        self.assertEqual(p.frequency, 100)
+        self.assertEqual(p.hertz, 100)
 
     def test_add(self):
         scale = music_parameters.Scale(

@@ -9,18 +9,18 @@ class DirectPitchIntervalTest(unittest.TestCase):
         self.pitch_interval_1 = music_parameters.DirectPitchInterval(500)
 
     def test_interval(self):
-        self.assertEqual(self.pitch_interval_0.interval, 800)
-        self.assertEqual(self.pitch_interval_1.interval, 500)
+        self.assertEqual(self.pitch_interval_0.cents, 800)
+        self.assertEqual(self.pitch_interval_1.cents, 500)
 
     def test_set_interval(self):
-        self.pitch_interval_0.interval = 100
-        self.assertEqual(self.pitch_interval_0.interval, 100)
+        self.pitch_interval_0.cents = 100
+        self.assertEqual(self.pitch_interval_0.cents, 100)
 
     def test_inverse(self):
         self.assertEqual(
             self.pitch_interval_1.inverse(), music_parameters.DirectPitchInterval(-500)
         )
-        self.assertEqual(self.pitch_interval_0.inverse().interval, -800)
+        self.assertEqual(self.pitch_interval_0.inverse().cents, -800)
 
     def test_add(self):
         self.assertEqual(
@@ -401,7 +401,7 @@ class WesternPitchIntervalTest(unittest.TestCase):
             self.assertEqual(
                 music_parameters.WesternPitchInterval(
                     interval_name_or_semitone_count
-                ).interval,
+                ).cents,
                 expected_interval,
             )
 
@@ -465,10 +465,10 @@ class JustIntonationPitchTest(unittest.TestCase):
         self.just_intonation_pitch = music_parameters.JustIntonationPitch("2/1")
 
     def test_interval(self):
-        self.assertEqual(self.just_intonation_pitch.interval, 1200)
+        self.assertEqual(self.just_intonation_pitch.cents, 1200)
 
     def test_inverse(self):
-        self.assertEqual(self.just_intonation_pitch.inverse().interval, -1200)
+        self.assertEqual(self.just_intonation_pitch.inverse().cents, -1200)
 
     def test_equal(self):
         self.assertEqual(

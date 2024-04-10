@@ -424,14 +424,14 @@ class JustIntonationPitch(
             case JustIntonationPitch():
                 return self.exponent_tuple == other.exponent_tuple
             case music_parameters.abc.PitchInterval():
-                return self.interval == other.interval
+                return self.cents == other.cents
             case _:  # pitch test
                 return super().__eq__(other)
 
     def __lt__(self, other: typing.Any) -> bool:
         match other:
             case music_parameters.abc.PitchInterval():
-                return self.interval < other.interval
+                return self.cents < other.cents
             case _:  # pitch test
                 return super().__lt__(other)
 
@@ -520,8 +520,8 @@ class JustIntonationPitch(
         self._concert_pitch = concert_pitch
 
     @property
-    def frequency(self) -> float:
-        return float(self.ratio * self.concert_pitch.frequency)
+    def hertz(self) -> float:
+        return float(self.ratio * self.concert_pitch.hertz)
 
     @property
     def ratio(self) -> fractions.Fraction:
@@ -576,7 +576,7 @@ class JustIntonationPitch(
         return denominator
 
     @property
-    def interval(self) -> float:
+    def cents(self) -> float:
         return self.ratio_to_cents(self.ratio)
 
     @property
@@ -625,7 +625,7 @@ class JustIntonationPitch(
 
     @property
     def octave(self) -> int:
-        return int(self.interval // music_parameters.constants.OCTAVE_IN_CENTS)
+        return int(self.cents // music_parameters.constants.OCTAVE_IN_CENTS)
 
     @property
     def helmholtz_ellis_just_intonation_notation_commas(
@@ -662,13 +662,13 @@ class JustIntonationPitch(
         deviation_by_helmholtz_ellis_just_intonation_notation_commas = (
             JustIntonationPitch(
                 self.helmholtz_ellis_just_intonation_notation_commas.ratio
-            ).interval
+            ).cents
         )
         closest_pythagorean_interval = self.closest_pythagorean_interval
         if len(closest_pythagorean_interval.exponent_tuple) >= 2:
             pythagorean_deviation = self.closest_pythagorean_interval.exponent_tuple[
                 1
-            ] * (JustIntonationPitch("3/2").interval - 700)
+            ] * (JustIntonationPitch("3/2").cents - 700)
         else:
             pythagorean_deviation = 0
         return (
@@ -1009,7 +1009,7 @@ class JustIntonationPitch(
         best = None
         for adaption in range(-1, 2):
             candidate: JustIntonationPitch = self.copy().register(reference_register + adaption)  # type: ignore
-            difference = abs((candidate - reference).interval)
+            difference = abs((candidate - reference).cents)
             set_best = True
             if best and difference > best[1]:
                 set_best = False
@@ -1096,7 +1096,7 @@ class JustIntonationPitch(
             self._math(pitch_interval, operator.add)
         else:
             self.exponent_tuple = self._ratio_to_exponent_tuple(
-                self.ratio * self.cents_to_ratio(pitch_interval.interval)
+                self.ratio * self.cents_to_ratio(pitch_interval.cents)
             )
         return self
 
@@ -1122,7 +1122,7 @@ class JustIntonationPitch(
             self._math(pitch_interval, operator.sub)
         else:
             self.exponent_tuple = self._ratio_to_exponent_tuple(
-                self.ratio / self.cents_to_ratio(pitch_interval.interval)
+                self.ratio / self.cents_to_ratio(pitch_interval.cents)
             )
         return self
 

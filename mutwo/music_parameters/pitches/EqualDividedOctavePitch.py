@@ -107,7 +107,7 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
             pitch_interval,
             music_parameters.abc.PitchInterval,
         ):
-            return pitch_interval.interval / self.n_cents_per_step
+            return pitch_interval.cents / self.n_cents_per_step
         else:
             return pitch_interval
 
@@ -177,7 +177,7 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
         return self.ratio_to_cents(self.step_factor)
 
     @property
-    def frequency(self) -> float:
+    def hertz(self) -> float:
         n_octaves_distant_to_concert_pitch = self.octave - self.concert_pitch_octave
         n_pitch_classes_distant_to_concert_pitch = (
             self.pitch_class - self.concert_pitch_pitch_class
@@ -190,7 +190,7 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
             distance_to_concert_pitch_in_cents
         )
         return core_utilities.round_floats(
-            self.concert_pitch.frequency * distance_to_concert_pitch_as_factor,
+            self.concert_pitch.hertz* distance_to_concert_pitch_as_factor,
             music_parameters.configurations.EQUAL_DIVIDED_OCTAVE_PITCH_ROUND_FREQUENCY_DIGIT_COUNT,
         )
 

@@ -15,8 +15,8 @@ __all__ = (
 class DirectPitchInterval(music_parameters.abc.PitchInterval):
     """Simple interval class which gets directly assigned by its cents value
 
-    :param interval: Defines how big or small the interval is (in cents).
-    :type interval: float
+    :param cents: Defines how big or small the interval is (in cents).
+    :type cents: float
 
     **Example:**
 
@@ -25,16 +25,16 @@ class DirectPitchInterval(music_parameters.abc.PitchInterval):
     >>> falling_minor_third = music_parameters.DirectPitchInterval(-300)
     """
 
-    def __init__(self, interval: float):
-        self.interval = interval
+    def __init__(self, cents: float):
+        self.cents = cents
 
     @property
-    def interval(self) -> float:
-        return self._interval
+    def cents(self) -> float:
+        return self._cents
 
-    @interval.setter
-    def interval(self, interval: float):
-        self._interval = interval
+    @cents.setter
+    def cents(self, cents: float):
+        self._cents = cents
 
     def inverse(self) -> DirectPitchInterval:
         """Makes falling interval to rising and vice versa.
@@ -42,10 +42,10 @@ class DirectPitchInterval(music_parameters.abc.PitchInterval):
         **Example:**
 
         >>> from mutwo import music_parameters
-        >>> music_parameters.DirectPitchInterval(700).inverse().interval
+        >>> music_parameters.DirectPitchInterval(700).inverse().cents
         -700
         """
-        self.interval = -self.interval
+        self.cents = -self.cents
         return self
 
 
@@ -513,7 +513,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
         return WesternPitchInterval.is_interval_type_imperfect(self.interval_type)
 
     @property
-    def interval(self) -> float:
+    def cents(self) -> float:
         cent_deviation = (
             self.interval_quality_cent_deviation + self.interval_type_cent_deviation
         )
@@ -523,7 +523,7 @@ class WesternPitchInterval(music_parameters.abc.PitchInterval):
 
     @property
     def semitone_count(self) -> float:
-        return self.interval // 100
+        return self.cents // 100
 
     @semitone_count.setter
     def semitone_count(self, semitone_count: core_constants.Real):
