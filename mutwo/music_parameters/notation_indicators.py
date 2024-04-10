@@ -82,14 +82,6 @@ class NotationIndicatorCollection(
     markup: Markup = f(Markup)
     rehearsal_mark: RehearsalMark = f(RehearsalMark)
 
-    def __setattr__(self, parameter_name: str, value: bool):
-        if (notation_indicator := getattr(self, parameter_name, None)) is not None:
-            raise dataclasses.FrozenInstanceError(
-                f"Can't override frozen property (notation indicator) '{notation_indicator}'!"
-            )
-        else:
-            super().__setattr__(parameter_name, value)
-
 
 # Dynamically define __all__ in order to catch all NotationIndicator classes
 __all__ = tuple(

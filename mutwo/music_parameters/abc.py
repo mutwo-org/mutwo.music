@@ -15,12 +15,18 @@ import copy
 import dataclasses
 import functools
 import math
+import numbers
+import types
 import typing
 
 try:
     import quicktions as fractions  # type: ignore
 except ImportError:
     import fractions  # type: ignore
+
+    _fractions = None
+else:
+    import fractions as _fractions
 
 import ranges
 
@@ -90,6 +96,10 @@ class Pitch(
     from mutwo version = 0.46.0 the user will furthermore have
     to define an :func:`add` method.
     """
+
+    Type: typing.TypeAlias = typing.Union[fractions.Fraction, float, int, str, "Pitch"]
+    """Pitch.Type hosts all types that are supported by the pitch parser
+    :func:`Pitch.from_any`."""
 
     # ###################################################################### #
     #     conversion methods between different pitch describing units        #
@@ -176,6 +186,37 @@ class Pitch(
         return float(closest_midi_pitch_number + (difference_in_cents / 100))
 
     # ###################################################################### #
+    #                            class methods                               #
+    # ###################################################################### #
+
+    @classmethod
+    def from_any(cls, object: Pitch.Type) -> Pitch:
+        builtin_fraction = _fractions.Fraction if _fractions else fractions.Fraction
+        match object:
+            case music_parameters.abc.Pitch():
+                return object
+            case str():
+                if "/" in object:  # assumes it is a ratio
+                    return music_parameters.JustIntonationPitch(object)
+                elif (  # assumes it is a WesternPitch name
+                    object[0]
+                    in music_parameters.constants.DIATONIC_PITCH_CLASS_CONTAINER
+                ):
+                    if object[-1].isdigit():
+                        pitch_name, octave = object[:-1], int(object[-1])
+                        return music_parameters.WesternPitch(pitch_name, octave)
+                    else:
+                        return music_parameters.WesternPitch(object)
+            case fractions.Fraction() | builtin_fraction():
+                return music_parameters.JustIntonationPitch(object)
+            case float() | int():
+                return music_parameters.WesternPitch(object)
+            case _:
+                pass
+
+        raise core_utilities.CannotParseError(object, cls)
+
+    # ###################################################################### #
     #                            public properties                           #
     # ###################################################################### #
 
@@ -223,6 +264,32 @@ class Pitch(
         return music_parameters.DirectPitchInterval(cent_difference)
 
 
+class PitchList(core_parameters.abc.Parameter, list[Pitch]):
+    """PitchList provides functionality to parse objects to a list of pitches"""
+
+    Type: typing.TypeAlias = typing.Union[
+        Pitch.Type, list[Pitch], tuple[Pitch], str, types.NoneType
+    ]
+    """PitchList.Type hosts all types that are supported by the pitch
+    list parser :func:`PitchList.from_any`."""
+
+    @classmethod
+    def from_any(cls, object: Pitch.Type) -> Pitch:
+        match object:
+            case None:
+                return []
+            case list() | tuple():
+                return [Pitch.from_any(p) for p in object]
+            case str():
+                return [
+                    Pitch.from_any(pitch_indication)
+                    for pitch_indication in object.split(" ")
+                    if pitch_indication
+                ]
+            case _:
+                return [Pitch.from_any(object)]
+
+
 @functools.total_ordering  # type: ignore
 class Volume(
     core_parameters.abc.SingleNumberParameter,
@@ -234,6 +301,10 @@ class Volume(
     If the user wants to define a new volume class, the abstract
     property :attr:`amplitude` has to be overridden.
     """
+
+    Type: typing.TypeAlias = typing.Union[core_constants.Real, str, "Volume"]
+    """Volume.Type hosts all types that are supported by the volume parser
+    :func:`Volume.from_any`."""
 
     @staticmethod
     def decibel_to_amplitude_ratio(
@@ -409,6 +480,21 @@ class Volume(
         )
 
         return velocity
+
+    @classmethod
+    def from_any(cls, object: Volume.Type) -> Volume:
+        match object:
+            case music_parameters.abc.Volume():
+                return object
+            case numbers.Real():
+                if object >= 0:  # type: ignore
+                    return music_parameters.DirectVolume(object)  # type: ignore
+                else:
+                    return music_parameters.DecibelVolume(object)  # type: ignore
+            case str():
+                return music_parameters.WesternVolume(object)
+            case _:
+                raise core_utilities.CannotParseError(object, cls)
 
     # properties
     @property
@@ -628,6 +714,24 @@ T = typing.TypeVar("T", PlayingIndicator, NotationIndicator)
 
 @dataclasses.dataclass
 class IndicatorCollection(core_parameters.abc.Parameter, typing.Generic[T]):
+    Type: typing.TypeAlias = typing.Union[types.NoneType, str, "IndicatorCollection"]
+    """IndicatorCollection.Type hosts all types that are supported by the indicator
+    collection parser :func:`IndicatorCollection.from_any`."""
+
+    @classmethod
+    def from_any(cls, object: IndicatorCollection.Type) -> IndicatorCollection:
+        from mutwo import music_utilities
+
+        match object:
+            case None:
+                return cls()
+            case cls():
+                return object
+            case str():
+                return music_utilities.IndicatorCollectionParser().parse(object, cls())
+            case _:
+                raise NotImplementedError(f"Can't build {cls.__name__} from '{object}'")
+
     def get_all_indicator(self) -> tuple[T, ...]:
         return tuple(
             getattr(self, key)

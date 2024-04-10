@@ -232,13 +232,8 @@ class PlayingIndicatorCollection(
                 playing_indicator, music_parameters.abc.ExplicitPlayingIndicator
             ):
                 playing_indicator.is_active = bool(value)
-            else:
-                raise dataclasses.FrozenInstanceError(
-                    "Can't override frozen property (playing indicator)"
-                    f" '{playing_indicator}'!"
-                )
-        else:
-            super().__setattr__(parameter_name, value)
+                return
+        super().__setattr__(parameter_name, value)
 
 
 # Dynamically define __all__ in order to catch all PlayingIndicator classes

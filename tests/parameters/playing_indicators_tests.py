@@ -10,12 +10,6 @@ class PlayingIndicatorCollectionTest(unittest.TestCase):
             music_parameters.PlayingIndicatorCollection()
         )
 
-    def test_frozen_attribute(self):
-        def override_frozen_attribute():
-            self.playing_indicator_collection.articulation = "This will raise an error."
-
-        self.assertRaises(dataclasses.FrozenInstanceError, override_frozen_attribute)
-
     def test_syntactic_sugar_setter(self):
         # Normal setting of explicit playing indicators
         self.playing_indicator_collection.tie.is_active = False

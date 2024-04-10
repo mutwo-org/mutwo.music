@@ -94,15 +94,6 @@ class NoteLikeTest(unittest.TestCase):
     #                   test grace notes setter                              #
     # ###################################################################### #
 
-    def test_grace_note_consecution_setter_from_chronon(self):
-        grace_note_consecution = music_events.NoteLike()
-        self.assertEqual(
-            core_events.Consecution([grace_note_consecution]),
-            music_events.NoteLike(
-                None, 1, 1, grace_note_consecution
-            ).grace_note_consecution,
-        )
-
     def test_grace_note_consecution_setter_from_consecution(self):
         grace_note_consecution = core_events.Consecution(
             [music_events.NoteLike()]

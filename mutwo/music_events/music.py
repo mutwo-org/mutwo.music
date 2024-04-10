@@ -1,19 +1,12 @@
 import typing
 
 from mutwo import core_events
-from mutwo import core_constants
 from mutwo import core_parameters
-from mutwo import music_events
 from mutwo import music_parameters
 
 __all__ = ("NoteLike",)
 
-PitchOrPitchSequence = (
-    music_parameters.abc.Pitch | typing.Sequence | core_constants.Real | None
-)
-
-Volume = music_parameters.abc.Volume | core_constants.Real | str
-GraceNotes = core_events.Consecution[core_events.Chronon]
+GraceNotes: typing.TypeAlias = core_events.Consecution[core_events.Chronon]
 
 
 class NoteLike(core_events.Chronon):
@@ -29,7 +22,7 @@ class NoteLike(core_events.Chronon):
         Fraction will also build :class:`mutwo.music_parameters.JustIntonationPitch`
         objects. Other numbers (integer and float) will be read as pitch class numbers
         to make :class:`mutwo.music_parameters.WesternPitch` objects.
-    :type pitch_list: PitchOrPitchSequence
+    :type pitch_list: music_parameters.abc.PitchList.Type
     :param duration: The duration of :class:`NoteLike`.
     :type duration: mutwo.core_parameters.abc.Duration.Type
     :param volume: The volume of the event. Can either be a object of
@@ -41,7 +34,7 @@ class NoteLike(core_events.Chronon):
         :class:`mutwo.music_parameters.volumes.DecibelVolume` (and the number
         is interpreted as `decibel <https://en.wikipedia.org/wiki/Decibel>`_). If the argument is a string,
         `mutwo` initialises a :class:`mutwo.music_parameters.volumes.WesternVolume`.
-    :type volume: Volume
+    :type volume: music_parameters.abc.Volume.Type
     :param grace_note_consecution: Specify `grace notes <https://en.wikipedia.org/wiki/Grace_note>`_
         which are played before the :class:`NoteLike`. If the :class:`~mutwo.core_events.Consecution`
         is empty, no grace notes are present.
@@ -53,11 +46,11 @@ class NoteLike(core_events.Chronon):
     :param playing_indicator_collection: A :class:`~mutwo.music_parameters.playing_indicator_collection.PlayingIndicatorCollection`.
         Playing indicators alter the sound of :class:`NoteLike` (e.g.
         tremolo, fermata, pizzicato).
-    :type playing_indicator_collection: music_parameters.playing_indicator_collection.PlayingIndicatorCollection
+    :type playing_indicator_collection: music_parameters.abc.IndicatorCollection.Type
     :param notation_indicator_collection: A :class:`~mutwo.music_parameters.notation_indicator_collection.NotationIndicatorCollection`.
         Notation indicators alter the visual representation of :class:`NoteLike`
         (e.g. ottava, clefs) without affecting the resulting sound.
-    :type notation_indicator_collection: music_parameters.notation_indicator_collection.NotationIndicatorCollection
+    :type notation_indicator_collection: music_parameters.abc.IndicatorCollection.Type
     :param lyric: If with this :class:`NoteLike` a text is to be sung or spoken,
         this text can be specified here. Default to ``music_parameters.DirectLyric("")``.
     :type lyric: core_parameters.abc.Lyric
@@ -86,29 +79,21 @@ class NoteLike(core_events.Chronon):
 
     def __init__(
         self,
-        pitch_list: PitchOrPitchSequence = [],
+        pitch_list: music_parameters.abc.PitchList.Type = [],
         duration: core_parameters.abc.Duration.Type = 1,
-        volume: Volume = "mf",
+        volume: music_parameters.abc.Volume.Type = "mf",
         grace_note_consecution: typing.Optional[GraceNotes] = None,
         after_grace_note_consecution: typing.Optional[GraceNotes] = None,
-        playing_indicator_collection: typing.Optional[
-            music_parameters.PlayingIndicatorCollection
-        ] = None,
-        notation_indicator_collection: typing.Optional[
-            music_parameters.NotationIndicatorCollection
-        ] = None,
+        playing_indicator_collection: music_parameters.abc.IndicatorCollection.Type = None,
+        notation_indicator_collection: music_parameters.abc.IndicatorCollection.Type = None,
         lyric: music_parameters.abc.Lyric = music_parameters.DirectLyric(""),
         instrument_list: list[music_parameters.abc.Instrument] = [],
     ):
         self.pitch_list = pitch_list
         self.volume = volume
         super().__init__(duration)
-        self.grace_note_consecution = (
-            grace_note_consecution or core_events.Consecution([])
-        )
-        self.after_grace_note_consecution = (
-            after_grace_note_consecution or core_events.Consecution([])
-        )
+        self.grace_note_consecution = grace_note_consecution
+        self.after_grace_note_consecution = after_grace_note_consecution
         self.playing_indicator_collection = playing_indicator_collection
         self.notation_indicator_collection = notation_indicator_collection
         self.lyric = lyric
@@ -140,22 +125,8 @@ class NoteLike(core_events.Chronon):
         return self._pitch_list
 
     @pitch_list.setter
-    def pitch_list(self, pitch_list: typing.Any):
-        # make sure pitch_list always become assigned to a list of pitches,
-        # to be certain of the returned type
-        if not isinstance(pitch_list, str) and isinstance(pitch_list, typing.Iterable):
-            parsed_pitch_list = []
-            for pitch in pitch_list:
-                parsed_pitch_list.extend(
-                    music_events.configurations.UNKNOWN_OBJECT_TO_PITCH_LIST(pitch)
-                )
-            pitch_list = parsed_pitch_list
-        else:
-            pitch_list = music_events.configurations.UNKNOWN_OBJECT_TO_PITCH_LIST(
-                pitch_list
-            )
-
-        self._pitch_list = pitch_list
+    def pitch_list(self, pitch_list: "music_parameters.abc.PitchList.Type"):
+        self._pitch_list = music_parameters.abc.PitchList.from_any(pitch_list)
 
     @property
     def volume(self) -> typing.Any:
@@ -163,8 +134,8 @@ class NoteLike(core_events.Chronon):
         return self._volume
 
     @volume.setter
-    def volume(self, volume: typing.Any):
-        self._volume = music_events.configurations.UNKNOWN_OBJECT_TO_VOLUME(volume)
+    def volume(self, volume: "music_parameters.abc.Volume.Type"):
+        self._volume = music_parameters.abc.Volume.from_any(volume)
 
     @property
     def grace_note_consecution(self) -> GraceNotes:
@@ -174,12 +145,10 @@ class NoteLike(core_events.Chronon):
     @grace_note_consecution.setter
     def grace_note_consecution(
         self,
-        grace_note_consecution: GraceNotes | core_events.Chronon,
+        grace_note_consecution: typing.Optional[GraceNotes],
     ):
         self._grace_note_consecution = (
-            music_events.configurations.UNKNOWN_OBJECT_TO_GRACE_NOTE_SEQUENTIAL_EVENT(
-                grace_note_consecution
-            )
+            grace_note_consecution or core_events.Consecution([])
         )
 
     @property
@@ -189,12 +158,10 @@ class NoteLike(core_events.Chronon):
 
     @after_grace_note_consecution.setter
     def after_grace_note_consecution(
-        self, after_grace_note_consecution: GraceNotes | core_events.Chronon
+        self, after_grace_note_consecution: typing.Optional[GraceNotes]
     ):
         self._after_grace_note_consecution = (
-            music_events.configurations.UNKNOWN_OBJECT_TO_GRACE_NOTE_SEQUENTIAL_EVENT(
-                after_grace_note_consecution
-            )
+            after_grace_note_consecution or core_events.Consecution([])
         )
 
     @property
@@ -206,12 +173,10 @@ class NoteLike(core_events.Chronon):
     @playing_indicator_collection.setter
     def playing_indicator_collection(
         self,
-        playing_indicator_collection: typing.Optional[
-            music_parameters.PlayingIndicatorCollection | str
-        ],
+        playing_indicator_collection: music_parameters.abc.IndicatorCollection.Type,
     ):
         self._playing_indicator_collection = (
-            music_events.configurations.UNKNOWN_OBJECT_TO_PLAYING_INDICATOR_COLLECTION(
+            music_parameters.PlayingIndicatorCollection.from_any(
                 playing_indicator_collection
             )
         )
@@ -225,12 +190,10 @@ class NoteLike(core_events.Chronon):
     @notation_indicator_collection.setter
     def notation_indicator_collection(
         self,
-        notation_indicator_collection: typing.Optional[
-            music_parameters.NotationIndicatorCollection | str
-        ],
+        notation_indicator_collection: music_parameters.abc.IndicatorCollection.Type,
     ):
         self._notation_indicator_collection = (
-            music_events.configurations.UNKNOWN_OBJECT_TO_NOTATION_INDICATOR_COLLECTION(
+            music_parameters.NotationIndicatorCollection.from_any(
                 notation_indicator_collection
             )
         )
