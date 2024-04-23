@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing
 import unittest
 
 try:
@@ -8,6 +9,17 @@ except ImportError:
     import fractions  # type: ignore
 
 from mutwo import music_parameters
+
+
+class FromAnyTestMixin(object):
+    def _test(self, value: typing.Any, result: music_parameters.abc.Volume):
+        self.assertEqual(self.c(value), result)
+
+    def _test_bad_input(self, value: typing.Any, error=NotImplementedError):
+        self.assertRaises(error, self.c, value)
+
+    def test_bad_object(self):
+        self._test_bad_input(type("test", (), {}))
 
 
 class PitchTest(unittest.TestCase):
@@ -78,6 +90,62 @@ class PitchTest(unittest.TestCase):
         self.assertEqual(
             60, round(music_parameters.abc.Pitch.hertz_to_midi_pitch_number(261))
         )
+
+
+class PitchFromAnyTest(unittest.TestCase, FromAnyTestMixin):
+    c = music_parameters.abc.Pitch.from_any
+
+    j = music_parameters.JustIntonationPitch
+    d = music_parameters.DirectPitch
+    w = music_parameters.WesternPitch
+    f = music_parameters.FlexPitch
+
+    def test_pitch(self):
+        p = self.d(440)
+        self._test(p, p)
+
+    def test_str_ratio(self):
+        self._test("1/1", self.j("1/1"))
+
+    def test_str_name(self):
+        self._test("c4", self.w("c", octave=4))
+        self._test("fss", self.w("fss"))
+
+    def test_str_bad(self):
+        self._test_bad_input("Q")
+        self._test_bad_input("???4")
+
+    def test_float(self):
+        self._test(1, self.w(1))
+
+    def test_list(self):
+        self._test([[0, "c"]], self.f([[0, "c"]]))
+
+    def test_tuple(self):
+        self._test(([0, "c"],), self.f([[0, "c"]]))
+
+
+class PitchListFromAnyTest(unittest.TestCase, FromAnyTestMixin):
+    c = music_parameters.abc.PitchList.from_any
+
+    w = music_parameters.WesternPitch
+    j = music_parameters.JustIntonationPitch
+
+    def test_None(self):
+        self._test(None, [])
+
+    def test_list(self):
+        self._test([], [])
+        self._test(["c", "f"], [self.w("c"), self.w("f")])
+
+    def test_tuple(self):
+        self._test(tuple([]), [])
+        self._test(("g2",), [self.w("g", 2)])
+
+    def test_str(self):
+        self._test("", [])
+        self._test("c4", [self.w("c")])
+        self._test("c4 3/2", [self.w("c"), self.j("3/2")])
 
 
 class VolumeTest(unittest.TestCase):
@@ -184,6 +252,36 @@ class VolumeTest(unittest.TestCase):
         )
 
 
+class VolumeFromAnyTest(unittest.TestCase, FromAnyTestMixin):
+    c = music_parameters.abc.Volume.from_any
+
+    a = music_parameters.AmplitudeVolume
+    d = music_parameters.DirectVolume
+    w = music_parameters.WesternVolume
+    f = music_parameters.FlexVolume
+
+    def test_volume(self):
+        v = self.d(-6)
+        self._test(v, v)
+
+    def test_str_name(self):
+        self._test("ff", self.w("ff"))
+
+    def test_str_bad(self):
+        self._test_bad_input("Q", error=ValueError)
+        self._test_bad_input("???4", error=ValueError)
+
+    def test_float(self):
+        self._test(-6, self.d(-6))
+        self._test(0.32, self.a(0.32))
+
+    def test_list(self):
+        self._test([[0, -6]], self.f([[0, -6]]))
+
+    def test_tuple(self):
+        self._test(([0, -6],), self.f([[0, -6]]))
+
+
 class PitchAmbitusTest(unittest.TestCase):
     class GenericPitchAmbitus(music_parameters.abc.PitchAmbitus):
         def pitch_to_period(
@@ -232,6 +330,26 @@ class PitchAmbitusTest(unittest.TestCase):
         )
         self.assertTrue(music_parameters.JustIntonationPitch("3/2") in ambitus)
         self.assertFalse(music_parameters.JustIntonationPitch("3/1") in ambitus)
+
+
+class IndicatorCollectionFromAnyTest(unittest.TestCase, FromAnyTestMixin):
+    pic = music_parameters.PlayingIndicatorCollection
+    c = pic.from_any
+
+    def test_None(self):
+        self._test(None, self.pic())
+
+    def test_str(self):
+        self._test("", self.pic())
+
+        pic1 = self.pic()
+        pic1.fermata.type = "fermata"
+        self._test("fermata.type=fermata", pic1)
+
+        pic2 = self.pic()
+        pic2.fermata.type = "fermata"
+        pic2.articulation.name = "tenuto"
+        self._test("fermata.type=fermata;articulation.name=tenuto", pic2)
 
 
 if __name__ == "__main__":
