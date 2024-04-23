@@ -88,10 +88,13 @@ class NoteLike(core_events.Chronon):
         notation_indicator_collection: music_parameters.abc.IndicatorCollection.Type = None,
         lyric: music_parameters.abc.Lyric = music_parameters.DirectLyric(""),
         instrument_list: list[music_parameters.abc.Instrument] = [],
+        *,
+        tempo: typing.Optional[core_parameters.abc.Tempo] = None,
+        tag: typing.Optional[str] = None,
     ):
         self.pitch_list = pitch_list
         self.volume = volume
-        super().__init__(duration)
+        super().__init__(duration, tempo=tempo, tag=tag)
         self.grace_note_consecution = grace_note_consecution
         self.after_grace_note_consecution = after_grace_note_consecution
         self.playing_indicator_collection = playing_indicator_collection
