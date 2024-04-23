@@ -38,7 +38,9 @@ class AmplitudeVolumeTest(unittest.TestCase):
     def test_decibel(self):
         self.assertEqual(music_parameters.AmplitudeVolume(1).decibel, 0)
         self.assertEqual(music_parameters.AmplitudeVolume(0).decibel, float("-inf"))
-        self.assertAlmostEqual(music_parameters.AmplitudeVolume(0.5).decibel, -6, places=1)
+        self.assertAlmostEqual(
+            music_parameters.AmplitudeVolume(0.5).decibel, -6, places=1
+        )
 
 
 class DirectVolumeTest(unittest.TestCase):
@@ -57,6 +59,14 @@ class DirectVolumeTest(unittest.TestCase):
             self.vol.amplitude,
             music_parameters.abc.Volume.decibel_to_amplitude_ratio(-12),
         )
+
+
+class FlexVolumeTest(unittest.TestCase):
+    def setUp(self):
+        self.v = music_parameters.FlexVolume([[0, "mf"], [1, "fff"]])
+
+    def test_decibel(self):
+        self.assertEqual(self.v.decibel, self.v[0].volume.decibel)
 
 
 class WesternVolumeTest(unittest.TestCase):

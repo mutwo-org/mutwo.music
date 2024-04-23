@@ -25,6 +25,7 @@ from .CommonHarmonic import *
 from .EqualDividedOctavePitch import *
 from .WesternPitch import *
 from .ScalePitch import *
+from .FlexPitch import *
 
 
 __all__ = (
@@ -36,4 +37,5 @@ __all__ = (
     "MidiPitch",
     "CommonHarmonic",
     "ScalePitch",
+    "FlexPitch",
 )

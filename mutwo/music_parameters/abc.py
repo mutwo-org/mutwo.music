@@ -209,6 +209,8 @@ class Pitch(
                 return music_parameters.JustIntonationPitch(object)
             case float() | int():
                 return music_parameters.WesternPitch(object)
+            case list() | tuple():
+                return music_parameters.FlexPitch(object)
             case _:
                 pass
 
@@ -491,6 +493,8 @@ class Volume(
                     return music_parameters.DirectVolume(object)  # type: ignore
             case str():
                 return music_parameters.WesternVolume(object)
+            case list() | tuple():
+                return music_parameters.FlexVolume(object)
             case _:
                 raise core_utilities.CannotParseError(object, cls)
 

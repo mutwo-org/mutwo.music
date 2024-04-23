@@ -6,11 +6,12 @@
 import typing
 
 from mutwo import core_constants
+from mutwo import core_parameters
 from mutwo import core_utilities
 from mutwo import music_parameters
 from mutwo import music_utilities
 
-__all__ = ("DirectVolume", "AmplitudeVolume", "WesternVolume")
+__all__ = ("DirectVolume", "FlexVolume", "AmplitudeVolume", "WesternVolume")
 
 
 class DirectVolume(music_parameters.abc.Volume):
@@ -36,6 +37,33 @@ class DirectVolume(music_parameters.abc.Volume):
 
     def __repr__(self) -> str:
         return "{}({})".format(type(self).__name__, self.amplitude)
+
+
+class FlexVolume(music_parameters.abc.Volume, core_parameters.abc.FlexParameterMixin):
+    """A flexible volume.
+
+    This can be used to create dynamically changing volumes (e.g. crescendo,
+    decrescendo, ...).
+
+    **Example:**
+
+    >>> from mutwo import music_parameters
+    >>> v = music_parameters.FlexVolume([[0, 'ff'], [1, 'ppp']])
+    """
+
+    @classmethod
+    @property
+    def parameter_name(cls) -> str:
+        return "volume"
+
+    @classmethod
+    @property
+    def default_parameter(cls) -> music_parameters.abc.Pitch:
+        return music_parameters.DirectVolume(-6)
+
+    @property
+    def decibel(self):
+        return self.value_at(0)
 
 
 class AmplitudeVolume(music_parameters.abc.Volume):

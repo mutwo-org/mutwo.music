@@ -440,9 +440,7 @@ class JustIntonationPitchTest(unittest.TestCase):
             music_parameters.configurations.DEFAULT_CONCERT_PITCH * 2
         )
         self.assertEqual(pitch0.get_pitch_interval(pitch1), pitch1)
-        self.assertEqual(
-            pitch1.get_pitch_interval(pitch0), pitch1.copy().inverse()
-        )
+        self.assertEqual(pitch1.get_pitch_interval(pitch0), pitch1.copy().inverse())
         self.assertEqual(
             pitch0.get_pitch_interval(pitch2), music_parameters.DirectPitchInterval(0)
         )
@@ -1036,6 +1034,18 @@ class ScalePitchTest(unittest.TestCase):
         self.assertRaises(
             RuntimeError, p.add, music_parameters.DirectPitchInterval(312)
         )
+
+
+class FlexPitchTest(unittest.TestCase):
+    def setUp(self):
+        self.p = music_parameters.FlexPitch([[0, "f4"], [1, "c4"]])
+
+    def test_hertz(self):
+        self.assertEqual(self.p.hertz, self.p[0].pitch.hertz)
+
+    def test_value_at(self):
+        self.assertEqual(self.p.value_at(0), self.p[0].pitch.hertz)
+        self.assertEqual(self.p.value_at(1), self.p[1].pitch.hertz)
 
 
 if __name__ == "__main__":
