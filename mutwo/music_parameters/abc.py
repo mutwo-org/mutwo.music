@@ -258,9 +258,7 @@ class Pitch(
         >>> pitch_interval = a4.get_pitch_interval(a5)
         """
 
-        cent_difference = self.ratio_to_cents(
-            pitch_to_compare.hertz / self.hertz
-        )
+        cent_difference = self.ratio_to_cents(pitch_to_compare.hertz / self.hertz)
         return music_parameters.DirectPitchInterval(cent_difference)
 
 
@@ -713,11 +711,56 @@ class NotationIndicator(Indicator):
 T = typing.TypeVar("T", PlayingIndicator, NotationIndicator)
 
 
-@dataclasses.dataclass
 class IndicatorCollection(core_parameters.abc.Parameter, typing.Generic[T]):
+    """An :class:`IndicatorCollection` hosts a collection of indicators."""
+
     Type: typing.TypeAlias = typing.Union[types.NoneType, str, "IndicatorCollection"]
     """IndicatorCollection.Type hosts all types that are supported by the indicator
     collection parser :func:`IndicatorCollection.from_any`."""
+
+    def __init_subclass__(cls):
+        # This makes sure, that we only register indicators at the class
+        # itself, but not at other classes (e.g. its super class or other
+        # sub classes of the same super class). It also makes sure that when
+        # we inherit from a 'IndicatorCollection', we also inherit all already
+        # registered indicators.
+        IndicatorName: typing.TypeAlias = str
+        cls._indicator_type_dict: dict[IndicatorName, typing.Type[Indicator]] = dict(
+            getattr(cls, "_indicator_type_dict", {})
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for key, factory in self._indicator_type_dict.items():
+            setattr(self, key, factory())
+
+    def __eq__(self, other: typing.Any):
+        try:
+            indicator_dict1 = other.get_indicator_dict()
+        except AttributeError:
+            return False
+
+        indicator_dict0 = self.get_indicator_dict()
+
+        # Ensure we have the same indicators in both collections
+        key_set0 = set(indicator_dict0.keys())
+        key_set1 = set(indicator_dict1.keys())
+        if key_set0.difference(key_set1):
+            return False
+
+        # Finally compare all indicators themselves and check if they
+        # have the same values
+        for k in indicator_dict0.keys():
+            if indicator_dict0[k] != indicator_dict1[k]:
+                return False
+
+        return True
+
+    def get_all_indicator(self) -> tuple[T, ...]:
+        return tuple(getattr(self, key) for key in self._indicator_type_dict.keys())
+
+    def get_indicator_dict(self) -> dict[str, Indicator]:
+        return {key: getattr(self, key) for key in self._indicator_type_dict.keys()}
 
     @classmethod
     def from_any(cls, object: IndicatorCollection.Type) -> IndicatorCollection:
@@ -733,14 +776,23 @@ class IndicatorCollection(core_parameters.abc.Parameter, typing.Generic[T]):
             case _:
                 raise NotImplementedError(f"Can't build {cls.__name__} from '{object}'")
 
-    def get_all_indicator(self) -> tuple[T, ...]:
-        return tuple(
-            getattr(self, key)
-            for key in self.__dataclass_fields__.keys()  # type: ignore
-        )
+    @classmethod
+    def register(
+        cls, indicator: typing.Type[Indicator], name: typing.Optional[str] = None
+    ):
+        """Register new indicator type to collection.
 
-    def get_indicator_dict(self) -> dict[str, Indicator]:
-        return {key: getattr(self, key) for key in self.__dataclass_fields__.keys()}  # type: ignore
+        :param indicator: The indicator type that is registered.
+        :type indicator: typing.Type[Indicator]
+        :param name: The attribute name of the collection that points to
+            the indicator. If `None` this is automatically set to a lower
+            snake case version of the type name (e.g. 'MarginMarkup' is
+            converted to 'margin_markup'). Default to `None`.
+        :type name: typing.Optional[str] = None
+        """
+        name = name or core_utilities.camel_case_to_snake_case(indicator.__name__)
+        cls._indicator_type_dict[name] = indicator
+        return indicator
 
 
 class Lyric(

@@ -33,54 +33,48 @@ import typing
 from mutwo import music_parameters
 
 
-@dataclasses.dataclass()
+class NotationIndicatorCollection(
+    music_parameters.abc.IndicatorCollection[music_parameters.abc.NotationIndicator]
+):
+    """Collection of notation indicators"""
+
+
+r = NotationIndicatorCollection.register
+implicit = lambda cls: r(dataclasses.dataclass()(cls))
+
+
+@implicit
 class BarLine(music_parameters.abc.NotationIndicator):
     abbreviation: typing.Optional[
         str
     ] = None  # TODO(for future usage add typing.Literal)
 
 
-@dataclasses.dataclass()
+@implicit
 class Clef(music_parameters.abc.NotationIndicator):
     name: typing.Optional[str] = None  # TODO(for future usage add typing.Literal)
 
 
-@dataclasses.dataclass()
+@implicit
 class Ottava(music_parameters.abc.NotationIndicator):
     octave_count: typing.Optional[int] = 0
 
 
-@dataclasses.dataclass()
+@implicit
 class MarginMarkup(music_parameters.abc.NotationIndicator):
     content: typing.Optional[str] = None
     context: typing.Optional[str] = "Staff"  # TODO(for future usage add typing.Literal)
 
 
-@dataclasses.dataclass()
+@implicit
 class Markup(music_parameters.abc.NotationIndicator):
     content: typing.Optional[str] = None
     direction: typing.Optional[str] = None
 
 
-@dataclasses.dataclass()
+@implicit
 class RehearsalMark(music_parameters.abc.NotationIndicator):
     markup: typing.Optional[str] = None
-
-
-def f(factory):
-    return dataclasses.field(default_factory=factory)
-
-
-@dataclasses.dataclass
-class NotationIndicatorCollection(
-    music_parameters.abc.IndicatorCollection[music_parameters.abc.NotationIndicator]
-):
-    bar_line: BarLine = f(BarLine)
-    clef: Clef = f(Clef)
-    ottava: Ottava = f(Ottava)
-    margin_markup: MarginMarkup = f(MarginMarkup)
-    markup: Markup = f(Markup)
-    rehearsal_mark: RehearsalMark = f(RehearsalMark)
 
 
 # Dynamically define __all__ in order to catch all NotationIndicator classes

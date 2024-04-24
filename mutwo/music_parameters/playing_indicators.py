@@ -53,46 +53,97 @@ import typing
 from mutwo import music_parameters
 
 
-@dataclasses.dataclass()
+class PlayingIndicatorCollection(
+    music_parameters.abc.IndicatorCollection[music_parameters.abc.PlayingIndicator]
+):
+    """Collection of playing indicators"""
+
+    def __setattr__(self, parameter_name: str, value: bool):
+        """Overriding default behaviour to allow syntactic sugar.
+
+        This method allows syntax like:
+
+            playing_indicator_collection.tie = True
+
+        which is the same as
+
+            playing_indicator_collection.tie.is_active = True
+
+        Furthermore the methods makes sure that no property
+        can actually be overridden.
+        """
+        if (playing_indicator := getattr(self, parameter_name, None)) is not None:
+            if isinstance(
+                playing_indicator, music_parameters.abc.ExplicitPlayingIndicator
+            ):
+                playing_indicator.is_active = bool(value)
+                return
+        super().__setattr__(parameter_name, value)
+
+
+r = PlayingIndicatorCollection.register
+
+# Add explicit playing indicators
+for exp in (
+    "bartok_pizzicato",
+    "breath_mark",
+    "duration_line_dashed",
+    "duration_line_triller",
+    "flageolet",
+    "glissando",
+    "laissez_vibrer",
+    "optional",
+    "prall",
+    "tie",
+):
+    r(music_parameters.abc.ExplicitPlayingIndicator, exp)
+del exp
+
+
+implicit = lambda cls: r(dataclasses.dataclass()(cls))
+
+
+# Add implicit playing indicators
+@implicit
 class Tremolo(music_parameters.abc.ImplicitPlayingIndicator):
     flag_count: typing.Optional[int] = None
 
 
-@dataclasses.dataclass()
+@implicit
 class Articulation(music_parameters.abc.ImplicitPlayingIndicator):
     name: typing.Optional[music_parameters.constants.ARTICULATION_LITERAL] = None
 
 
-@dataclasses.dataclass()
+@implicit
 class Arpeggio(music_parameters.abc.ImplicitPlayingIndicator):
     direction: typing.Optional[music_parameters.constants.DIRECTION_LITERAL] = None
 
 
-@dataclasses.dataclass()
+@implicit
 class Pedal(music_parameters.abc.ImplicitPlayingIndicator):
     type: typing.Optional[music_parameters.constants.PEDAL_TYPE_LITERAL] = None
     activity: typing.Optional[bool] = True
 
 
-@dataclasses.dataclass()
+@implicit
 class Slur(music_parameters.abc.ImplicitPlayingIndicator):
     activity: typing.Optional[bool] = None
 
 
-@dataclasses.dataclass()
+@implicit
 class StringContactPoint(music_parameters.abc.ImplicitPlayingIndicator):
     contact_point: typing.Optional[
         music_parameters.constants.CONTACT_POINT_LITERAL
     ] = None
 
 
-@dataclasses.dataclass()
+@implicit
 class Ornamentation(music_parameters.abc.ImplicitPlayingIndicator):
     direction: typing.Optional[music_parameters.constants.DIRECTION_LITERAL] = None
     count: int = 1
 
 
-@dataclasses.dataclass()
+@implicit
 class BendAfter(music_parameters.abc.ImplicitPlayingIndicator):
     # Content music_parameters
     bend_amount: typing.Optional[float] = None
@@ -101,11 +152,12 @@ class BendAfter(music_parameters.abc.ImplicitPlayingIndicator):
     thickness: typing.Optional[float] = 3
 
 
-@dataclasses.dataclass()
+@implicit
 class ArtificalHarmonic(music_parameters.abc.ImplicitPlayingIndicator):
     semitone_count: typing.Optional[int] = None
 
 
+@implicit
 class NaturalHarmonicNodeList(
     list[music_parameters.NaturalHarmonic.Node], music_parameters.abc.PlayingIndicator
 ):
@@ -147,23 +199,23 @@ class NaturalHarmonicNodeList(
         return bool(self)
 
 
-@dataclasses.dataclass()
+@implicit
 class Fermata(music_parameters.abc.ImplicitPlayingIndicator):
     type: typing.Optional[music_parameters.constants.FERMATA_TYPE_LITERAL] = None
 
 
-@dataclasses.dataclass()
+@implicit
 class Hairpin(music_parameters.abc.ImplicitPlayingIndicator):
     symbol: typing.Optional[music_parameters.constants.HAIRPIN_SYMBOL_LITERAL] = None
     niente: bool = False
 
 
-@dataclasses.dataclass()
+@implicit
 class Trill(music_parameters.abc.ImplicitPlayingIndicator):
     pitch: typing.Optional[music_parameters.abc.Pitch] = None
 
 
-@dataclasses.dataclass()
+@implicit
 class WoodwindFingering(music_parameters.abc.ImplicitPlayingIndicator):
     cc: typing.Optional[typing.Tuple[str, ...]] = None
     left_hand: typing.Optional[typing.Tuple[str, ...]] = None
@@ -171,69 +223,11 @@ class WoodwindFingering(music_parameters.abc.ImplicitPlayingIndicator):
     instrument: str = "clarinet"
 
 
-@dataclasses.dataclass()
+@implicit
 class Cue(music_parameters.abc.ImplicitPlayingIndicator):
     """Cue for electronics etc."""
 
     index: typing.Optional[int] = None
-
-
-def f(factory=music_parameters.abc.ExplicitPlayingIndicator):
-    return dataclasses.field(default_factory=factory)
-
-
-@dataclasses.dataclass
-class PlayingIndicatorCollection(
-    music_parameters.abc.IndicatorCollection[music_parameters.abc.PlayingIndicator]
-):
-    articulation: Articulation = f(Articulation)
-    artifical_harmonic: ArtificalHarmonic = f(ArtificalHarmonic)
-    arpeggio: Arpeggio = f(Arpeggio)
-    bartok_pizzicato: music_parameters.abc.PlayingIndicator = f()
-    bend_after: BendAfter = f(BendAfter)
-    breath_mark: music_parameters.abc.PlayingIndicator = f()
-    cue: Cue = f(Cue)
-    duration_line_dashed: music_parameters.abc.PlayingIndicator = f()
-    duration_line_triller: music_parameters.abc.PlayingIndicator = f()
-    fermata: Fermata = f(Fermata)
-    flageolet: music_parameters.abc.PlayingIndicator = f()
-    glissando: music_parameters.abc.PlayingIndicator = f()
-    hairpin: Hairpin = f(Hairpin)
-    natural_harmonic_node_list: NaturalHarmonicNodeList = f(NaturalHarmonicNodeList)
-    laissez_vibrer: music_parameters.abc.PlayingIndicator = f()
-    optional: music_parameters.abc.PlayingIndicator = f()
-    ornamentation: Ornamentation = f(Ornamentation)
-    pedal: Pedal = f(Pedal)
-    prall: music_parameters.abc.PlayingIndicator = f()
-    slur: Slur = f(Slur)
-    string_contact_point: StringContactPoint = f(StringContactPoint)
-    tie: music_parameters.abc.PlayingIndicator = f()
-    tremolo: Tremolo = f(Tremolo)
-    trill: Trill = f(Trill)
-    woodwind_fingering: WoodwindFingering = f(WoodwindFingering)
-
-    def __setattr__(self, parameter_name: str, value: bool):
-        """Overriding default behaviour to allow syntactic sugar.
-
-        This method allows syntax like:
-
-            playing_indicator_collection.tie = True
-
-        which is the same as
-
-            playing_indicator_collection.tie.is_active = True
-
-        Furthermore the methods makes sure that no property
-        can actually be overridden.
-        """
-
-        if (playing_indicator := getattr(self, parameter_name, None)) is not None:
-            if isinstance(
-                playing_indicator, music_parameters.abc.ExplicitPlayingIndicator
-            ):
-                playing_indicator.is_active = bool(value)
-                return
-        super().__setattr__(parameter_name, value)
 
 
 # Dynamically define __all__ in order to catch all PlayingIndicator classes
