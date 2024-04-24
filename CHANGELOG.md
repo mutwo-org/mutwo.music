@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.27.0] - 2024-04-25
+
+This updates 'mutwo.music' to 'mutwo.core >= 2.0.0'.
+It also follows the same refactoring procedure as mutwo.core, if they apply here.
+
+### Added
+- `FlexPitch` and `FlexVolume`, see [here](https://github.com/mutwo-org/mutwo.music/commit/3a336f4cf9c9387453e99f52a1cc823ee4436992)
+
+### Changed
+- `Pitch.frequency` to `Pitch.hertz`. `PitchInterval.interval` to `PitchInterval.cents`, `Volume.amplitude` to `Volume.decibel`, `Lyric.phonetic_representation` to `Lyric.xsampa`, see [here](https://github.com/mutwo-org/mutwo.core/commit/9f08dcacc8e82a1bba3c69977a1f4f3b8e322f94) for rationale and [here](https://github.com/mutwo-org/mutwo.music/commit/6c8b416833196e8c4d3c9e4a6edaf69df85d516b) for actual change
+- `IndicatorCollection.get_all_indicator()` to `IndicatorCollection.indicator_tuple` and `IndicatorCollection.get_indicator_dict()` to `Indicator_collection.indicator_dict`, see [here](https://github.com/mutwo-org/mutwo.music/commit/92bf4975f1a30477f30687197540246503402642)
+- all `music_events.configurations.UNKNOWN_TO_OBJECT_TO_X` to `music_parameters.abc.X.from_any`, see [here](https://github.com/mutwo-org/mutwo.music/commit/500387bcac9db09f025f9e55b068970af5b9e44d)
+- `IndicatorCollection` from dataclass to registry supported class, see [here](https://github.com/mutwo-org/mutwo.music/commit/cc91c391878c4b0dfb8ec8658caf1b50ed48d3ef)
+
 ## [0.26.0] - 2023-12-27
 
 ### Added
@@ -17,7 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fix empty string in pitch parser of `NoteLike`, see [here](https://github.com/mutwo-org/mutwo.music/commit/9b01ba9126444e80d54991b5e0a33f2c217d1e62)
 
-### Chaned
+### Changed
 - `music_parameters.Pedal.pedal_type` to `music_parameters.Pedal.type` and `music_parameters.Pedal.pedal_activity` to `music_parameters.Pedal.activity`, see [here](https://github.com/mutwo-org/mutwo.music/commit/abc74d582c36d939e49cb7081ac5bc03a3e467be)
 - simplify pitch interval constants, see [here](https://github.com/mutwo-org/mutwo.music/commit/5fd03c01d7b0a4eca9f865011dc776dc885274ed)
 
