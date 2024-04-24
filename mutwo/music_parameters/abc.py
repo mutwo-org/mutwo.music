@@ -736,11 +736,11 @@ class IndicatorCollection(core_parameters.abc.Parameter, typing.Generic[T]):
 
     def __eq__(self, other: typing.Any):
         try:
-            indicator_dict1 = other.get_indicator_dict()
+            indicator_dict1 = other.indicator_dict
         except AttributeError:
             return False
 
-        indicator_dict0 = self.get_indicator_dict()
+        indicator_dict0 = self.indicator_dict
 
         # Ensure we have the same indicators in both collections
         key_set0 = set(indicator_dict0.keys())
@@ -756,10 +756,12 @@ class IndicatorCollection(core_parameters.abc.Parameter, typing.Generic[T]):
 
         return True
 
-    def get_all_indicator(self) -> tuple[T, ...]:
+    @property
+    def indicator_tuple(self) -> tuple[T, ...]:
         return tuple(getattr(self, key) for key in self._indicator_type_dict.keys())
 
-    def get_indicator_dict(self) -> dict[str, Indicator]:
+    @property
+    def indicator_dict(self) -> dict[str, Indicator]:
         return {key: getattr(self, key) for key in self._indicator_type_dict.keys()}
 
     @classmethod
