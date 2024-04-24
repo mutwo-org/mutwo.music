@@ -42,16 +42,16 @@ class GraceNotesConverter(core_converters.abc.EventConverter):
         receives as an input a :class:`~mutwo.core_events.Chronon`
         and returns a :class:`~mutwo.core_events.Consecution`.
         By default the function will ask the event for a
-        :attr:`~mutwo.events.music.NoteLike.grace_note_consecution`
-        attribute, because by default `~mutwo.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.grace_note_consecution`
+        attribute, because by default `~mutwo.music_events.NoteLike`
         objects are expected.
     :type chronon_to_grace_note_consecution: typing.Callable[[core_events.Chronon], core_events.Consecution[core_events.Chronon]]
     :param chronon_to_after_grace_note_consecution: Function which
         receives as an input a :class:`~mutwo.core_events.Chronon`
         and returns a :class:`~mutwo.core_events.Consecution`.
         By default the function will ask the event for a
-        :attr:`~mutwo.events.music.NoteLike.grace_note_consecution`
-        attribute, because by default `~mutwo.events.music.NoteLike`
+        :attr:`~mutwo.music_events.NoteLike.grace_note_consecution`
+        attribute, because by default `~mutwo.music_events.NoteLike`
         objects are expected.
     :type chronon_to_after_grace_note_consecution: typing.Callable[[core_events.Chronon], core_events.Consecution[core_events.Chronon]]
     """

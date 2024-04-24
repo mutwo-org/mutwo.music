@@ -1,6 +1,6 @@
 """Abstractions of `tuning commas <https://en.wikipedia.org/wiki/Comma_(music)>`_
 
-The tuning commas are helpful for :class:`mutwo.parameters.pitches.JustIntonationPitch`
+The tuning commas are helpful for :class:`mutwo.music_parameters.JustIntonationPitch`
 which owns a :attr:`commas` attribute. By default :mod:`mutwo` makes use of commas
 defined by the
 `Helmholtz-Ellis JI Pitch Notation <https://marsbat.space/pdfs/notation.pdf>`_.

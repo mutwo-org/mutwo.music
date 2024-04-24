@@ -1,7 +1,7 @@
 """Define playing indicators for chronons.
 
 This submodules provides several classes to add specific musical
-playing techniques to :class:`mutwo.events.basic.Chronon` objects.
+playing techniques to :class:`mutwo.core_events.Chronon` objects.
 They mostly derive from traditional Western playing techniques and their
 notation. Unlike indicators of the :mod:`mutwo.music_parameters.notation_indicators`
 module, playing indicators have an effect on the played music and aren't
@@ -9,7 +9,7 @@ merely specifications of representation. The proper way to handle
 playing  indicators should be via a :class:`PlayingIndicatorCollection`
 object that should be attached to the respective :class:`Chronon`.
 The collection contains all possible playing indicators which are defined
-in this module. :class:`mutwo.events.music.NoteLike` contain by default
+in this module. :class:`mutwo.music_events.NoteLike` contain by default
 a playing indicator collection.
 
 There are basically two different types of playing indicators:

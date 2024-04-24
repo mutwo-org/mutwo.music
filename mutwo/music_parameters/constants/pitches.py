@@ -13,7 +13,7 @@ from .diatonic_pitch_classes import (
 
 
 CENT_CALCULATION_CONSTANT = OCTAVE_IN_CENTS / (math.log10(2))
-"""constant used for cent calculation in mutwo.parameters.abc.Pitch"""
+"""constant used for cent calculation in mutwo.music_parameters.abc.Pitch"""
 
 ACCIDENTAL_NAME_TO_PITCH_CLASS_MODIFICATION_DICT = {
     # multiply with 2 because the difference of "1" in pitch
@@ -105,7 +105,7 @@ in :class:`mutwo.music_parameters.WesternPitch` (in property
 CHROMATIC_PITCH_CLASS_COUNT = 12
 """How many chromatic pitch classes exist"""
 
-# is used in mutwo.parameters.pitches.JustIntonationPitch
+# is used in mutwo.music_parameters.JustIntonationPitch
 DIATONIC_PITCH_NAME_CYCLE_OF_FIFTH_TUPLE = tuple("f c g d a e b".split(" "))
 """Diatonic pitch names sorted by cycle of fifths."""
 
