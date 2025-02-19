@@ -8,6 +8,7 @@ try:
 except ImportError:
     import fractions  # type: ignore
 
+from mutwo import core_utilities
 from mutwo import music_parameters
 
 
@@ -275,10 +276,18 @@ class VolumeFromAnyTest(unittest.TestCase, FromAnyTestMixin):
 
     def test_str_name(self):
         self._test("ff", self.w("ff"))
+        self._test("fp", self.w("fp"))
+
+    def test_str_number(self):
+        self._test("-6", self.d(-6))
+        self._test("0.32", self.a(0.32))
+
+    def test_str_list(self):
+        self._test("[[0, -6]]", self.f([[0, -6]]))
 
     def test_str_bad(self):
-        self._test_bad_input("Q", error=ValueError)
-        self._test_bad_input("???4", error=ValueError)
+        self._test_bad_input("Q", error=core_utilities.CannotParseError)
+        self._test_bad_input("???4", error=core_utilities.CannotParseError)
 
     def test_float(self):
         self._test(-6, self.d(-6))

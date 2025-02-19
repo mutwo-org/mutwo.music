@@ -498,11 +498,20 @@ class Volume(
                 else:
                     return music_parameters.DirectVolume(object)  # type: ignore
             case str():
-                return music_parameters.WesternVolume(object)
+                if object in music_parameters.constants.DYNAMIC_INDICATOR_TUPLE:
+                    return music_parameters.WesternVolume(object)
+                else:
+                    try:
+                        v = ast.literal_eval(object)
+                    except Exception:
+                        pass  # raise CannotParseError
+                    else:
+                        return cls.from_any(v)
             case list() | tuple():
                 return music_parameters.FlexVolume(object)
             case _:
-                raise core_utilities.CannotParseError(object, cls)
+                pass
+        raise core_utilities.CannotParseError(object, cls)
 
     # properties
     @property
