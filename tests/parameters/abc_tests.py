@@ -265,7 +265,6 @@ class VolumeTest(unittest.TestCase):
 class VolumeFromAnyTest(unittest.TestCase, FromAnyTestMixin):
     c = music_parameters.abc.Volume.from_any
 
-    a = music_parameters.AmplitudeVolume
     d = music_parameters.DirectVolume
     w = music_parameters.WesternVolume
     f = music_parameters.FlexVolume
@@ -280,7 +279,7 @@ class VolumeFromAnyTest(unittest.TestCase, FromAnyTestMixin):
 
     def test_str_number(self):
         self._test("-6", self.d(-6))
-        self._test("0.32", self.a(0.32))
+        self._test("0.32", self.d(0.32))
 
     def test_str_list(self):
         self._test("[[0, -6]]", self.f([[0, -6]]))
@@ -291,7 +290,7 @@ class VolumeFromAnyTest(unittest.TestCase, FromAnyTestMixin):
 
     def test_float(self):
         self._test(-6, self.d(-6))
-        self._test(0.32, self.a(0.32))
+        self._test(0.32, self.d(0.32))
 
     def test_list(self):
         self._test([[0, -6]], self.f([[0, -6]]))

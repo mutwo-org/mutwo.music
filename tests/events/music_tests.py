@@ -80,15 +80,9 @@ class NoteLikeTest(unittest.TestCase):
         volume = music_parameters.DirectVolume(-6)
         self.assertEqual(volume, music_events.NoteLike(None, 1, volume).volume)
 
-    def test_volume_setter_from_positive_number(self):
-        amplitude = 0.5
-        volume = music_parameters.AmplitudeVolume(amplitude)
-        self.assertEqual(volume, music_events.NoteLike(None, 1, amplitude).volume)
-
-    def test_volume_setter_from_negative_number(self):
-        n_decibel = -12
-        volume = music_parameters.DirectVolume(n_decibel)
-        self.assertEqual(volume, music_events.NoteLike(None, 1, n_decibel).volume)
+    def test_volume_setter_from_number(self):
+        volume = music_parameters.DirectVolume(-12)
+        self.assertEqual(volume, music_events.NoteLike(None, 1, -12).volume)
 
     # ###################################################################### #
     #                   test grace notes setter                              #

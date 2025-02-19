@@ -493,10 +493,7 @@ class Volume(
             case music_parameters.abc.Volume():
                 return object
             case numbers.Real():
-                if object >= 0:  # type: ignore
-                    return music_parameters.AmplitudeVolume(object)  # type: ignore
-                else:
-                    return music_parameters.DirectVolume(object)  # type: ignore
+                return music_parameters.DirectVolume(object)  # type: ignore
             case str():
                 if object in music_parameters.constants.DYNAMIC_INDICATOR_TUPLE:
                     return music_parameters.WesternVolume(object)
