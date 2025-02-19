@@ -195,7 +195,7 @@ class GraceNotesConverter(core_converters.abc.EventConverter):
 
         return grace_note_consecution
 
-    def _convert_simultaneous_event(
+    def _convert_concurrence(
         self,
         simultaneous_event: core_events.Concurrence,
         absolute_entry_delay: core_parameters.abc.Duration.Type,
