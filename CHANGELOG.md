@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.28.0] - 2025-02-19
+
+### Changed
+- `parameters/Pitch.from_any`: parse numbers as frequency and not as pitch class, see [here](https://github.com/mutwo-org/mutwo.music/commit/81011b9fe3400a5135ffae460de608d330539f75)
+- `parameters/Volume.from_any`: allow parsing strings not only for WesternVolume, see [here](https://github.com/mutwo-org/mutwo.music/commit/1dd5aebce2a8b53d4e0b4fe015c5d0ebacaf3e7f)
+- `parameters/Volume.from_any`: always interpret all numbers as decibels, see [here](https://github.com/mutwo-org/mutwo.music/commit/39f7da6fd9cb80a78240e0443fc1ea7767db5340)
+
+### Fixed
+- `converters/GraceNotesConverter`: Fix conversion of concurrences, see [here](https://github.com/mutwo-org/mutwo.music/commit/7456740348d3be16a1ffc57b49851ef9b053c129)
+
+
 ## [0.27.0] - 2024-04-25
 
 This updates 'mutwo.music' to 'mutwo.core >= 2.0.0'.
@@ -20,6 +31,7 @@ It also follows the same refactoring procedure as mutwo.core, if they apply here
 - `IndicatorCollection.get_all_indicator()` to `IndicatorCollection.indicator_tuple` and `IndicatorCollection.get_indicator_dict()` to `Indicator_collection.indicator_dict`, see [here](https://github.com/mutwo-org/mutwo.music/commit/92bf4975f1a30477f30687197540246503402642)
 - all `music_events.configurations.UNKNOWN_TO_OBJECT_TO_X` to `music_parameters.abc.X.from_any`, see [here](https://github.com/mutwo-org/mutwo.music/commit/500387bcac9db09f025f9e55b068970af5b9e44d)
 - `IndicatorCollection` from dataclass to registry supported class, see [here](https://github.com/mutwo-org/mutwo.music/commit/cc91c391878c4b0dfb8ec8658caf1b50ed48d3ef)
+
 
 ## [0.26.0] - 2023-12-27
 
