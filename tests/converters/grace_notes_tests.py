@@ -33,7 +33,7 @@ class GraceNotesConverterTest(unittest.TestCase):
         )
 
     def test_convert_consecution(self):
-        consecution = core_events.Consecution(
+        cns = core_events.Consecution(
             [
                 music_events.NoteLike("a"),
                 music_events.NoteLike(
@@ -44,10 +44,10 @@ class GraceNotesConverterTest(unittest.TestCase):
                 ),
             ]
         )
-        converted_sequental_event = self.grace_notes_converter.convert(consecution)
-        self.assertEqual(consecution.duration, converted_sequental_event.duration)
+        converted_cns = self.grace_notes_converter.convert(cns)
+        self.assertEqual(cns.duration, converted_cns.duration)
         self.assertEqual(
-            len(converted_sequental_event), 3  # two main events + one after grace note
+            len(converted_cns), 3  # two main events + one after grace note
         )
 
 
