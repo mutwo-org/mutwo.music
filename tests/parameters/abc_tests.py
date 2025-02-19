@@ -111,12 +111,21 @@ class PitchFromAnyTest(unittest.TestCase, FromAnyTestMixin):
         self._test("c4", self.w("c", octave=4))
         self._test("fss", self.w("fss"))
 
+    def test_str_float(self):
+        self._test("440.4", self.d(440.4))
+
+    def test_str_int(self):
+        self._test("440", self.d(440))
+
     def test_str_bad(self):
         self._test_bad_input("Q")
         self._test_bad_input("???4")
 
     def test_float(self):
-        self._test(1, self.w(1))
+        self._test(440.4, self.d(440.4))
+
+    def test_int(self):
+        self._test(440, self.d(440))
 
     def test_list(self):
         self._test([[0, "c"]], self.f([[0, "c"]]))

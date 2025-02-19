@@ -11,6 +11,7 @@ newly created parameter class.
 from __future__ import annotations
 
 import abc
+import ast
 import copy
 import dataclasses
 import functools
@@ -205,10 +206,17 @@ class Pitch(
                         return music_parameters.WesternPitch(pitch_name, octave)
                     else:
                         return music_parameters.WesternPitch(object)
+                else:  # assume it's a number in a string
+                    try:
+                        v = ast.literal_eval(object)
+                    except Exception:
+                        pass  # raise CannotParseError
+                    else:
+                        return cls.from_any(v)
             case fractions.Fraction() | builtin_fraction():
                 return music_parameters.JustIntonationPitch(object)
             case float() | int():
-                return music_parameters.WesternPitch(object)
+                return music_parameters.DirectPitch(object)
             case list() | tuple():
                 return music_parameters.FlexPitch(object)
             case _:
