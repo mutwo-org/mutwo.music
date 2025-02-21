@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 
 from mutwo import core_constants
-from mutwo import core_utilities
 from mutwo import music_parameters
 
 __all__ = (
