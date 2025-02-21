@@ -158,6 +158,26 @@ class PitchListFromAnyTest(unittest.TestCase, FromAnyTestMixin):
         self._test("c4 3/2", [self.w("c"), self.j("3/2")])
 
 
+class PitchIntervalFromAnyTest(unittest.TestCase, FromAnyTestMixin):
+    c = music_parameters.abc.PitchInterval.from_any
+
+    d = music_parameters.DirectPitchInterval
+    w = music_parameters.WesternPitchInterval
+    j = music_parameters.JustIntonationPitch
+
+    def test_pitch_interval(self):
+        self._test(self.w("p4"), self.w("p4"))
+
+    def test_str(self):
+        self._test("3/2", self.j("3/2"))
+        self._test("p4", self.w("p4"))
+        self._test("-56", self.d(-56))
+
+    def test_number(self):
+        self._test(200, self.d(200))
+        self._test(-10.4, self.d(-10.4))
+
+
 class VolumeTest(unittest.TestCase):
     def test_decibel_to_amplitude_ratio(self):
         self.assertEqual(

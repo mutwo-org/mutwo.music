@@ -65,6 +65,8 @@ class PitchInterval(
     for definition of 'cents'.
     """
 
+    Type: typing.TypeAlias = typing.Union[float, int, str, "PitchInterval"]
+
     def __repr__(self) -> str:
         return str(self)
 
@@ -81,6 +83,30 @@ class PitchInterval(
 
     def __sub__(self, other: PitchInterval) -> PitchInterval:
         return music_parameters.DirectPitchInterval(self.cents - other.cents)
+
+    @classmethod
+    def from_any(cls, object: PitchInterval.Type) -> PitchInterval:
+        match object:
+            case PitchInterval():
+                return object
+            case int() | float():
+                return music_parameters.DirectPitchInterval(object)
+            case str():
+                if "/" in object:
+                    return music_parameters.JustIntonationPitch(object)
+                try:
+                    return music_parameters.WesternPitchInterval(object)
+                except Exception:
+                    f = core_utilities.str_to_number_parser(object)
+                    try:
+                        v = f(object)
+                    except ValueError:
+                        pass
+                    else:
+                        return cls.from_any(v)
+            case _:
+                pass
+        raise core_utilities.CannotParseError(object, cls)
 
 
 class Pitch(
