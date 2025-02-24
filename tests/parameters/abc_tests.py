@@ -24,31 +24,6 @@ class FromAnyTestMixin(object):
 
 
 class PitchTest(unittest.TestCase):
-    class GenericPitch(music_parameters.abc.Pitch):
-        """Pitch only for UnitTest with minimal functionality"""
-
-        def __init__(self, frequency: float, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self._frequency = frequency
-
-        @property
-        def frequency(self) -> float:
-            return self._frequency
-
-        def add(self, pitch_interval: music_parameters.PitchInterval) -> GenericPitch:
-            self._frequency = (
-                self.cents_to_ratio(pitch_interval.interval) * self.frequency
-            )
-            return self
-
-        def subtract(
-            self, pitch_interval: music_parameters.PitchInterval
-        ) -> GenericPitch:
-            self._frequency = self.frequency / self.cents_to_ratio(
-                pitch_interval.interval
-            )
-            return self
-
     def test_abstract_error(self):
         self.assertRaises(TypeError, music_parameters.abc.Pitch)
 
