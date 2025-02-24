@@ -40,10 +40,11 @@ class MidiPitch(music_parameters.abc.Pitch):
     def midi_pitch_number(self, new_midi_pitch_number: float):
         self._midi_pitch_number = new_midi_pitch_number
 
-    def add(
-        self, pitch_interval: music_parameters.abc.PitchInterval
-    ) -> MidiPitch:
+    def add(self, pitch_interval: music_parameters.abc.PitchInterval.Type) -> MidiPitch:
         self.midi_pitch_number = self.hertz_to_midi_pitch_number(
-            self.cents_to_ratio(pitch_interval.cents) * self.hertz
+            self.cents_to_ratio(
+                music_parameters.abc.PitchInterval.from_any(pitch_interval).cents
+            )
+            * self.hertz
         )
         return self

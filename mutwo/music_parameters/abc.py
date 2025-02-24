@@ -264,16 +264,18 @@ class Pitch(
     # ###################################################################### #
 
     @abc.abstractmethod
-    def add(self, pitch_interval: PitchInterval) -> Pitch:
+    def add(self, pitch_interval: PitchInterval.Type) -> Pitch:
         ...
 
-    def subtract(self, pitch_interval: music_parameters.abc.PitchInterval) -> Pitch:
-        return self.add(music_parameters.DirectPitchInterval(-pitch_interval.cents))
+    def subtract(
+        self, pitch_interval: music_parameters.abc.PitchInterval.Type
+    ) -> Pitch:
+        return self.add(PitchInterval.from_any(pitch_interval).inverse())
 
-    def __add__(self, pitch_interval: PitchInterval) -> Pitch:
+    def __add__(self, pitch_interval: PitchInterval.Type) -> Pitch:
         return self.copy().add(pitch_interval)
 
-    def __sub__(self, pitch_interval: PitchInterval) -> Pitch:
+    def __sub__(self, pitch_interval: PitchInterval.Type) -> Pitch:
         return self.copy().subtract(pitch_interval)
 
     def get_pitch_interval(self, pitch_to_compare: Pitch) -> PitchInterval:

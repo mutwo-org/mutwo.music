@@ -99,18 +99,6 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
                 f" = {self.n_pitch_classes_per_octave - 1})."
             )
 
-    def _fetch_n_pitch_classes_difference(
-        self,
-        pitch_interval: music_parameters.abc.PitchInterval | core_constants.Real,
-    ) -> core_constants.Real:
-        if isinstance(
-            pitch_interval,
-            music_parameters.abc.PitchInterval,
-        ):
-            return pitch_interval.cents / self.n_cents_per_step
-        else:
-            return pitch_interval
-
     def _math(
         self,
         n_pitch_classes_difference: core_constants.Real,
@@ -118,10 +106,13 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
             [core_constants.Real, core_constants.Real], core_constants.Real
         ],
     ) -> None:
-        new_pitch_class = operator(self.pitch_class, n_pitch_classes_difference)
-        n_octaves_difference = new_pitch_class // self.n_pitch_classes_per_octave
+        # Round to avoid floating point errors
+        new_pitch_class = core_utilities.round_floats(
+            operator(self.pitch_class, n_pitch_classes_difference), 10
+        )
+        octave_delta = new_pitch_class // self.n_pitch_classes_per_octave
         new_pitch_class = new_pitch_class % self.n_pitch_classes_per_octave
-        new_octave = self.octave + n_octaves_difference
+        new_octave = self.octave + octave_delta
         self.pitch_class = new_pitch_class
         self.octave = int(new_octave)
 
@@ -199,24 +190,22 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
     # ###################################################################### #
 
     def add(
-        self, pitch_interval: music_parameters.abc.PitchInterval | core_constants.Real
-    ) -> EqualDividedOctavePitch:  # type: ignore
-        """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""
-
-        n_pitch_classes_difference = self._fetch_n_pitch_classes_difference(
-            pitch_interval
+        self, pitch_interval: music_parameters.abc.PitchInterval.Type
+    ) -> EqualDividedOctavePitch:
+        self._math(
+            music_parameters.abc.PitchInterval.from_any(pitch_interval).cents
+            / self.n_cents_per_step,
+            operator.add,
         )
-        self._math(n_pitch_classes_difference, operator.add)
         return self
 
-    def subtract(
-        self, pitch_interval: music_parameters.abc.PitchInterval | core_constants.Real
-    ) -> EqualDividedOctavePitch:  # type: ignore
-        """Transposes the ``EqualDividedOctavePitch`` by n_pitch_classes_difference."""
-        if isinstance(
-            pitch_interval,
-            music_parameters.abc.PitchInterval,
-        ):
-            return super().subtract(pitch_interval)  # type: ignore
-        else:
-            return self.add(-pitch_interval)
+    def add_pitch_class_delta(
+        self, pitch_class_delta: core_constants.Real
+    ) -> EqualDividedOctavePitch:
+        self._math(pitch_class_delta, operator.add)
+        return self
+
+    def subtract_pitch_class_delta(
+        self, pitch_class_delta: core_constants.Real
+    ) -> EqualDividedOctavePitch:
+        return self.add_pitch_class_delta(-pitch_class_delta)

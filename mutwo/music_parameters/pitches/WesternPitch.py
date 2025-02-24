@@ -202,6 +202,7 @@ class WesternPitch(EqualDividedOctavePitch):
                 music_parameters.constants.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT.keys()
             ),
         )
+
         closest_accidental = (
             music_parameters.constants.PITCH_CLASS_MODIFICATION_TO_ACCIDENTAL_NAME_DICT[
                 closest_pitch_class_modification
@@ -263,23 +264,19 @@ class WesternPitch(EqualDividedOctavePitch):
     # ###################################################################### #
 
     def _parse_pitch_interval(
-        self,
-        pitch_interval: str | music_parameters.abc.PitchInterval | core_constants.Real,
-    ) -> (
-        music_parameters.abc.PitchInterval
-        | core_constants.Real
-        | music_parameters.abc.PitchInterval
-    ):
-        if isinstance(pitch_interval, str):
-            pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
-        elif isinstance(pitch_interval, core_constants.Real.__args__ + (int,)):
+        self, pitch_interval: music_parameters.abc.PitchInterval.Type
+    ) -> music_parameters.abc.PitchInterval:
+        if (
+            isinstance(pitch_interval, core_constants.Real.__args__ + (int,))
             # Only convert to western pitch interval in case the interval isn't
             # microtonal (because WesternPitchInterval doesn't support
             # microtonality). 0.001 (= 0.1 cents) are set in case for
             # floating point errors.
-            if abs(round(pitch_interval) - pitch_interval) < 0.001:
-                pitch_interval = music_parameters.WesternPitchInterval(pitch_interval)
-        return pitch_interval
+            and abs(round(pitch_interval) - pitch_interval) < 0.001
+        ):
+            return music_parameters.WesternPitchInterval(pitch_interval)
+        else:
+            return music_parameters.abc.PitchInterval.from_any(pitch_interval)
 
     def _get_new_diatonic_pitch_class_name_and_octave_count(
         self, western_pitch_interval_to_add: music_parameters.WesternPitchInterval
@@ -464,24 +461,26 @@ class WesternPitch(EqualDividedOctavePitch):
 
     def add(
         self,
-        pitch_interval: str | music_parameters.abc.PitchInterval | core_constants.Real,
+        pitch_interval: music_parameters.abc.PitchInterval.Type,
     ) -> WesternPitch:  # type: ignore
         pitch_interval = self._parse_pitch_interval(pitch_interval)
-        if isinstance(pitch_interval, music_parameters.WesternPitchInterval):
-            self._add_western_pitch_interval(pitch_interval)
-        else:
-            return super().add(pitch_interval)  # type: ignore
-        return self
+        match pitch_interval:
+            case music_parameters.WesternPitchInterval():
+                self._add_western_pitch_interval(pitch_interval)
+                return self
+            case _:
+                return super().add(pitch_interval)  # type: ignore
 
     def subtract(
         self,
-        pitch_interval: str | music_parameters.abc.PitchInterval | core_constants.Real,
+        pitch_interval: music_parameters.abc.PitchInterval.Type,
     ) -> WesternPitch:  # type: ignore
         pitch_interval = self._parse_pitch_interval(pitch_interval)
-        if isinstance(pitch_interval, music_parameters.WesternPitchInterval):
-            return self.add(pitch_interval.copy().inverse())
-        else:
-            return super().subtract(pitch_interval)  # type: ignore
+        match pitch_interval:
+            case music_parameters.WesternPitchInterval():
+                return self.add(pitch_interval.copy().inverse())
+            case _:
+                return super().subtract(pitch_interval)  # type: ignore
 
     def _get_western_pitch_interval(
         self, pitch_to_compare: music_parameters.WesternPitch

@@ -33,6 +33,11 @@ class DirectPitch(music_parameters.abc.Pitch):
     def __repr__(self) -> str:
         return "DirectPitch(hertz = {})".format(self.hertz)
 
-    def add(self, pitch_interval: music_parameters.abc.PitchInterval) -> DirectPitch:
-        self._hertz = self.cents_to_ratio(pitch_interval.cents) * self.hertz
+    def add(self, pitch_interval: music_parameters.abc.PitchInterval.Type) -> DirectPitch:
+        self._hertz = (
+            self.cents_to_ratio(
+                music_parameters.abc.PitchInterval.from_any(pitch_interval).cents
+            )
+            * self.hertz
+        )
         return self

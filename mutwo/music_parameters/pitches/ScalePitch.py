@@ -60,9 +60,11 @@ class ScalePitch(music_parameters.abc.Pitch):
         return self.scale_pitch.hertz
 
     def add(
-        self, pitch_interval: music_parameters.abc.PitchInterval
+        self, pitch_interval: music_parameters.abc.PitchInterval.Type
     ) -> ScalePitch:
-        p = self.scale_pitch.copy().add(pitch_interval)
+        p = self.scale_pitch.copy().add(
+            music_parameters.abc.PitchInterval.from_any(pitch_interval)
+        )
         if p not in self.scale.pitch_tuple:
             raise RuntimeError(f"Pitch '{p}' isn't part of reference scale.")
         self.scale_degree, self.octave = self.scale.pitch_to_scale_position(p)

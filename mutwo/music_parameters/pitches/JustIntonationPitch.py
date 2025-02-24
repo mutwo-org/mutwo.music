@@ -1076,7 +1076,7 @@ class JustIntonationPitch(
         return self
 
     def add(
-        self, pitch_interval: music_parameters.abc.PitchInterval
+        self, pitch_interval: music_parameters.abc.PitchInterval.Type
     ) -> JustIntonationPitch:
         """Add :class:`JustIntonationPitch` to current pitch.
 
@@ -1092,6 +1092,7 @@ class JustIntonationPitch(
         >>> p
         JustIntonationPitch('9/4')
         """
+        pitch_interval = music_parameters.abc.PitchInterval.from_any(pitch_interval)
         if isinstance(pitch_interval, JustIntonationPitch):
             self._math(pitch_interval, operator.add)
         else:
@@ -1101,7 +1102,7 @@ class JustIntonationPitch(
         return self
 
     def subtract(
-        self, pitch_interval: music_parameters.abc.PitchInterval
+        self, pitch_interval: music_parameters.abc.PitchInterval.Type
     ) -> JustIntonationPitch:
         """Subtract :class:`JustIntonationPitch` from current pitch.
 
@@ -1117,7 +1118,7 @@ class JustIntonationPitch(
         >>> p
         JustIntonationPitch('3/2')
         """
-
+        pitch_interval = music_parameters.abc.PitchInterval.from_any(pitch_interval)
         if isinstance(pitch_interval, JustIntonationPitch):
             self._math(pitch_interval, operator.sub)
         else:

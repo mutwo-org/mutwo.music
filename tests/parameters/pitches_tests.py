@@ -59,6 +59,14 @@ class MidiPitch_Test(unittest.TestCase):
 
 
 class EqualDividedOctavePitch_Test(unittest.TestCase):
+    @staticmethod
+    def pitch(
+        pitch_class, octave=0, concert_pitch_pitch_class=0, concert_pitch_octave=0
+    ):
+        return music_parameters.EqualDividedOctavePitch(
+            12, pitch_class, octave, concert_pitch_pitch_class, concert_pitch_octave, 0
+        )
+
     def test_false_pitch_class(self):
         self.assertRaises(
             ValueError,
@@ -101,29 +109,40 @@ class EqualDividedOctavePitch_Test(unittest.TestCase):
         self.assertEqual(pitch2 - pitch1, 11)
         self.assertRaises(ValueError, lambda: pitch3 - pitch1)
 
-    def test_add(self):
-        pitch0 = music_parameters.EqualDividedOctavePitch(12, 7, 0, 0, 0)
-        pitch1 = music_parameters.EqualDividedOctavePitch(12, 1, 0, 0, 0)
-        pitch2 = music_parameters.EqualDividedOctavePitch(12, 0, 1, 0, 0)
-        pitch3 = music_parameters.EqualDividedOctavePitch(12, 11, -1, 0, 0)
-        pitch4 = music_parameters.EqualDividedOctavePitch(12, 0, 0, 0, 0)
-        pitch4.add(-1)
-        self.assertEqual(pitch0.copy().add(-6), pitch1)
-        self.assertEqual(pitch0.copy().add(5), pitch2)
-        self.assertEqual(pitch0.copy().add(-8), pitch3)
-        self.assertEqual(pitch4, pitch3)
+    def test_add_and_subtract(self):
+        def t(operation, pitch_interval, *args):
+            self.assertEqual(
+                getattr(self.pitch(7), operation)(pitch_interval), self.pitch(*args)
+            )
 
-    def test_subtract(self):
-        pitch0 = music_parameters.EqualDividedOctavePitch(12, 7, 0, 0, 0)
-        pitch1 = music_parameters.EqualDividedOctavePitch(12, 1, 0, 0, 0)
-        pitch2 = music_parameters.EqualDividedOctavePitch(12, 0, 1, 0, 0)
-        pitch3 = music_parameters.EqualDividedOctavePitch(12, 11, -1, 0, 0)
-        pitch4 = music_parameters.EqualDividedOctavePitch(12, 0, 0, 0, 0)
-        pitch4.subtract(1)
-        self.assertEqual(pitch0.copy().subtract(6), pitch1)
-        self.assertEqual(pitch0.copy().subtract(-5), pitch2)
-        self.assertEqual(pitch0.copy().subtract(8), pitch3)
-        self.assertEqual(pitch4, pitch3)
+        _ = lambda *args: t("add", *args)
+        _(100, 8)
+        _(-100, 6)
+        _("m2", 8)
+        _(500, 0, 1)
+        _(music_parameters.DirectPitchInterval(-800), 11, -1)
+
+        _ = lambda *args: t("subtract", *args)
+        _(-100, 8)
+        _(100, 6)
+        _("m-2", 8)
+        _(-500, 0, 1)
+        _(music_parameters.DirectPitchInterval(800), 11, -1)
+
+    def test_add_and_subtract_pitch_class_delta(self):
+        def t(operation, delta, *args):
+            self.assertEqual(
+                getattr(self.pitch(7), operation)(delta), self.pitch(*args)
+            )
+
+        _ = lambda *args: t("add_pitch_class_delta", *args)
+        _(-6, 1)
+        _(5, 0, 1)
+        _(-8, 11, -1)
+
+        _ = lambda *args: t("subtract_pitch_class_delta", *args)
+        _(6, 1)
+        _(-5, 0, 1)
 
 
 class WesternPitchTest(unittest.TestCase):
