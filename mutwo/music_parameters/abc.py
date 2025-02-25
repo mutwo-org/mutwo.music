@@ -818,7 +818,7 @@ class IndicatorCollection(core_parameters.abc.Parameter, typing.Generic[T]):
             case str():
                 return music_utilities.IndicatorCollectionParser().parse(object, cls())
             case _:
-                raise NotImplementedError(f"Can't build {cls.__name__} from '{object}'")
+                raise core_utilities.CannotParseError(object, cls)
 
     @classmethod
     def register(
