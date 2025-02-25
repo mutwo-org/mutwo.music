@@ -99,16 +99,6 @@ class EqualDividedOctavePitch_Test(unittest.TestCase):
             pitch1.hertz,
         )
 
-    def test_magic_method_sub(self):
-        pitch0 = music_parameters.EqualDividedOctavePitch(12, 7, 0, 0, 0)
-        pitch1 = music_parameters.EqualDividedOctavePitch(12, 1, 0, 0, 0)
-        pitch2 = music_parameters.EqualDividedOctavePitch(12, 0, 1, 0, 0)
-        pitch3 = music_parameters.EqualDividedOctavePitch(24, 1, 0, 0, 0)
-        self.assertEqual(pitch0 - pitch1, 6)
-        self.assertEqual(pitch2 - pitch0, 5)
-        self.assertEqual(pitch2 - pitch1, 11)
-        self.assertRaises(ValueError, lambda: pitch3 - pitch1)
-
     def test_add_and_subtract(self):
         def t(operation, pitch_interval, *args):
             self.assertEqual(

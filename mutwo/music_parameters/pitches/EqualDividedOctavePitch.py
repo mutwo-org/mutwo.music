@@ -60,28 +60,6 @@ class EqualDividedOctavePitch(music_parameters.abc.Pitch):
         self.concert_pitch = concert_pitch  # type: ignore
 
     # ###################################################################### #
-    #                          magic methods                                 #
-    # ###################################################################### #
-
-    def __sub__(self, other: EqualDividedOctavePitch) -> core_constants.Real:
-        """Calculates the interval between two ``EqualDividedOctave`` pitches."""
-
-        try:
-            assert self.n_pitch_classes_per_octave == other.n_pitch_classes_per_octave
-        except AssertionError:
-            raise ValueError(
-                "Can't calculate the interval between to different"
-                " EqualDividedOctavePitch objects with different value for"
-                " 'n_pitch_classes_per_octave'."
-            )
-
-        n_pitch_classes_difference = self.pitch_class - other.pitch_class
-        n_octaves_difference = self.octave - other.octave
-        return n_pitch_classes_difference + (
-            n_octaves_difference * self.n_pitch_classes_per_octave
-        )
-
-    # ###################################################################### #
     #                          private methods                               #
     # ###################################################################### #
 
