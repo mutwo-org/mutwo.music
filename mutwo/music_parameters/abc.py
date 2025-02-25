@@ -264,8 +264,7 @@ class Pitch(
     # ###################################################################### #
 
     @abc.abstractmethod
-    def add(self, pitch_interval: PitchInterval.Type) -> Pitch:
-        ...
+    def add(self, pitch_interval: PitchInterval.Type) -> Pitch: ...
 
     def subtract(
         self, pitch_interval: music_parameters.abc.PitchInterval.Type
@@ -576,8 +575,7 @@ class PitchAmbitus(core_parameters.abc.Parameter):
     # ######################################################## #
 
     @abc.abstractmethod
-    def pitch_to_period(self, pitch: Pitch) -> PitchInterval:
-        ...
+    def pitch_to_period(self, pitch: Pitch) -> PitchInterval: ...
 
     # ######################################################## #
     #                     magic methods                        #
@@ -694,8 +692,7 @@ class PitchAmbitus(core_parameters.abc.Parameter):
 class Indicator(core_parameters.abc.Parameter):
     @property
     @abc.abstractmethod
-    def is_active(self) -> bool:
-        ...
+    def is_active(self) -> bool: ...
 
     def get_arguments_dict(self) -> dict[str, typing.Any]:
         return {
@@ -955,13 +952,11 @@ class PitchedInstrument(Instrument):
         )
 
     @abc.abstractmethod
-    def __contains__(self, pitch: typing.Any) -> bool:
-        ...
+    def __contains__(self, pitch: typing.Any) -> bool: ...
 
     @property
     @abc.abstractmethod
-    def pitch_ambitus(self) -> music_parameters.abc.PitchAmbitus:
-        ...
+    def pitch_ambitus(self) -> music_parameters.abc.PitchAmbitus: ...
 
     @property
     def is_pitched(self) -> bool:
