@@ -129,7 +129,7 @@ class String(object):
         This is useful in case one wants to notate the fingering
         of a harmonic and not the sounding result. The ``pitch``
         attribute of :class:`NaturalHarmonic.Node` uses `tuning_original`
-        for calculation instead of `tuning. If `tuning_original`
+        for calculation instead of `tuning`. If `tuning_original`
         is ``None`` it is auto-set to `tuning`. Default to ``None``.
     :type tuning_original: typing.Optional[music_parameters.abc.Pitch]
     :param max_natural_harmonic_index: Although we can imagine infinite
@@ -137,8 +137,8 @@ class String(object):
         easy to play higher flageolet. It's therefore a good idea
         to denote a limit of the highest natural harmonic. This
         limit defines the highest :class:`NaturalHarmonic` which is
-        returned when accessing :class:`String`s
-        ``natural_harmonic_tuple`` property. No matter what is
+        returned when accessing the ``natural_harmonic_tuple``
+        property of :class:`String`. No matter what is
         set to ``max_natural_harmonic_index``, you can still get
         infinitely high :class:`NaturalHarmonic` of a :class:`String`
         with its ``index_to_natural_harmonic`` method. Default to 6.
