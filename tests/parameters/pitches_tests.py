@@ -89,13 +89,13 @@ class EqualDividedOctavePitch_Test(unittest.TestCase):
         pitch0 = music_parameters.EqualDividedOctavePitch(12, 0, 1, 0, 0)
         pitch1 = music_parameters.EqualDividedOctavePitch(6, 0, -1, 0, 0)
         self.assertAlmostEqual(
-            (pitch0.step_factor**pitch0.n_pitch_classes_per_octave)
+            (pitch0.step_factor**pitch0.pitch_class_count)
             * pitch0.concert_pitch.hertz,
             pitch0.hertz,
         )
         self.assertAlmostEqual(
             pitch1.concert_pitch.hertz
-            / (pitch1.step_factor**pitch1.n_pitch_classes_per_octave),
+            / (pitch1.step_factor**pitch1.pitch_class_count),
             pitch1.hertz,
         )
 
