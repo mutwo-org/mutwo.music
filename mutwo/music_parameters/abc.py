@@ -314,9 +314,12 @@ class PitchList(core_parameters.abc.Parameter, list[Pitch]):
             case list() | tuple():
                 return [Pitch.from_any(p) for p in object]
             case str():
+                # BBB: In old versions of mutwo.music, empty space was used
+                # as a separator.
+                object = object.replace(" ", ",")
                 return [
                     Pitch.from_any(pitch_indication)
-                    for pitch_indication in object.split(" ")
+                    for pitch_indication in object.split(",")
                     if pitch_indication
                 ]
             case _:
