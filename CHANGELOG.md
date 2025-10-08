@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.29.0] - 2025-10-08
+
+### Added
+- parsing `PitchInterval` from number & string, see [here](https://github.com/mutwo-org/mutwo.music/commit/518f7a924f3190d6e5f0d12ff611389c850e827c)
+
+### Changed
+- default separator of pitches in string pitch lists from " " (empty space) to ",", see [here](https://github.com/mutwo-org/mutwo.music/commit/9a66701673f269f866454e95f24434c0cfb40183)
+- `EqualDividedOctavePitch.n_pitch_classes_per_octave` to  `EqualDividedOctavePitch.pitch_class_count` and `EqualDividedOctavePitch.n_cents_per_step` to  `EqualDividedOctavePitch.step_size`, see [here](https://github.com/mutwo-org/mutwo.music/commit/6567922f41fae9e9421fb7308607dc05f7141dc1)
+
+### Fixed
+- inconsistency with abc.Pitch API, see [here](https://github.com/mutwo-org/mutwo.music/commit/b33e333985edfeb52865e004edb04e507aa45a4a)
+
+
 ## [0.28.0] - 2025-02-19
 
 ### Changed
