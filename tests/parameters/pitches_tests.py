@@ -1,6 +1,5 @@
 import unittest
 
-
 try:
     import quicktions as fractions  # type: ignore
 except ImportError:
@@ -89,13 +88,11 @@ class EqualDividedOctavePitch_Test(unittest.TestCase):
         pitch0 = music_parameters.EqualDividedOctavePitch(12, 0, 1, 0, 0)
         pitch1 = music_parameters.EqualDividedOctavePitch(6, 0, -1, 0, 0)
         self.assertAlmostEqual(
-            (pitch0.step_factor**pitch0.pitch_class_count)
-            * pitch0.concert_pitch.hertz,
+            (pitch0.step_factor**pitch0.pitch_class_count) * pitch0.concert_pitch.hertz,
             pitch0.hertz,
         )
         self.assertAlmostEqual(
-            pitch1.concert_pitch.hertz
-            / (pitch1.step_factor**pitch1.pitch_class_count),
+            pitch1.concert_pitch.hertz / (pitch1.step_factor**pitch1.pitch_class_count),
             pitch1.hertz,
         )
 
@@ -1055,6 +1052,26 @@ class FlexPitchTest(unittest.TestCase):
     def test_value_at(self):
         self.assertEqual(self.p.value_at(0), self.p[0].pitch.hertz)
         self.assertEqual(self.p.value_at(1), self.p[1].pitch.hertz)
+
+    def test_add(self):
+        # 1. Test Pitch.__add__
+        p_transposed = music_parameters.FlexPitch([[0, "f5"], [1, "c5"]])
+        for interval in (
+            music_parameters.WesternPitchInterval("p8"),
+            "p8",
+            music_parameters.DirectPitchInterval(1200),
+            1200,
+        ):
+            print(self.p + interval, self.p, interval)
+            self.assertEqual(self.p + interval, p_transposed)
+
+        # 2. Test Envelope.__add__
+        p2 = self.p + self.p
+        self.assertEqual(len(p2), len(self.p) * 2)
+        self.assertEqual(
+            [p.name for p in p2.parameter_tuple],
+            ["f4", "c4", "f4", "c4"],
+        )
 
 
 if __name__ == "__main__":
