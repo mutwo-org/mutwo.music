@@ -19,7 +19,7 @@ from mutwo import music_parameters
 __all__ = (
     "ChrononToPitchList",
     "ChrononToVolume",
-    "ChrononToLyric",
+    "ChrononToLyricList",
     "ChrononToInstrumentList",
     "ChrononToPlayingIndicatorCollection",
     "ChrononToNotationIndicatorCollection",
@@ -62,15 +62,15 @@ class ChrononToVolume(core_converters.ChrononToAttribute):
         )
 
 
-class ChrononToLyric(core_converters.ChrononToAttribute):
+class ChrononToLyricList(core_converters.ChrononToAttribute):
     def __init__(
         self,
         attribute_name: typing.Optional[str] = None,
-        exception_value: music_parameters.abc.Volume = music_parameters.DirectLyric(""),
+        exception_value: music_parameters.abc.LyricList = [],
     ):
         super().__init__(
             attribute_name
-            or music_converters.configurations.DEFAULT_LYRIC_TO_SEARCH_NAME,
+            or music_converters.configurations.DEFAULT_LYRIC_LIST_TO_SEARCH_NAME,
             exception_value,
         )
 
