@@ -25,15 +25,9 @@ class NoteLike(core_events.Chronon):
     :type pitch_list: music_parameters.abc.PitchList.Type
     :param duration: The duration of :class:`NoteLike`.
     :type duration: mutwo.core_parameters.abc.Duration.Type
-    :param volume: The volume of the event. Can either be a object of
-        :mod:`mutwo.music_parameters.abc.Volume`, a number or a string. If the number
-        ranges from 0 to 1, :mod:`mutwo` automatically generates a
-        :class:`mutwo.music_parameters.AmplitudeVolume` object (and the number
-        is interpreted as the amplitude). If the number is smaller than 0,
-        :mod:`mutwo` automatically generates a
-        :class:`mutwo.music_parameters.volumes.DecibelVolume` (and the number
-        is interpreted as `decibel <https://en.wikipedia.org/wiki/Decibel>`_). If the argument is a string,
-        `mutwo` initialises a :class:`mutwo.music_parameters.volumes.WesternVolume`.
+    :param volume: The volume of the event. Can either be
+        :mod:`mutwo.music_parameters.abc.Volume` or any other type that can
+        be parsed by `mutwo.music_parameters.abc.Volume.from_any`.
     :type volume: music_parameters.abc.Volume.Type
     :param grace_note_consecution: Specify `grace notes <https://en.wikipedia.org/wiki/Grace_note>`_
         which are played before the :class:`NoteLike`. If the :class:`~mutwo.core_events.Consecution`
@@ -52,8 +46,8 @@ class NoteLike(core_events.Chronon):
         (e.g. ottava, clefs) without affecting the resulting sound.
     :type notation_indicator_collection: music_parameters.abc.IndicatorCollection.Type
     :param lyric: If with this :class:`NoteLike` a text is to be sung or spoken,
-        this text can be specified here. Default to ``music_parameters.DirectLyric("")``.
-    :type lyric: core_parameters.abc.Lyric
+        this text can be specified here. Default to ``music_parameters.NotationLyric("")``.
+    :type lyric: core_parameters.abc.Lyric.Type
     :param instrument_list: If an event is played with one or more specifc
         :class:`mutwo.music_parameters.abc.Instrument`, these instruments can be
         assigned here. Default is an empty list.
@@ -86,7 +80,7 @@ class NoteLike(core_events.Chronon):
         after_grace_note_consecution: typing.Optional[GraceNotes] = None,
         playing_indicator_collection: music_parameters.abc.IndicatorCollection.Type = None,
         notation_indicator_collection: music_parameters.abc.IndicatorCollection.Type = None,
-        lyric: music_parameters.abc.Lyric = music_parameters.DirectLyric(""),
+        lyric_list: music_parameters.abc.LyricList.Type = [],
         instrument_list: list[music_parameters.abc.Instrument] = [],
         *,
         tempo: typing.Optional[core_parameters.abc.Tempo] = None,
@@ -99,7 +93,7 @@ class NoteLike(core_events.Chronon):
         self.after_grace_note_consecution = after_grace_note_consecution
         self.playing_indicator_collection = playing_indicator_collection
         self.notation_indicator_collection = notation_indicator_collection
-        self.lyric = lyric
+        self.lyric_list = lyric_list
         self.instrument_list = instrument_list
 
     # ###################################################################### #
@@ -200,3 +194,12 @@ class NoteLike(core_events.Chronon):
                 notation_indicator_collection
             )
         )
+
+    @property
+    def lyric_list(self) -> typing.Any:
+        """All lyrics of the event."""
+        return self._lyric_list
+
+    @lyric_list.setter
+    def lyric_list(self, lyric_list: "music_parameters.abc.LyricList.Type"):
+        self._lyric_list = music_parameters.abc.LyricList.from_any(lyric_list)

@@ -1,34 +1,81 @@
 import unittest
 
 from mutwo import music_parameters
+from mutwo.music_parameters.constants import LYRIC_TIE, LYRIC_SUSTAIN
 
 
-class LanguageBasedLyricTest(unittest.TestCase):
-    def setUp(self):
-        self.lyric_hello = music_parameters.LanguageBasedLyric("hallo")
-        self.lyric_how_are_you = music_parameters.LanguageBasedLyric("wie geht es dir?")
+class DirectLyricTest(unittest.TestCase):
+    def test_basic_assignment(self):
+        lyric = music_parameters.DirectLyric("hello", False, True)
 
-    def test_written_representation(self):
-        self.assertEqual(self.lyric_hello.written_representation, "hallo")
-        self.assertEqual(self.lyric_how_are_you.written_representation, "wie geht es dir?")
+        self.assertEqual(lyric.text, "hello")
+        self.assertFalse(lyric.ties_previous)
+        self.assertTrue(lyric.ties_next)
 
-    def test_xsampa(self):
-        self.assertEqual(self.lyric_hello.xsampa, "halo:")
-        self.assertEqual(self.lyric_how_are_you.xsampa, "vi:@ ge:t e:s di:R\\")
+        lyric.text = "world"
+        self.assertEqual(lyric.text, "world")
+
+        lyric.ties_previous = True
+        self.assertTrue(lyric.ties_previous)
 
 
-class LanguageBasedSyllable(unittest.TestCase):
-    def setUp(self):
-        self.syllable_hel = music_parameters.LanguageBasedSyllable(False, "hal")
-        self.syllable_lo = music_parameters.LanguageBasedSyllable(True, "lo")
+class NotationLyricTest(unittest.TestCase):
+    def test_empty_notation(self):
+        lyric = music_parameters.NotationLyric("")
+        self.assertEqual(lyric.text, "")
+        self.assertFalse(lyric.ties_previous)
+        self.assertFalse(lyric.ties_next)
 
-    def test_written_representation(self):
-        self.assertEqual(self.syllable_hel.written_representation, "hal")
-        self.assertEqual(self.syllable_lo.written_representation, "lo")
+    def test_sustain(self):
+        lyric = music_parameters.NotationLyric(LYRIC_SUSTAIN)
+        self.assertEqual(lyric.text, "")
+        self.assertTrue(lyric.ties_previous)
+        self.assertTrue(lyric.ties_next)
 
-    def test_xsampa(self):
-        self.assertEqual(self.syllable_hel.xsampa, "hA:l")
-        self.assertEqual(self.syllable_lo.xsampa, "lo:")
+    def test_simple_word(self):
+        lyric = music_parameters.NotationLyric("hello")
+        self.assertEqual(lyric.text, "hello")
+        self.assertFalse(lyric.ties_previous)
+        self.assertFalse(lyric.ties_next)
+
+    def test_prefix_tie(self):
+        lyric = music_parameters.NotationLyric(f"{LYRIC_TIE} hello")
+        self.assertEqual(lyric.text, "hello")
+        self.assertTrue(lyric.ties_previous)
+        self.assertFalse(lyric.ties_next)
+
+    def test_suffix_tie(self):
+        lyric = music_parameters.NotationLyric(f"hello {LYRIC_TIE}")
+        self.assertEqual(lyric.text, "hello")
+        self.assertFalse(lyric.ties_previous)
+        self.assertTrue(lyric.ties_next)
+
+    def test_both_ties(self):
+        lyric = music_parameters.NotationLyric(f"{LYRIC_TIE} hello {LYRIC_TIE}")
+        self.assertEqual(lyric.text, "hello")
+        self.assertTrue(lyric.ties_previous)
+        self.assertTrue(lyric.ties_next)
+
+    def test_invalid_middle_tie(self):
+        with self.assertRaises(ValueError):
+            music_parameters.NotationLyric(f"hel {LYRIC_TIE} lo")
+
+    def test_setters_modify_notation(self):
+        lyric = music_parameters.NotationLyric("hello")
+
+        lyric.ties_previous = True
+        self.assertTrue(lyric.ties_previous)
+
+        lyric.ties_next = True
+        self.assertTrue(lyric.ties_next)
+
+    def test_roundtrip_consistency(self):
+        original = f"{LYRIC_TIE} hello {LYRIC_TIE}"
+        lyric = music_parameters.NotationLyric(original)
+
+        self.assertEqual(lyric.text, "hello")
+        self.assertTrue(lyric.ties_previous)
+        self.assertTrue(lyric.ties_next)
 
 
 if __name__ == "__main__":

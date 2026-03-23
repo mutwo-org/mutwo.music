@@ -89,9 +89,7 @@ class NoteLikeTest(unittest.TestCase):
     # ###################################################################### #
 
     def test_grace_note_consecution_setter_from_consecution(self):
-        grace_note_consecution = core_events.Consecution(
-            [music_events.NoteLike()]
-        )
+        grace_note_consecution = core_events.Consecution([music_events.NoteLike()])
         self.assertEqual(
             grace_note_consecution,
             music_events.NoteLike(
@@ -116,6 +114,23 @@ class NoteLikeTest(unittest.TestCase):
         self.assertEqual(n.notation_indicator_collection.clef.name, "treble_8")
 
     # ###################################################################### #
+    #                          test lyric list                               #
+    # ###################################################################### #
+
+    def test_set_lyric_list(self):
+        n = music_events.NoteLike()
+        n.lyric_list = "-- lo world"
+        self.assertEqual(n.lyric_list, [music_parameters.NotationLyric("-- lo world")])
+        n.lyric_list = ["-- lo world", "__"]
+        self.assertEqual(
+            n.lyric_list,
+            [
+                music_parameters.NotationLyric("-- lo world"),
+                music_parameters.NotationLyric("__"),
+            ],
+        )
+
+    # ###################################################################### #
     #                          other                                         #
     # ###################################################################### #
 
@@ -126,7 +141,7 @@ class NoteLikeTest(unittest.TestCase):
             "duration",
             "grace_note_consecution",
             "instrument_list",
-            "lyric",
+            "lyric_list",
             "notation_indicator_collection",
             "pitch_list",
             "playing_indicator_collection",

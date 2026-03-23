@@ -39,12 +39,13 @@ from mutwo import music_parameters
 __all__ = (
     "PitchInterval",
     "Pitch",
+    "PitchList",
     "Volume",
     "PitchAmbitus",
     "PlayingIndicator",
     "NotationIndicator",
     "Lyric",
-    "Syllable",
+    "LyricList",
     "Instrument",
     "PitchedInstrument",
 )
@@ -307,7 +308,7 @@ class PitchList(core_parameters.abc.Parameter, list[Pitch]):
     list parser :func:`PitchList.from_any`."""
 
     @classmethod
-    def from_any(cls, object: Pitch.Type) -> Pitch:
+    def from_any(cls, object: Pitch.Type) -> list[Pitch]:
         match object:
             case None:
                 return []
@@ -560,13 +561,13 @@ class PitchAmbitus(core_parameters.abc.Parameter):
 
     def __init__(self, minima_pitch: Pitch, maxima_pitch: Pitch) -> None:
         try:
-            assert minima_pitch < maxima_pitch
+            assert minima_pitch <= maxima_pitch
         except AssertionError:
             raise ValueError(
                 (
                     f"Found minima_pitch: {minima_pitch} and "
                     f"maxima_pitch={maxima_pitch}. The minima pitch has to be "
-                    "a lower pitch than the maxima pitch!"
+                    "a lower or the same pitch like the maxima pitch!"
                 )
             )
 
@@ -841,39 +842,60 @@ class IndicatorCollection(core_parameters.abc.Parameter, typing.Generic[T]):
 
 class Lyric(
     core_parameters.abc.SingleValueParameter,
-    value_name="xsampa",
+    value_name="text",
     value_return_type=str,
 ):
     """Abstract base class for any spoken, sung or written text.
 
     If the user wants to define a new lyric class, the abstract
-    properties :attr:`xampa` and
-    :attr:`written_representation` have to be overridden.
-
-    The :attr:`xsampa` should return a string of
-    X-SAMPA format phonemes, separated by space to indicate new words.
-    Consult `wikipedia entry <https://en.wikipedia.org/wiki/X-SAMPA>`_
-    for detailed information regarding X-SAMPA.
-
-    The :attr:`written_representation` should return a string of
-    normal written text, separated by space to indicate new words.
+    properties :attr:`text`, :attr:`ties_previous` and
+    :attr:`ties_next` have to be overridden.
     """
+
+    Type: typing.TypeAlias = typing.Union[str, "Lyric"]
+
+    @classmethod
+    def from_any(cls, object: Lyric.Type) -> Lyric:
+        match object:
+            case Lyric():
+                return object
+            case str():
+                try:
+                    return music_parameters.NotationLyric(object)
+                except ValueError:
+                    return music_parameters.DirectLyric(object)
+            case _:
+                raise core_utilities.CannotParseError(object, cls)
 
     @property
-    def written_representation(self) -> str:
-        """Get text as it would be written in natural language"""
+    @abc.abstractmethod
+    def ties_previous(self):
+        """True if text begins with syllable or melisma that ties to previous lyric"""
+
+    @property
+    @abc.abstractmethod
+    def ties_next(self):
+        """True if text begins with syllable or melisma that ties to enxt lyric"""
 
 
-class Syllable(Lyric):
-    """Syllable mixin for classes which inherit from :class:`Lyric`.
+class LyricList(core_parameters.abc.Parameter, list[Lyric]):
+    """LyricList provides functionality to parse objects to a list of lyric"""
 
-    This adds the new attribute :attr:`is_last_syllable`. This should
-    be `True` if it is the last syllable of a word and `False` if it
-    isn't.
-    """
+    Type: typing.TypeAlias = typing.Union[
+        Lyric.Type, list[Lyric], tuple[Lyric], types.NoneType
+    ]
+    """LyricList.Type hosts all types that are supported by the lyric
+    list parser :func:`LyricList.from_any`."""
 
-    def __init__(self, is_last_syllable: bool):
-        self.is_last_syllable = is_last_syllable
+    @classmethod
+    def from_any(cls, object: LyricList.Type) -> list[Lyric]:
+        match object:
+            case None:
+                return []
+            case list() | tuple():
+                return [Lyric.from_any(ly) for ly in object]
+            case _:
+                return [Lyric.from_any(object)]
 
 
 @dataclasses.dataclass(frozen=True)
