@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-03-23
+
+### Changed
+- lyric module implementation (simplified) and `NoteLike.lyric` to `NoteLike.lyric_list`, see [here](https://github.com/mutwo-org/mutwo.music/commit/53a0bb2bb251d09274e746a9b04efa97136bdf22)
+
+### Fixed
+- `FlexPitch.__add__` and `FlexPitch.add`, see [here](https://github.com/mutwo-org/mutwo.music/commit/30defa834ef85f3b738ca9302d6ddd25c4bfc892)
+
+
 ## [0.29.0] - 2025-10-08
 
 ### Added
