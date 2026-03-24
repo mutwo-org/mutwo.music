@@ -130,6 +130,22 @@ class NoteLikeTest(unittest.TestCase):
             ],
         )
 
+        # Test parsing lyric list as string
+
+        def _():
+            self.assertEqual(
+                n.lyric_list,
+                [
+                    music_parameters.NotationLyric("hello, python"),
+                    music_parameters.NotationLyric("how are you"),
+                ],
+            )
+
+        n.lyric_list = '"hello, python","how are you"'
+        _()
+        n.lyric_list = "'hello, python','how are you'"
+        _()
+
     # ###################################################################### #
     #                          other                                         #
     # ###################################################################### #

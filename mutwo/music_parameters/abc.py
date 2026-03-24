@@ -17,6 +17,7 @@ import dataclasses
 import functools
 import math
 import numbers
+import re
 import types
 import typing
 
@@ -892,10 +893,48 @@ class LyricList(core_parameters.abc.Parameter, list[Lyric]):
         match object:
             case None:
                 return []
+            case str():
+                return [Lyric.from_any(ly) for ly in _split_lyric_list(object)]
             case list() | tuple():
                 return [Lyric.from_any(ly) for ly in object]
             case _:
                 return [Lyric.from_any(object)]
+
+
+def _split_lyric_list(s):
+    """
+    Splits a string by commas, preserving quoted fields.
+    Supports both single ' and double " quotes.
+    Strips the surrounding quotes from each field.
+    """
+    pattern = re.compile(
+        r"""
+        \s*                   # optional leading whitespace
+        (                     # capture group for the field
+            "(?:[^"]*)"       # double-quoted field
+            |                 # OR
+            '(?:[^']*)'       # single-quoted field
+            |                 # OR
+            [^,]+             # unquoted field (no commas)
+        )
+        \s*                   # optional trailing whitespace
+        (?:,|$)               # followed by comma or end of string
+    """,
+        re.VERBOSE,
+    )
+
+    fields = pattern.findall(s)
+
+    # Strip surrounding quotes if present
+    return [
+        (
+            f[1:-1]
+            if (f.startswith('"') and f.endswith('"'))
+            or (f.startswith("'") and f.endswith("'"))
+            else f
+        )
+        for f in fields
+    ]
 
 
 @dataclasses.dataclass(frozen=True)
